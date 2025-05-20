@@ -1,0 +1,2 @@
+D:/Flutter/artrit/android/app/.cxx/RelWithDebInfo/4m404y3a/x86_64/CMakeFiles/edit_cache.dir
+D:/Flutter/artrit/android/app/.cxx/RelWithDebInfo/4m404y3a/x86_64/CMakeFiles/rebuild_cache.dir
