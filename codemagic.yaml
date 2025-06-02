@@ -4,16 +4,26 @@ workflows:
     environment:
       groups:
         - appstore_credentials
+      flutter: stable
+      xcode: latest
     scripts:
-      - name: Set up keychain
+      - name: Clean project
+        script: flutter clean
+      - name: Get dependencies
+        script: flutter pub get
+      - name: Install pods
         script: |
-          keychain initialize
-      - name: Fetch signing files
+          cd ios
+          pod install
+      - name: Build and archive
         script: |
-          app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
-      - name: Build IPA
+          flutter build ios --release --no-codesign
+          cd ios
+          xcodebuild -workspace Artrit.xcworkspace -scheme RunnArtriter -configuration Release archive -archivePath build/Artrit.xcarchive
+      - name: Export IPA
         script: |
-          xcode-project build-ipa --workspace "Artrit.xcworkspace" --scheme "Artrit"
+          cd ios
+          xcodebuild -exportArchive -archivePath build/Artrit.xcarchive -exportOptionsPlist exportOptions.plist -exportPath build/ipa
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:

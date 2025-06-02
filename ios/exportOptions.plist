@@ -3,8 +3,10 @@
 <plist version="1.0">
 <dict>
   <key>method</key>
-  <string>development</string>
+  <string>development</string>  <!-- Используйте "app-store" для публикации -->
   <key>teamID</key>
   <string>c114591b-1260-4812-8ff8-f55694ee8c41</string>
+  <key>signingStyle</key>
+  <string>automatic</string>    <!-- Автоматическая подпись -->
 </dict>
 </plist>
