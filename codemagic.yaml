@@ -1,24 +1,23 @@
 workflows:
   ios-release:
-    name: iOS Release
+    name: iOS Release Build
     environment:
       flutter: stable
       xcode: latest
-      vars:
-        APP_STORE_CONNECT_ISSUER_ID: c114591b-1260-4812-8ff8-f55694ee8c41
-        APP_STORE_CONNECT_KEY_IDENTIFIER: 43ZCHB7Q98
-        APP_STORE_CONNECT_PRIVATE_KEY: -----BEGIN PRIVATE KEY-----MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgvxtTq77MFYCe2FebKS/n/iVzU1JOnt6rvix6wuhyMdigCgYIKoZIzj0DAQehRANCAARjkTx1+8K1w7QbeFYKRmpYUx1sebEnOJpH9iZgajGUST//G+9hdXM/NaPxR7eu0jSYcTNY99L4DNshT3QYSJzt-----END PRIVATE KEY-----
+      groups:
+        - appstore_credentials # если используешь API key
+      #  - signing              # если добавлены .p12 и .mobileprovision
     scripts:
-      - name: Install dependencies
+      - name: Get dependencies
         script: flutter pub get
-      - name: Build IPA
-        script: flutter build ipa --release
+      - name: Build signed IPA
+        script: flutter build ipa
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
       app_store_connect:
         auth: api_key
-        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
-        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
         issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
         submit_to_testflight: true
