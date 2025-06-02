@@ -5,10 +5,10 @@ workflows:
       flutter: stable
       xcode: latest
       groups:
-        - appstore_credentials # если используешь API key
-      #  - signing              # если добавлены .p12 и .mobileprovision
+        - appstore_credentials
+        - signing
     scripts:
-      - name: Get dependencies
+      - name: Install dependencies
         script: flutter pub get
       - name: Build signed IPA
         script: flutter build ipa
