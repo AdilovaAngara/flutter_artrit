@@ -35,32 +35,32 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-  http: ^1.2.2
+  http: ^1.4.0
   intl: ^0.20.2
   flutter_secure_storage: ^9.0.0
-  provider: ^6.1.2
+  provider: ^6.1.5
   font_awesome_flutter: ^10.1.0
   image_picker: ^1.0.8
-  file_picker: ^8.0.0
-  flutter_svg: ^1.0.3
+  file_picker: ^10.1.9
+  flutter_svg: ^2.1.0
   camera: ^0.11.1
-  image: ^4.2.0
+  image: ^4.5.4
   flutter_exif_rotation: ^0.5.1
   auto_size_text: ^3.0.0
-  webview_flutter: ^4.8.0
+  webview_flutter: ^4.13.0
   path_provider: ^2.1.4
   open_file: ^3.5.8
-  permission_handler: ^11.3.0
-  flutter_pdfview: ^1.3.2
+  permission_handler: ^12.0.0+1
+  flutter_pdfview: ^1.4.0+1
   collection: ^1.17.0
-  flutter_launcher_icons: ^0.13.1 # Для создания иконки приложения
-  device_info_plus: ^10.1.0  # Для проверки версии Android
+  flutter_launcher_icons: ^0.14.3 # Для создания иконки приложения
+  device_info_plus: ^11.4.0  # Для проверки версии Android
   media_store_plus: ^0.1.3
   charset_converter: ^2.0.0
   video_player: ^2.9.1
   grouped_list: ^6.0.0
   cached_network_image: ^3.3.1 # Для просмотра изображений, пока не использую
-  audioplayers: ^5.2.1
+  audioplayers: ^6.4.0
 
 
 
