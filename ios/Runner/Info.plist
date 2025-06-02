@@ -58,6 +58,5 @@
         <!-- Если ваш API использует веб-авторизацию, укажите домен -->
         <string>applinks:nitrosbase.com</string>
       </array>
-    </dict>
 </dict>
 </plist>
