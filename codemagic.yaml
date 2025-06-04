@@ -1,10 +1,10 @@
-version: 1.0.1+14  # Увеличиваем номер сборки
+version: 1.0.1+15  # Увеличиваем номер сборки
 workflows:
   ios-release:
     name: iOS Release Build
     environment:
       flutter: stable
-      xcode: 16.0
+      xcode: 16.3
       groups:
         - appstore_credentials
         - signing
