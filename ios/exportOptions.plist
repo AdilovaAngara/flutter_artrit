@@ -4,7 +4,7 @@
 <dict>
   <key>method</key>
   <string>development</string>  <!-- Используйте "app-store" для публикации -->
-  <key>teamID</key>
+  <key>43ZCHB7Q98</key>
   <string>c114591b-1260-4812-8ff8-f55694ee8c41</string>
   <key>signingStyle</key>
   <string>automatic</string>    <!-- Автоматическая подпись -->
