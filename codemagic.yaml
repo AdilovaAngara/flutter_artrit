@@ -1,10 +1,10 @@
-version: 1.0.1+9  # Увеличиваем номер сборки до 7
+version: 1.0.1+10  # Увеличиваем номер сборки
 workflows:
   ios-release:
     name: iOS Release Build
     environment:
       flutter: stable
-      xcode: 16.0  # Последняя стабильная версия Xcode
+      xcode: 16.0
       groups:
         - appstore_credentials
         - signing
@@ -12,28 +12,28 @@ workflows:
       - name: Verify Xcode version
         script: |
           xcodebuild -version
+
       - name: Clean and install dependencies
         script: |
           flutter clean
           flutter pub get
-          cd ios
-          xcodebuild clean -project Runner.xcodeproj -scheme Runner -configuration Release
-      - name: Build signed IPA with SwiftSupport
+
+      - name: Ensure xcconfig sets SwiftSupport
         script: |
-          flutter build ios --release --no-codesign --build-number=7
-          xcode-project build-ipa \
-            --project ios/Runner.xcodeproj \
-            --scheme Runner \
-            --config Release \
-            --archive-path build/ios/archive/Runner.xcarchive \
-            --export-options-plist ios/exportOptions.plist
+          echo 'ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES=YES' >> ios/Flutter/Release.xcconfig
+          cat ios/Flutter/Release.xcconfig
+
+      - name: Build signed IPA
+        script: |
+          flutter build ipa --release --build-number=9
+
       - name: Verify SwiftSupport
         script: |
           echo "Checking for SwiftSupport in IPA..."
-          unzip -l build/ios/ipa/*.ipa | grep SwiftSupport || echo "SwiftSupport not found"
+          unzip -l build/ios/ipa/*.ipa | grep SwiftSupport || echo "❌ SwiftSupport not found"
+
     artifacts:
       - build/ios/ipa/*.ipa
-      - build/ios/archive/Runner.xcarchive
     publishing:
       app_store_connect:
         auth: api_key
