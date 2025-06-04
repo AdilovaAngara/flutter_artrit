@@ -18,11 +18,6 @@ workflows:
           flutter clean
           flutter pub get
 
-      - name: Ensure xcconfig sets SwiftSupport
-        script: |
-          echo 'ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES=YES' >> ios/Flutter/Release.xcconfig
-          cat ios/Flutter/Release.xcconfig
-
       - name: Build signed IPA
         script: |
           flutter build ipa --release --build-number=9
