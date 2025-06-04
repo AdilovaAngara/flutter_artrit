@@ -1,20 +1,43 @@
-version: 1.0.1+5
+version: 1.0.1+6
 workflows:
   ios-release:
     name: iOS Release Build
     environment:
       flutter: stable
-      xcode: latest
+      xcode: 16.3
       groups:
         - appstore_credentials
         - signing
+
     scripts:
       - name: Install dependencies
         script: flutter pub get
-      - name: Build signed IPA
-        script: flutter build ipa
+
+      - name: Clean project
+        script: flutter clean
+
+      - name: Build IPA
+        script: |
+          flutter build ipa --release --no-codesign
+          
+          # Убедимся, что Swift библиотеки попадут в IPA
+          echo "Embedding SwiftSupport..."
+          APP_PATH=build/ios/iphoneos/Runner.app
+          SWIFT_LIB_DIR=$(xcrun --sdk iphoneos --show-sdk-path)/usr/lib/swift
+          
+          mkdir -p build/ios/ipa/Payload
+          cp -r $APP_PATH build/ios/ipa/Payload/
+          
+          mkdir -p build/ios/ipa/SwiftSupport/iphoneos
+          cp -r $SWIFT_LIB_DIR/* build/ios/ipa/SwiftSupport/iphoneos/
+          
+          cd build/ios/ipa
+          zip -r ../JuvenileArthritis.ipa .
+          cd ../../../
+
     artifacts:
-      - build/ios/ipa/*.ipa
+      - build/ios/JuvenileArthritis.ipa
+
     publishing:
       app_store_connect:
         auth: api_key
@@ -22,8 +45,3 @@ workflows:
         key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
         api_key: $APP_STORE_CONNECT_PRIVATE_KEY
         submit_to_testflight: true
-        post_build:
-          - name: Ensure Swift libraries are embedded
-            script: |
-              echo "Ensuring SwiftSupport is embedded..."
-              defaults write com.apple.dt.Xcode AlwaysEmbedSwiftStandardLibraries -bool YES || true
