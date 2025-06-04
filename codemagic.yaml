@@ -5,55 +5,53 @@ workflows:
     environment:
       flutter: stable
       xcode: 16.3
-  groups:
-    - appstore_credentials
-    - signing
-  scripts:
-    - name: Verify Xcode and Flutter Versions
-      script: |
-        echo "Xcode version:"
-        xcodebuild -version
-        echo "Flutter version:"
-        flutter --version
-    - name: Clean and Install Dependencies
-      script: |
-        flutter clean
-        rm -rf ios/Pods ios/Podfile.lock  # Удаляем кэш Pods
-        flutter pub upgrade  # Обновляем зависимости
-        flutter pub get
-        cd ios
-        xcodebuild clean -project Runner.xcodeproj -scheme Runner -configuration Release
-        pod install || true  # Игнорируем, если Podfile отсутствует
-    - name: Ensure SwiftSupport
-      script: |
-        echo "Setting ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES to YES"
-        sed -i '' '/ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES/d' ios/Runner.xcodeproj/project.pbxproj
-        sed -i '' '/buildSettings = {/a\
-          \ \ \ \ \ \ \ \ \ \ \ \ ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;' ios/Runner.xcodeproj/project.pbxproj
-    - name: Build Signed IPA with SwiftSupport
-      script: |
-        flutter build ios --release --no-codesign --build-number=12 --verbose
-        xcode-project build-ipa \
-          --project ios/Runner.xcodeproj \
-          --scheme Runner \
-          --config Release \
-          --archive-path build/ios/archive/Runner.xcarchive \
-          --export-options-plist ios/exportOptions.plist
-    - name: Verify SwiftSupport
-      script: |
-        echo "Checking for SwiftSupport in IPA..."
-        unzip -l build/ios/ipa/*.ipa | grep SwiftSupport || echo "SwiftSupport not found in IPA"
-    - name: Check Swift Libraries in Archive
-      script: |
-        echo "Checking for Swift libraries in archive..."
-        find build/ios/archive/Runner.xcarchive -name "*.dylib" | grep swift || echo "No Swift libraries found in archive"
-  artifacts:
-    - build/ios/ipa/*.ipa
-    - build/ios/archive/Runner.xcarchive
-  publishing:
-    app_store_connect:
-      auth: api_key
-      issuer_id: $APP_STORE_CONNECT_ISSUER_ID
-      key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
-      api_key: $APP_STORE_CONNECT_PRIVATE_KEY
-      submit_to_testflight: true
+      groups:
+        - appstore_credentials
+        - signing
+    scripts:
+      - name: Verify Xcode and Flutter Versions
+        script: |
+          echo "Xcode version:"
+          xcodebuild -version
+          echo "Flutter version:"
+          flutter --version
+      - name: Clean and Install Dependencies
+        script: |
+          flutter clean
+          rm -rf ios/Pods ios/Podfile.lock
+          flutter pub upgrade
+          flutter pub get
+          cd ios
+          xcodebuild clean -project Runner.xcodeproj -scheme Runner -configuration Release
+          pod install || true
+      - name: Check Swift Files
+        script: |
+          echo "Checking for Swift files in project..."
+          find ios/Runner -name "*.swift" || echo "No Swift files found"
+      - name: Build Signed IPA with SwiftSupport
+        script: |
+          flutter build ios --release --no-codesign --build-number=13 --verbose
+          xcode-project build-ipa \
+            --project ios/Runner.xcodeproj \
+            --scheme Runner \
+            --config Release \
+            --archive-path build/ios/archive/Runner.xcarchive \
+            --export-options-plist ios/exportOptions.plist
+      - name: Verify SwiftSupport
+        script: |
+          echo "Checking for SwiftSupport in IPA..."
+          unzip -l build/ios/ipa/*.ipa | grep SwiftSupport || echo "SwiftSupport not found in IPA"
+      - name: Check Swift Libraries in Archive
+        script: |
+          echo "Checking for Swift libraries in archive..."
+          find build/ios/archive/Runner.xcarchive -name "*.dylib" | grep swift || echo "No Swift libraries found in archive"
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - build/ios/archive/Runner.xcarchive
+    publishing:
+      app_store_connect:
+        auth: api_key
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+        submit_to_testflight: true
