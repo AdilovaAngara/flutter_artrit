@@ -1,22 +1,26 @@
-version: 1.0.1+8
+version: 1.0.1+9  # Увеличиваем номер сборки до 7
 workflows:
   ios-release:
     name: iOS Release Build
     environment:
       flutter: stable
-      xcode: 16.0  # Указываем конкретную версию Xcode (последняя стабильная на июнь 2025)
+      xcode: 16.0  # Последняя стабильная версия Xcode
       groups:
         - appstore_credentials
         - signing
     scripts:
-      - name: Install dependencies
+      - name: Verify Xcode version
         script: |
+          xcodebuild -version
+      - name: Clean and install dependencies
+        script: |
+          flutter clean
           flutter pub get
           cd ios
-          pod install || true  # Устанавливаем Pods, если они используются (игнорируем, если Podfile отсутствует)
+          xcodebuild clean -project Runner.xcodeproj -scheme Runner -configuration Release
       - name: Build signed IPA with SwiftSupport
         script: |
-          flutter build ios --release --no-codesign --build-number=6
+          flutter build ios --release --no-codesign --build-number=7
           xcode-project build-ipa \
             --project ios/Runner.xcodeproj \
             --scheme Runner \
