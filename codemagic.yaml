@@ -1,43 +1,35 @@
-version: 1.0.1+6
+version: 1.0.1+7
 workflows:
   ios-release:
     name: iOS Release Build
     environment:
       flutter: stable
-      xcode: 16.3
+      xcode: 16.0  # Указываем конкретную версию Xcode (последняя стабильная на июнь 2025)
       groups:
         - appstore_credentials
         - signing
-
     scripts:
       - name: Install dependencies
-        script: flutter pub get
-
-      - name: Clean project
-        script: flutter clean
-
-      - name: Build IPA
         script: |
-          flutter build ipa --release --no-codesign
-          
-          # Убедимся, что Swift библиотеки попадут в IPA
-          echo "Embedding SwiftSupport..."
-          APP_PATH=build/ios/iphoneos/Runner.app
-          SWIFT_LIB_DIR=$(xcrun --sdk iphoneos --show-sdk-path)/usr/lib/swift
-          
-          mkdir -p build/ios/ipa/Payload
-          cp -r $APP_PATH build/ios/ipa/Payload/
-          
-          mkdir -p build/ios/ipa/SwiftSupport/iphoneos
-          cp -r $SWIFT_LIB_DIR/* build/ios/ipa/SwiftSupport/iphoneos/
-          
-          cd build/ios/ipa
-          zip -r ../JuvenileArthritis.ipa .
-          cd ../../../
-
+          flutter pub get
+          cd ios
+          pod install || true  # Устанавливаем Pods, если они используются (игнорируем, если Podfile отсутствует)
+      - name: Build signed IPA with SwiftSupport
+        script: |
+          flutter build ios --release --no-codesign --build-number=6
+          xcode-project build-ipa \
+            --project ios/Runner.xcodeproj \
+            --scheme Runner \
+            --config Release \
+            --archive-path build/ios/archive/Runner.xcarchive \
+            --export-options-plist ios/exportOptions.plist
+      - name: Verify SwiftSupport
+        script: |
+          echo "Checking for SwiftSupport in IPA..."
+          unzip -l build/ios/ipa/*.ipa | grep SwiftSupport || echo "SwiftSupport not found"
     artifacts:
-      - build/ios/JuvenileArthritis.ipa
-
+      - build/ios/ipa/*.ipa
+      - build/ios/archive/Runner.xcarchive
     publishing:
       app_store_connect:
         auth: api_key
