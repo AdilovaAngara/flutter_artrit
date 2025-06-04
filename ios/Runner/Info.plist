@@ -30,6 +30,8 @@
 	<string>Main</string>
 	<key>NSPhotoLibraryUsageDescription</key>
     <string>Приложению требуется доступ к фотогалерее для загрузки изображений, отображающих состояние здоровья пациента, например, состояние кожных покровов или суставов.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+    <string>Приложению нужен доступ для сохранения изображений в фотогалерею.</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
