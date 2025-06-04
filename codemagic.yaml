@@ -1,4 +1,4 @@
-version: 1.0.1+12  # Увеличиваем номер сборки
+version: 1.0.1+13  # Увеличиваем номер сборки
 workflows:
   ios-release:
     name: iOS Release Build
@@ -9,26 +9,41 @@ workflows:
         - appstore_credentials
         - signing
     scripts:
-      - name: Verify Xcode version
+      - name: Verify Xcode and Flutter Versions
         script: |
+          echo "Xcode version:"
           xcodebuild -version
-
-      - name: Clean and install dependencies
+          echo "Flutter version:"
+          flutter --version
+      - name: Clean and Install Dependencies
         script: |
           flutter clean
+          rm -rf ios/Pods ios/Podfile.lock  # Удаляем кэш Pods
+          flutter pub upgrade  # Обновляем зависимости
           flutter pub get
-
-      - name: Build signed IPA
+          cd ios
+          xcodebuild clean -project Runner.xcodeproj -scheme Runner -configuration Release
+          pod install || true  # Игнорируем, если Podfile отсутствует
+      - name: Build Signed IPA with SwiftSupport
         script: |
-          flutter build ipa --release --build-number=9
-
+          flutter build ios --release --no-codesign --build-number=11 --verbose
+          xcode-project build-ipa \
+            --project ios/Runner.xcodeproj \
+            --scheme Runner \
+            --config Release \
+            --archive-path build/ios/archive/Runner.xcarchive \
+            --export-options-plist ios/exportOptions.plist
       - name: Verify SwiftSupport
         script: |
           echo "Checking for SwiftSupport in IPA..."
-          unzip -l build/ios/ipa/*.ipa | grep SwiftSupport || echo "❌ SwiftSupport not found"
-
+          unzip -l build/ios/ipa/*.ipa | grep SwiftSupport || echo "SwiftSupport not found in IPA"
+      - name: Check Swift Libraries in Archive
+        script: |
+          echo "Checking for Swift libraries in archive..."
+          find build/ios/archive/Runner.xcarchive -name "*.dylib" | grep swift || echo "No Swift libraries found in archive"
     artifacts:
       - build/ios/ipa/*.ipa
+      - build/ios/archive/Runner.xcarchive
     publishing:
       app_store_connect:
         auth: api_key
