@@ -55,12 +55,12 @@ class FileUtils {
         debugPrint('Открываем диалог сохранения на iOS...');
         await Share.shareFiles(
           [tempFilePath],
-          text: 'Сохранить файл: $fileName',
+          //text: 'Сохранить файл: $fileName',
           subject: fileName,
         );
         filePath = tempFilePath;
         debugPrint('Файл подготовлен для сохранения на iOS: $filePath');
-        showBottomBanner(context: context, message: 'Выберите место для сохранения файла: $fileName');
+        //showBottomBanner(context: context, message: 'Выберите место для сохранения файла: $fileName');
       }
       return filePath;
     } catch (e) {
