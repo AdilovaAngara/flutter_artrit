@@ -212,6 +212,7 @@ flutter_launcher_name:
 flutter_launcher_icons:
   android: "ic_launcher" # Имя иконки для Android
   ios: true # Включить генерацию для iOS
+  remove_alpha_ios: true
   image_path: "assets/logo_new.png" # Путь к вашей иконке (например, 1024x1024 px)
 
 
