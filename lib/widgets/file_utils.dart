@@ -55,7 +55,6 @@ class FileUtils {
         debugPrint('Открываем диалог сохранения на iOS...');
         await Share.shareFiles(
           [tempFilePath],
-          //text: 'Сохранить файл: $fileName',
           subject: fileName,
         );
         filePath = tempFilePath;
