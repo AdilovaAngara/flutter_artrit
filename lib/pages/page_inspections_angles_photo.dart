@@ -76,17 +76,13 @@ class PageInspectionsAnglesPhotoState
         bodyType: _bodyType,
         inspectionsId: _inspectionsId);
 
-    _thisData = thisData.where((e) => e.jointsId == widget.jointsId).toList();
     setState(() {
-
+      _thisData = thisData.where((e) => e.jointsId == widget.jointsId).toList();
     });
   }
 
   Future<void> _refreshData() async {
-    await _loadData();
-    if (mounted) {
-      setState(() {});
-    }
+    _future = _loadData();
   }
 
 
@@ -99,6 +95,7 @@ class PageInspectionsAnglesPhotoState
         onDataUpdated: () async {
           widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
           await _refreshData();
+
         }),
   );}
 

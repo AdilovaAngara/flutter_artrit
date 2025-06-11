@@ -79,10 +79,7 @@ class PageInspectionsMainState extends State<PageInspectionsMain> {
   }
 
   Future<void> _refreshData() async {
-    await _loadData();
-    if (mounted) {
-      setState(() {});
-    }
+    _future = _loadData();
   }
 
   void _navigateAndRefresh(BuildContext context, bool isEditForm, {int? index}) {

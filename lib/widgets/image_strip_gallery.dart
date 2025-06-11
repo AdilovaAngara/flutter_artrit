@@ -75,41 +75,41 @@ class _ImageStripGalleryState extends State<ImageStripGallery> {
   @override
   void didUpdateWidget(covariant ImageStripGallery oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.jointsId != oldWidget.jointsId) {
-      photoFilter();
+    if (widget.jointsId != oldWidget.jointsId || widget.inspectionsId != oldWidget.inspectionsId) {
+      setState(() {
+        _future = _loadData();
+      });
     }
   }
+
 
   Future<void> _loadData() async {
     _role = await getUserRole();
     _patientsId = await readSecureData(SecureKey.patientsId);
-    final thisData  =
-    await _apiPhoto.get(
-        patientsId: _patientsId,
-        bodyType: widget.bodyType,
-        inspectionsId: _inspectionsId);
-    setState(() {
-      _thisData = thisData;
-    });
-    photoFilter();
+    final thisData = await _apiPhoto.get(
+      patientsId: _patientsId,
+      bodyType: widget.bodyType,
+      inspectionsId: _inspectionsId,
+    );
+    _thisData = thisData;
+    _photoFilter();
   }
 
-  void photoFilter() {
-    if (widget.jointsId != null) {
-      _thisDataForJoint = _thisData!.where((e) => e.jointsId == widget.jointsId).toList();
-    }
-    else {
-      _thisDataForJoint = _thisData;
-    }
+
+
+  void _photoFilter() {
     setState(() {
-      _listImages = _thisDataForJoint!
-          .map((e) => e.id)
-          .toList();
+      _thisDataForJoint = widget.jointsId != null
+          ? _thisData?.where((e) => e.jointsId == widget.jointsId).toList()
+          : _thisData;
+      _listImages = _thisDataForJoint?.map((e) => e.id).toList() ?? [];
+      debugPrint(_listImages.join(', '));
     });
   }
+
 
   Future<bool> _saveData() async {
-    if (_pickedImage == null) return false; // Предотвращаем ошибку
+    if (_pickedImage == null) return false;
     await _post();
     widget.onDataUpdated?.call(); // ✅ Вызываем колбэк, если он передан
     return true;
@@ -148,16 +148,6 @@ class _ImageStripGalleryState extends State<ImageStripGallery> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _buildThumbnailStrip(),
-      ],
-    );
-  }
-
-
-  // Лента миниатюр в нижней части экрана
-  Widget _buildThumbnailStrip() {
     return FutureBuilder(
         future: _future,
         builder: (context, snapshot) {
@@ -166,6 +156,7 @@ class _ImageStripGalleryState extends State<ImageStripGallery> {
           } else if (snapshot.hasError) {
             return errorDataWidget(snapshot.error);
           }
+          /// Лента миниатюр в нижней части экрана
           return SizedBox(
             height: 100,
             child: Row(
@@ -193,6 +184,9 @@ class _ImageStripGalleryState extends State<ImageStripGallery> {
     );
   }
 
+
+
+
   Widget _buildThumbnail(int index, int selectedIndex) {
     final imageId = _listImages[index];
     return GestureDetector(
@@ -219,8 +213,8 @@ class _ImageStripGalleryState extends State<ImageStripGallery> {
         margin: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           border: Border.all(
-            color:
-                selectedIndex == index ? Colors.blueAccent : Colors.transparent,
+            color:selectedIndex == index
+                ? Colors.blueAccent : Colors.transparent,
             width: 3,
           ),
           borderRadius: BorderRadius.circular(11),

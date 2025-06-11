@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:media_store_plus/media_store_plus.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share/share.dart';
 import '../widgets/banners.dart';
 
 class FileUtils {
@@ -48,13 +49,19 @@ class FileUtils {
             filePath = tempFilePath;
           }
         }
+        showBottomBanner(context: context, message: 'Файл сохранён в Downloads: $fileName');
       } else if (Platform.isIOS) {
-        final directory = await getApplicationDocumentsDirectory();
-        filePath = '${directory.path}/$fileName';
-        await File(filePath).writeAsBytes(fileData);
-        debugPrint('Файл сохранён на iOS: $filePath');
+        final tempFilePath = await saveTempFile(fileData, fileName);
+        debugPrint('Открываем диалог сохранения на iOS...');
+        await Share.shareFiles(
+          [tempFilePath],
+          text: 'Сохранить файл: $fileName',
+          subject: fileName,
+        );
+        filePath = tempFilePath;
+        debugPrint('Файл подготовлен для сохранения на iOS: $filePath');
+        showBottomBanner(context: context, message: 'Выберите место для сохранения файла: $fileName');
       }
-      showBottomBanner(context: context, message: 'Файл сохранён в Downloads: $fileName');
       return filePath;
     } catch (e) {
       debugPrint('Ошибка при сохранении файла: $e');

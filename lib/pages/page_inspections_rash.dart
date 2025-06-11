@@ -85,12 +85,7 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
   }
 
   Future<void> _refreshData() async {
-    await _loadData();
-    if (mounted) {
-      setState(() {
-        _future = _loadData();
-      });
-    }
+    _future = _loadData();
   }
 
   @override
@@ -167,9 +162,7 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
                     bodyType: _bodyType,
                     viewRegime: widget.viewRegime,
                     onDataUpdated: () {
-                      setState(() {
-                        _refreshData();
-                      });
+                      _refreshData();
                     },
                   ),
                 ),

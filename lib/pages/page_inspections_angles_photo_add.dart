@@ -24,7 +24,7 @@ class PageInspectionsAnglesPhotoAdd extends StatefulWidget {
   final File photo;
   final String jointsId;
   final String inspectionsId;
-  final VoidCallback? onDataUpdated;
+  final VoidCallback onDataUpdated;
   final int role;
 
   const PageInspectionsAnglesPhotoAdd({
@@ -184,10 +184,6 @@ class PageInspectionsAnglesPhotoAddState
       File file = File('${tempDir.path}/${dateFullTimeFormatForFileName(getMoscowDateTime())}.png');
       await file.writeAsBytes(pngBytes);
 
-      // final tempDir = await getTemporaryDirectory();
-      // File file = File('${tempDir.path}/overlayed_image.png');
-      // await file.writeAsBytes(pngBytes);
-
       return file;
     } catch (e) {
       debugPrint("Ошибка при сохранении изображения: $e");
@@ -212,7 +208,7 @@ class PageInspectionsAnglesPhotoAddState
       _isLoading = false;
     });
 
-    widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
+    widget.onDataUpdated.call(); // ✅ Вызываем колбэк
   }
 
 
@@ -238,7 +234,7 @@ class PageInspectionsAnglesPhotoAddState
       creationDate: convertToTimestamp(dateTimeFormat(getMoscowDateTime())),);
     _api.post(patientsId: _patientsId, thisData: thisData);
 
-    widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
+    widget.onDataUpdated.call(); // ✅ Вызываем колбэк
   }
 
 

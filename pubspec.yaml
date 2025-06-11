@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.1+18
+version: 1.0.1+19
 
 environment:
   sdk: ^3.6.0
@@ -60,6 +60,7 @@ dependencies:
   video_player: ^2.10.0
   grouped_list: ^6.0.0
   audioplayers: ^6.4.0
+  share: ^2.0.4
 
 
 
@@ -93,6 +94,7 @@ flutter:
   assets:
     - assets/logo.png
     - assets/logotype.png
+    - assets/logo_new.png
     - assets/main_icon.png
     - assets/rash.png
     - assets/lymph.png
@@ -210,7 +212,7 @@ flutter_launcher_name:
 flutter_launcher_icons:
   android: "ic_launcher" # Имя иконки для Android
   ios: true # Включить генерацию для iOS
-  image_path: "assets/logotype.png" # Путь к вашей иконке (например, 1024x1024 px)
+  image_path: "assets/logo_new.png" # Путь к вашей иконке (например, 1024x1024 px)
 
 
 

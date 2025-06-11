@@ -94,17 +94,11 @@ class PageInspectionsJointSyndromeState
         patientsId: _patientsId,
         bodyType: _bodyType,
         inspectionsId: _inspectionsId);
-    setState(() {
-    });
+    setState(() { });
   }
 
   Future<void> _refreshData() async {
-    await _loadData();
-    if (mounted) {
-      setState(() {
-        _future = _loadData();
-      });
-    }
+    _future = _loadData();
   }
 
   // Метод для сравнения содержимого двух списков
