@@ -185,30 +185,33 @@ class InputSelectState extends State<InputSelect> {
                 border: UnderlineInputBorder(),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
                 // Всегда отображать label сверху
-                suffixIcon: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (controller.text.isNotEmpty &&
-                        widget
-                            .cleanAvailable) // Показываем крестик только если есть текст и разрешено очищать поле
-                      IconButton(
-                        icon: Icon(Icons.clear),
-                        onPressed: () {
-                          controller.clear(); // Очищаем поле
-                          if (widget.onChanged != null) {
-                            widget.onChanged!(
-                                ''); // Вызываем колбэк с пустым значением
-                          }
-                          widget.fieldKey.currentState
-                              ?.validate(); // Перепроверяем валидацию
-                        },
-                      ),
-                    Icon(
-                      Icons.arrow_drop_down,
-                    ), // Иконка раскрытия списка
-                  ],
+                suffixIcon: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (controller.text.isNotEmpty &&
+                          widget
+                              .cleanAvailable) // Показываем крестик только если есть текст и разрешено очищать поле
+                        IconButton(
+                          icon: Icon(Icons.clear),
+                          onPressed: () {
+                            controller.clear(); // Очищаем поле
+                            if (widget.onChanged != null) {
+                              widget.onChanged!(
+                                  ''); // Вызываем колбэк с пустым значением
+                            }
+                            widget.fieldKey.currentState
+                                ?.validate(); // Перепроверяем валидацию
+                          },
+                        ),
+                      Icon(
+                        Icons.arrow_drop_down,
+                      ), // Иконка раскрытия списка
+                    ],
+                  ),
                 ),
               ),
               style: inputTextStyle,
