@@ -168,6 +168,7 @@ class _PageNotificationsForPatientState extends State<PageNotificationsForPatien
       ),
       trailing: showMarkAsRead
           ? IconButton(
+        tooltip: 'Сделать прочитанным',
         onPressed: () async {
           await _setNotificationsAsRead(notification.id, index);
           setState(() {});

@@ -95,7 +95,6 @@ class PageInspectionsAnglesPhotoState
         onDataUpdated: () async {
           widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
           await _refreshData();
-
         }),
   );}
 

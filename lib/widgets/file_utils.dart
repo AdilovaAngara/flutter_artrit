@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:media_store_plus/media_store_plus.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 import '../widgets/banners.dart';
 
 class FileUtils {
@@ -53,8 +53,8 @@ class FileUtils {
       } else if (Platform.isIOS) {
         final tempFilePath = await saveTempFile(fileData, fileName);
         debugPrint('Открываем диалог сохранения на iOS...');
-        await Share.shareFiles(
-          [tempFilePath],
+        await Share.share(
+          tempFilePath,
           subject: fileName,
         );
         filePath = tempFilePath;

@@ -167,6 +167,7 @@ class _PageInspectionsUveitState extends State<PageInspectionsUveit> {
                   ],),
                 ),
               ),
+              if (!widget.viewRegime)
               Container(
                 padding: EdgeInsets.all(10.0),
                 child: Center(

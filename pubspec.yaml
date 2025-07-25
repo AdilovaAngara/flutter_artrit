@@ -60,7 +60,7 @@ dependencies:
   video_player: ^2.10.0
   grouped_list: ^6.0.0
   audioplayers: ^6.4.0
-  share: ^2.0.4
+  share_plus: ^7.0.2
 
 
 
