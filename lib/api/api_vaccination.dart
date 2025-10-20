@@ -44,6 +44,8 @@ class ApiVaccination{
     required String comment,
 
   }) async {
+    debugPrint('executeDate $executeDate');
+
     final fields = {
       'vaccinationid': vaccinationId,
       'executeDate': executeDate,

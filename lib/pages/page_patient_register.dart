@@ -112,7 +112,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
     _listSprHospitals = _dataSprHospitals.map((e) => e.name ?? '').toList()..sort();
     _listSprDoctors.addAll(_dataSprDoctors.map((e) => e.name ?? '').toList()..sort());
     _listSprRelationship = _dataSprRelationship.map((e) => e.name ?? '').toList()..sort();
-    _listSprDiagnoses = _dataSprDiagnoses.map((e) => e.mkbName).toList()..sort();
+    _listSprDiagnoses = _dataSprDiagnoses.map((e) => '${e.mkbCode} ${e.synonym.replaceAll('\n', '')}').toList()..sort();
     setState(() {});
   }
 
@@ -155,11 +155,11 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
           firstName: _firstNamePatient,
           lastName: _lastNamePatient,
           patrynomic: _patronymicPatient,
-          birthDate: converStrToDate(_birthDate) ?? getMoscowDateTime(),
+          birthDate: convertStrToDate(_birthDate) ?? getMoscowDateTime(),
           regionId: _dataSprRegion.firstWhereOrNull((region) => region.name == _regionName)?.id ?? '',
           isMale: _gender == _listGender[0] ? 'true' : 'false',
           isFemale: _gender == _listGender[1] ? 'true' : 'false',
-          diagnosisId: _dataSprDiagnoses.firstWhereOrNull((e) => e.mkbName == _mkbName)?.id ?? '',
+          diagnosisId: _dataSprDiagnoses.firstWhereOrNull((e) => '${e.mkbCode} ${e.synonym.replaceAll('\n', '')}' == _mkbName)?.id ?? '',
           diagnosisComment: _diagnosisComment,
           uveit: _uveit ?? false,
           doctorId: _doctorId,
@@ -518,7 +518,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
                   _mkbName = value;
                   if (value.isNotEmpty) {
                     _mkbCode = _dataSprDiagnoses
-                        .firstWhereOrNull((e) => e.mkbName == value)
+                        .firstWhereOrNull((e) => '${e.mkbCode} ${e.synonym.replaceAll('\n', '')}' == value)
                         ?.mkbCode ??
                         '';
                   } else {

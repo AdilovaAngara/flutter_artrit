@@ -37,7 +37,7 @@ class TestsClinicalViewWidgetState extends State<TestsClinicalViewWidget> {
               title: widget.thisData.thrombocytesName ?? 'Тромбоциты',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                    date: converStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
+                    date: convertStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
                     value: item.thrombocytes,
                     unit: item.thrombocytesUnit,
                     isNorma: item.thrombocytesnorma
@@ -57,7 +57,7 @@ class TestsClinicalViewWidgetState extends State<TestsClinicalViewWidget> {
               title: widget.thisData.soeName ?? 'СОЭ',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                    date: converStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
+                    date: convertStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
                     value: item.soe,
                     unit: item.soeUnit,
                     isNorma: item.soEnorma
@@ -77,7 +77,7 @@ class TestsClinicalViewWidgetState extends State<TestsClinicalViewWidget> {
               title: widget.thisData.neutrophilsName ?? 'Нейтрофилы',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                    date: converStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
+                    date: convertStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
                     value: item.neutrophils,
                     unit: item.neutrophilsUnit,
                     isNorma: item.neutrophilsnorma
@@ -97,7 +97,7 @@ class TestsClinicalViewWidgetState extends State<TestsClinicalViewWidget> {
               title: widget.thisData.monocytesName ?? 'Моноциты',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                    date: converStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
+                    date: convertStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
                     value: item.monocytes,
                     unit: item.monocytesUnit,
                     isNorma: item.monocytesnorma
@@ -117,7 +117,7 @@ class TestsClinicalViewWidgetState extends State<TestsClinicalViewWidget> {
               title: widget.thisData.eosinophilsName ?? 'Эозинофилы',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                    date: converStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
+                    date: convertStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
                     value: item.eosinophils,
                     unit: item.eosinophilsUnit,
                     isNorma: item.eosinophilsnorma
@@ -137,7 +137,7 @@ class TestsClinicalViewWidgetState extends State<TestsClinicalViewWidget> {
               title: widget.thisData.erythrocytesName ?? 'Эритроциты',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                    date: converStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
+                    date: convertStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
                     value: item.erythrocytes,
                     unit: item.erythrocytesUnit,
                     isNorma: item.erythrocytesnorma
@@ -157,7 +157,7 @@ class TestsClinicalViewWidgetState extends State<TestsClinicalViewWidget> {
               title: widget.thisData.hemoglobinName ?? 'Гемоглобин',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                    date: converStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
+                    date: convertStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
                     value: item.hemoglobin,
                     unit: item.hemoglobinUnit,
                     isNorma: item.hemoglobinnorma
@@ -177,7 +177,7 @@ class TestsClinicalViewWidgetState extends State<TestsClinicalViewWidget> {
               title: widget.thisData.leukocytesName ?? 'Лейкоциты',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                    date: converStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
+                    date: convertStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
                     value: item.leukocytes,
                     unit: item.leukocytesUnit,
                     isNorma: item.leukocytesnorma
@@ -197,7 +197,7 @@ class TestsClinicalViewWidgetState extends State<TestsClinicalViewWidget> {
               title: widget.thisData.lymphocytesName ?? 'Лимфоциты',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                    date: converStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
+                    date: convertStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
                     value: item.lymphocytes,
                     unit: item.lymphocytesUnit,
                     isNorma: item.lymphocytesnorma
@@ -217,7 +217,7 @@ class TestsClinicalViewWidgetState extends State<TestsClinicalViewWidget> {
               title: widget.thisData.basophilsName ?? 'Базофилы',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                    date: converStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
+                    date: convertStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
                     value: item.basophils,
                     unit: item.basophilsUnit,
                     isNorma: item.basophilsnorma

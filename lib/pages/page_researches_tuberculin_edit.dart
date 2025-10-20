@@ -127,7 +127,7 @@ class PageResearchesTuberculinEditState extends State<PageResearchesTuberculinEd
     if (_resultName == 'Отрицательный') _value = 0;
     DataResearchesTuberculin thisData = DataResearchesTuberculin(
         patientId: _patientsId,
-        date: converStrToDate(_date!),
+        date: convertStrToDate(_date!),
         createDate: _createDate,
         value: _value,
         researchItemId: _dataSprResearchTuberculinType.firstWhereOrNull((e) => e.name == _researchName)?.id,
@@ -149,7 +149,7 @@ class PageResearchesTuberculinEditState extends State<PageResearchesTuberculinEd
       }
       // Иначе Сравниваем поля
       final w = widget.thisData!;
-      return w.date != converStrToDate(_date ?? '')
+      return w.date != convertStrToDate(_date ?? '')
       || w.researchItem!.name != _researchName
       || w.result!.name != _resultName
       || w.value != _value;

@@ -302,7 +302,7 @@ bool areDifferent(oldList, newList) {
 bool delBtnShowCalculate(String? date) {
   bool delBtnShow = false;
   if (date == null || date.isEmpty) return delBtnShow;
-  DateTime dateTime1 = converStrToDateTime(date)!;
+  DateTime dateTime1 = convertStrToDateTime(date)!;
   DateTime dateTime2 = getMoscowDateTime();
   // Вычисление разницы в часах
   Duration difference = dateTime2.difference(dateTime1);
@@ -374,13 +374,14 @@ String timeFormat(DateTime date) {
   return '${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
 }
 
-DateTime? converStrToDate(String? dateString) {
+DateTime? convertStrToDate(String? dateString) {
   if (dateString == null || dateString.isEmpty) return null;
   DateFormat dateFormat = DateFormat('dd.MM.yyyy');
   return dateFormat.parse(dateString);
 }
 
-DateTime? converStrToDateTime(String? dateString) {
+
+DateTime? convertStrToDateTime(String? dateString) {
   if (dateString == null || dateString.isEmpty) return null;
   DateFormat dateFormat = DateFormat('dd.MM.yyyy HH:mm');
   return dateFormat.parse(dateString);

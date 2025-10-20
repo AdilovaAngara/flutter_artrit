@@ -8,7 +8,12 @@ import "package:path/path.dart" as path;
 const String baseUrl = 'https://artritdevapi.nitrosbase.com';
 
 class BaseClient {
-  String baseUrl = 'https://artritdevapi.nitrosbase.com';
+  /// Тест
+  //String baseUrl = 'https://artritdevapi.nitrosbase.com';
+  /// Релиз
+  String baseUrl = 'https://api.aspirre-russia.ru/ja';
+
+
   var client = http.Client();
 
   Future<Map<String, String>> _getHeaders() async {
@@ -43,7 +48,7 @@ class BaseClient {
     }
   }
 
-  Future<dynamic> post(String api, dynamic object) async {
+  Future<dynamic> post(String api, dynamic object, {bool isChat = false}) async {
     try {
       var url = Uri.parse(baseUrl + api);
       var headers = await _getHeaders();
@@ -65,7 +70,7 @@ class BaseClient {
     }
   }
 
-  Future<dynamic> put(String api, dynamic object) async {
+  Future<dynamic> put(String api, dynamic object, {bool isChat = false}) async {
     try {
       var url = Uri.parse(baseUrl + api);
       var headers = await _getHeaders();
@@ -88,7 +93,7 @@ class BaseClient {
   }
 
 
-  Future<dynamic> delete(String api, [dynamic object]) async {
+  Future<dynamic> delete(String api, {dynamic object, bool isChat = false}) async {
     try {
       var url = Uri.parse(baseUrl + api);
       var headers = await _getHeaders();
@@ -115,9 +120,10 @@ class BaseClient {
 
 
 
-  Future<http.StreamedResponse?> sendFile(String filePath) async {
+  Future<http.StreamedResponse?> sendFile(String filePath, {bool isChat = false}) async {
     try {
-      var url = Uri.parse('$baseUrl/files/send');
+      String api = '/files/send';
+      var url = Uri.parse(baseUrl + api);
       var request = http.MultipartRequest('POST', url);
       var headers = await _getHeaders();
 

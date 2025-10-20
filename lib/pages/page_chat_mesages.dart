@@ -161,9 +161,15 @@ class PageChatMessagesState extends State<PageChatMessages> {
     _selectedMessageIdsNotifier.dispose();
     _sendVisibilityNotifier.dispose();
     _focusNode.dispose();
-    // Очищаем текущий чат в ChatProvider
+
+    // Отписываем слушатель, чтобы не ловить уведомления
     _chatProvider.removeListener(_onChatProviderUpdate);
-    _chatProvider.setCurrentChat(null);
+
+    // 🚀 Отложенно очищаем currentChat в ChatProvider
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _chatProvider.setCurrentChat(null);
+    });
+
     super.dispose();
   }
 
@@ -209,14 +215,19 @@ class PageChatMessagesState extends State<PageChatMessages> {
     _userId = await readSecureData(SecureKey.userId);
     _chatInfo = await _api.getInfo(
         ssId: _ssId, clientUserId: widget.contact.clientUserId);
-    if (_chatInfo != null && _chatInfo!.success) {
-      _chatId = _chatInfo!.result.id;
-      _isChatClosed = _chatInfo!.result.isClosed;
-      _allowByDoctor = _chatInfo!.result.allowByDoctor;
-      _allowByPatient = _chatInfo!.result.allowByPatient;
+
+    if (_chatInfo != null && _chatInfo!.success && _chatInfo!.result != null) {
+      _chatId = _chatInfo!.result!.id;
+      _isChatClosed = _chatInfo!.result!.isClosed;
+      _allowByDoctor = _chatInfo!.result!.allowByDoctor;
+      _allowByPatient = _chatInfo!.result!.allowByPatient;
       // Устанавливаем текущий чат, сбрасывая предыдущий
       _chatProvider.setCurrentChat(_chatId);
+    } else {
+      _chatId = '';
+      return;
     }
+
     _chatTemplates = await _api.getTemplates(ssId: _ssId);
     if (_chatTemplates != null &&
         _chatTemplates!.success &&
@@ -589,8 +600,8 @@ class PageChatMessagesState extends State<PageChatMessages> {
     if (!_fileItems.any((e) => !(e.isSendSuccess ?? true))) {
       DataChatAddMessage thisData = DataChatAddMessage(
         toId: Roles.asPatient.contains(_role)
-            ? _chatInfo!.result.doctorId
-            : _chatInfo!.result.patientId,
+            ? _chatInfo!.result!.doctorId
+            : _chatInfo!.result!.patientId,
         message: _textController.text,
         files: _fileElements,
       );
@@ -695,7 +706,7 @@ class PageChatMessagesState extends State<PageChatMessages> {
       },
       child: Scaffold(
         appBar: AppBarWidget(
-          title: widget.contact.userFio,
+          title: widget.contact.userFio ?? '',
         ),
         endDrawer: const MenuDrawer(),
         resizeToAvoidBottomInset: true, // Адаптация к клавиатуре
@@ -1117,9 +1128,9 @@ class PageChatMessagesState extends State<PageChatMessages> {
       _sendMsg();
       setState(() {
         if (Roles.asDoctor.contains(_role)) {
-          _allowByDoctor = result.result.allowByDoctor;
+          _allowByDoctor = result.result!.allowByDoctor;
         } else if (Roles.asPatient.contains(_role)) {
-          _allowByPatient = result.result.allowByPatient;
+          _allowByPatient = result.result!.allowByPatient;
         }
       });
     } else {
@@ -1141,7 +1152,7 @@ class PageChatMessagesState extends State<PageChatMessages> {
         if (result != null && result.success) {
           showBottomBanner(context: context, message: 'Чат закрыт');
           setState(() {
-            _isChatClosed = result.result.isClosed;
+            _isChatClosed = result.result!.isClosed;
           });
         } else {
           showBottomBanner(
@@ -1164,7 +1175,7 @@ class PageChatMessagesState extends State<PageChatMessages> {
         if (result != null && result.success) {
           showBottomBanner(context: context, message: 'Чат открыт');
           setState(() {
-            _isChatClosed = result.result.isClosed;
+            _isChatClosed = result.result!.isClosed;
           });
         } else {
           showBottomBanner(

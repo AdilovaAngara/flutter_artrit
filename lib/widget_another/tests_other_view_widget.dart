@@ -26,17 +26,17 @@ class TestsOtherViewWidgetState extends State<TestsOtherViewWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         LabelJoinWidget(
-          labelText: widget.thisData.analys,
+          labelText: widget.thisData.analys ?? '',
           value: formatDouble(widget.thisData.znach.num),
           unit: widget.thisData.znach.sel,
           isNorma: widget.thisData.norma,
           onPressed: () {
             navigateToPageDynamic(
               context,
-              title: widget.thisData.analys,
+              title: widget.thisData.analys ?? '',
               thisData: widget.allData.where((e) => e.analys == widget.thisData.analys).map((item) {
                 return DataDynamic(
-                    date: converStrToDateTime(convertTimestampToDateTime(item.date!)),
+                    date: convertStrToDateTime(convertTimestampToDateTime(item.date!)),
                     value: item.znach.num,
                     unit: item.znach.sel,
                     isNorma: item.norma

@@ -20,6 +20,8 @@ void main() async {
     await MediaStore.ensureInitialized();
     MediaStore.appFolder = '/';
   }
+  // Этот код отключает проверку сертификата (раскомментировать только для тестирования, если андроид ругается на сертификат)
+  //HttpOverrides.global = MyHttpOverrides();
   runApp(
       MultiProvider(
           providers: [
@@ -88,7 +90,14 @@ class Main extends StatelessWidget {
 
 
 
-
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
 
 
 

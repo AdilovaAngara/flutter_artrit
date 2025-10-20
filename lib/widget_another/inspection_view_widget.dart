@@ -113,7 +113,7 @@ class InspectionViewWidgetState extends State<InspectionViewWidget> {
               title: 'Уровень боли',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                    date: converStrToDateTime(convertTimestampToDateTime(item.date!)),
+                    date: convertStrToDateTime(convertTimestampToDateTime(item.date!)),
                     value: item.ocbol,
                     unit: '%',
                     isNorma: item.ocbol < 30 ? true : false
@@ -135,7 +135,7 @@ class InspectionViewWidgetState extends State<InspectionViewWidget> {
               title: 'Температура',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                    date: converStrToDateTime(convertTimestampToDateTime(item.date!)),
+                    date: convertStrToDateTime(convertTimestampToDateTime(item.date!)),
                     value: item.tem,
                     unit: '\u00B0C',
                     isNorma: item.tem == null ? true : item.tem! >= 35.5 && item.tem! <= 37.5 ? true : false,
@@ -155,7 +155,7 @@ class InspectionViewWidgetState extends State<InspectionViewWidget> {
               title: 'ЧСС',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                    date: converStrToDateTime(convertTimestampToDateTime(item.date!)),
+                    date: convertStrToDateTime(convertTimestampToDateTime(item.date!)),
                     value: item.chss,
                     unit: 'уд./мин.',
                     isNorma: item.chss == null ? true : _getNormaChss(item.chss!),
@@ -169,19 +169,19 @@ class InspectionViewWidgetState extends State<InspectionViewWidget> {
           value: '${widget.thisData.ardav.sis != 0 ? '${widget.thisData.ardav.sis} / ' : ''}'
               '${widget.thisData.ardav.dia == 0 ? '' : widget.thisData.ardav.dia}',
           unit: 'мм.рт.ст.',
-          isNorma: widget.thisData.ardav.sis == 0 ? true : _getNormaartDav(widget.thisData.ardav.sis, widget.thisData.ardav.dia),
+          isNorma: widget.thisData.ardav.sis == 0 ? true : _getNormaartDav(widget.thisData.ardav.sis ?? 0, widget.thisData.ardav.dia ?? 0),
           onPressed: () {
             navigateToPageDynamic(
               context,
               title: 'Давление',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                    date: converStrToDateTime(convertTimestampToDateTime(item.date!)),
+                    date: convertStrToDateTime(convertTimestampToDateTime(item.date!)),
                     value: item.ardav.sis == 0 ? null : item.ardav.sis,
                     visibleValue: '${item.ardav.sis != 0 ? '${item.ardav.sis} / ' : ''}'
                         '${item.ardav.dia == 0 ? '' : item.ardav.dia}',
                     unit: 'мм.рт.ст.',
-                    isNorma: item.ardav.sis == 0 ? true : _getNormaartDav(item.ardav.sis, item.ardav.dia),
+                    isNorma: item.ardav.sis == 0 ? true : _getNormaartDav(item.ardav.sis ?? 0, item.ardav.dia ?? 0),
                 );
               }).toList(),
             );
@@ -198,7 +198,7 @@ class InspectionViewWidgetState extends State<InspectionViewWidget> {
               title: 'Уренняя скованность',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                    date: converStrToDateTime(convertTimestampToDateTime(item.date!)),
+                    date: convertStrToDateTime(convertTimestampToDateTime(item.date!)),
                     value: item.utscov,
                     unit: 'мин.',
                     isNorma: item.utscov == null ? true : item.utscov! < 15 ? true : false
@@ -217,7 +217,7 @@ class InspectionViewWidgetState extends State<InspectionViewWidget> {
               title: 'Увеит',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                  date: converStrToDateTime(convertTimestampToDateTime(item.date!)),
+                  date: convertStrToDateTime(convertTimestampToDateTime(item.date!)),
                   value: 1.0,
                   visibleValue: item.uveit != null ? 'Присутствует' : 'Отсутствует',
                   unit: null,
@@ -247,7 +247,7 @@ class InspectionViewWidgetState extends State<InspectionViewWidget> {
               title: 'Сыпь',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                  date: converStrToDateTime(convertTimestampToDateTime(item.date!)),
+                  date: convertStrToDateTime(convertTimestampToDateTime(item.date!)),
                   value: item.sip!,
                   visibleValue: item.sip != null && item.sip! > 0 ? 'Присутствует' : 'Отсутствует',
                   showBothValue: true,
@@ -280,7 +280,7 @@ class InspectionViewWidgetState extends State<InspectionViewWidget> {
               title: 'Увеличенные лимфоузлы',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                  date: converStrToDateTime(convertTimestampToDateTime(item.date!)),
+                  date: convertStrToDateTime(convertTimestampToDateTime(item.date!)),
                   value: item.uvellim!,
                   visibleValue: item.uvellim != null && item.uvellim! > 0 ? 'Присутствуют' : 'Отсутствуют',
                   showBothValue: true,
@@ -312,7 +312,7 @@ class InspectionViewWidgetState extends State<InspectionViewWidget> {
               title: 'Суставной синдром',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                  date: converStrToDateTime(convertTimestampToDateTime(item.date!)),
+                  date: convertStrToDateTime(convertTimestampToDateTime(item.date!)),
                   value: item.joints.length,
                   visibleValue: item.joints.isNotEmpty ? 'Присутствует' : 'Отсутствует',
                   showBothValue: true,
@@ -344,7 +344,7 @@ class InspectionViewWidgetState extends State<InspectionViewWidget> {
               title: 'Измерение углов',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                  date: converStrToDateTime(convertTimestampToDateTime(item.date!)),
+                  date: convertStrToDateTime(convertTimestampToDateTime(item.date!)),
                   value: widget.allDataPhoto != null ? widget.allDataPhoto!.where((e) => e.inspectionId == item.id).length : 0,
                   unit: 'фото',
                   isNorma: null,

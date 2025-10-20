@@ -203,7 +203,7 @@ class _PageTestsOtherState extends State<PageTestsOther> {
                           key: _itemKeys[index],
                           padding: paddingListTile(index),
                           child: ListTileExpandWidget(
-                            title: _thisData![index].analys,
+                            title: _thisData![index].analys ?? '',
                             subtitle: convertTimestampToDateTime(
                                 _thisData![index].date),
                             currentIndex: _currentExpandedIndex,

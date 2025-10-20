@@ -221,7 +221,7 @@ class _PageTreatmentMedicamentsEditState extends State<PageTreatmentMedicamentsE
     final w = widget.thisData!;
     // Сравниваем списки _skippings и w.skippings
     bool areSkippingsDifferent() {
-      if (_skippings.isEmpty && w.skippings == null) return false; // Оба null — нет различий
+      if ((_skippings.isEmpty && w.skippings == null) || (_skippings.isEmpty && w.skippings!.isEmpty)) return false; // Оба null — нет различий
       if (_skippings.isEmpty || w.skippings == null) return true; // Один null — есть различия
       if (_skippings.length != w.skippings!.length) return true; // Разная длина — есть различия
 
@@ -496,7 +496,7 @@ class _PageTreatmentMedicamentsEditState extends State<PageTreatmentMedicamentsE
           fieldKey: _keys[Enum.dnp]!,
           value: _dnp,
           lastDate: _getMinBeginDate(_skippings) ?? (_dop != null
-              ? converStrToDate(_dop!)
+              ? convertStrToDate(_dop!)
               : null),
           required: true,
           listRoles: Roles.asPatient,
@@ -513,7 +513,7 @@ class _PageTreatmentMedicamentsEditState extends State<PageTreatmentMedicamentsE
           fieldKey: _keys[Enum.dop]!,
           value: _dop,
           firstDate: _getMaxEndDate(_skippings) ?? (_dnp != null
-              ? converStrToDate(_dnp!)
+              ? convertStrToDate(_dnp!)
               : null),
           lastDate: getMoscowDateTime().add(Duration(days: 365 * 18)),
           required: true,
@@ -709,14 +709,14 @@ class _PageTreatmentMedicamentsEditState extends State<PageTreatmentMedicamentsE
                             fieldKey: _keysSkippings[EnumSkippings.beginDate]!,
                             value: beginDate != null ? dateFormat(beginDate!) : null,
                             //initialDate: beginDate ?? endDate,
-                            firstDate: converStrToDate(_dnp),
-                            lastDate: endDate ?? converStrToDate(_dop),
+                            firstDate: convertStrToDate(_dnp),
+                            lastDate: endDate ?? convertStrToDate(_dop),
                             required: true,
                             listRoles: Roles.asPatient,
                             role: _role,
                             onChanged: (value) {
                               dialogSetState(() {
-                                beginDate = converStrToDate(value);
+                                beginDate = convertStrToDate(value);
                               });
                             },
                           ),
@@ -724,14 +724,14 @@ class _PageTreatmentMedicamentsEditState extends State<PageTreatmentMedicamentsE
                             labelText: 'Дата окончания пропуска',
                             fieldKey: _keysSkippings[EnumSkippings.endDate]!,
                             value: endDate != null ? dateFormat(endDate!) : null,
-                            firstDate: beginDate ?? converStrToDate(_dnp),
-                            lastDate: converStrToDate(_dop) ?? getMoscowDateTime().add(Duration(days: 365 * 18)),
+                            firstDate: beginDate ?? convertStrToDate(_dnp),
+                            lastDate: convertStrToDate(_dop) ?? getMoscowDateTime().add(Duration(days: 365 * 18)),
                             required: true,
                             listRoles: Roles.asPatient,
                             role: _role,
                             onChanged: (value) {
                               dialogSetState(() {
-                                endDate = converStrToDate(value);
+                                endDate = convertStrToDate(value);
                               });
                             },
                           ),

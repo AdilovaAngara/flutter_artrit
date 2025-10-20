@@ -115,7 +115,7 @@ class _PageVaccinationEditState extends State<PageVaccinationEdit> {
   Future<void> _request() async {
     DataVaccination thisData = DataVaccination(
         vaccinationId: _thisSprDataVaccination.firstWhereOrNull((e) => e.name == _name)?.id,
-        executeDate: converStrToDate(_executeDate!),
+        executeDate: convertStrToDate(_executeDate!),
         comment: _comment);
 
     widget.isEditForm
@@ -128,7 +128,7 @@ class _PageVaccinationEditState extends State<PageVaccinationEdit> {
         fileName: _fileName,
         vaccinationId: _thisSprDataVaccination.firstWhereOrNull((e) => e.name == _name)?.id ?? '',
         comment: _comment ?? '',
-        executeDate: _executeDate!);
+        executeDate: convertStrToDate(_executeDate!).toString());
   }
 
 

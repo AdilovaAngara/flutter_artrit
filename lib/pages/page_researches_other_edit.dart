@@ -110,7 +110,7 @@ class PageResearchesOtherEditState extends State<PageResearchesOtherEdit> {
   Future<void> _request() async {
     DataResearchesOther thisData = DataResearchesOther(
         name: _name,
-        executeDate: converStrToDate(_executeDate!),
+        executeDate: convertStrToDate(_executeDate!),
         comment: _comment,
         createdOn: _createdOn);
 
@@ -124,7 +124,7 @@ class PageResearchesOtherEditState extends State<PageResearchesOtherEdit> {
         fileName: _fileName,
         name: _name,
         comment: _comment ?? '',
-        executeDate: _executeDate!);
+        executeDate: convertStrToDate(_executeDate!).toString());
   }
 
 

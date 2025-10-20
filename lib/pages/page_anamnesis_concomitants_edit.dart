@@ -231,11 +231,11 @@ class _PageAnamnesisConcomitantsEditState
           fieldKey: _keys[Enum.dateStart]!,
           value: _dateStart,
           initialDate: _dateStart != null
-              ? converStrToDate(_dateStart!)
+              ? convertStrToDate(_dateStart!)
               : _dateEnd != null
-                  ? converStrToDate(_dateEnd!)
+                  ? convertStrToDate(_dateEnd!)
                   : null,
-          lastDate: _dateEnd != null ? converStrToDate(_dateEnd!) : null,
+          lastDate: _dateEnd != null ? convertStrToDate(_dateEnd!) : null,
           required: true,
           listRoles: Roles.asPatient,
           role: _role,
@@ -250,7 +250,7 @@ class _PageAnamnesisConcomitantsEditState
             labelText: 'Дата окончания',
             fieldKey: _keys[Enum.endDate]!,
             value: _dateEnd,
-            firstDate: _dateStart != null ? converStrToDate(_dateStart!) : null,
+            firstDate: _dateStart != null ? convertStrToDate(_dateStart!) : null,
             required: true,
             listRoles: Roles.asPatient,
             role: _role,

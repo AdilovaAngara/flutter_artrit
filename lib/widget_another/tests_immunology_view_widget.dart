@@ -37,7 +37,7 @@ class TestsImmunologyViewWidgetState extends State<TestsImmunologyViewWidget> {
               title: widget.thisData.cReactiveProteinName ?? 'С-реактивный белок',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                    date: converStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
+                    date: convertStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
                     value: item.cReactiveProtein,
                     unit: item.cReactiveProteinUnit,
                     isNorma: item.cReactiveProteinnorma
@@ -57,7 +57,7 @@ class TestsImmunologyViewWidgetState extends State<TestsImmunologyViewWidget> {
               title: widget.thisData.antinuclearFactorName ?? 'Антинуклеарный фактор, 1',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                    date: converStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
+                    date: convertStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
                     value: item.antinuclearFactor,
                     unit: item.antinuclearFactorUnit,
                     isNorma: item.antinuclearFactornorma
@@ -77,7 +77,7 @@ class TestsImmunologyViewWidgetState extends State<TestsImmunologyViewWidget> {
               title: widget.thisData.rheumatoidFactorName ?? 'Ревматоидный фактор',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                    date: converStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
+                    date: convertStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
                     value: item.rheumatoidFactor,
                     unit: item.rheumatoidFactorUnit,
                     isNorma: item.rheumatoidFactornorma
@@ -97,7 +97,7 @@ class TestsImmunologyViewWidgetState extends State<TestsImmunologyViewWidget> {
               title: widget.thisData.antiCcpName ?? 'Антитела к циклическому цитруллинированному пептиду',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                    date: converStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
+                    date: convertStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
                     value: item.antiCcp,
                     unit: item.antiCcpUnit,
                     isNorma: item.antiCcPnorma

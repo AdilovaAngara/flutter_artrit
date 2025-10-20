@@ -222,12 +222,12 @@ class _PageReportState extends State<PageReport> {
               fieldKey: _keys[Enum.startDate]!,
               value: _startDate,
               initialDate: _startDate != null
-                  ? converStrToDate(_startDate!)
+                  ? convertStrToDate(_startDate!)
                   : _endDate != null
-                  ? converStrToDate(_endDate!)
+                  ? convertStrToDate(_endDate!)
                   : null,
               lastDate:
-              _endDate != null ? converStrToDate(_endDate!) : null,
+              _endDate != null ? convertStrToDate(_endDate!) : null,
               required: true,
               listRoles: Roles.all,
               onChanged: (value) {
@@ -241,7 +241,7 @@ class _PageReportState extends State<PageReport> {
               fieldKey: _keys[Enum.endDate]!,
               value: _endDate,
               firstDate:
-              _startDate != null ? converStrToDate(_startDate!) : null,
+              _startDate != null ? convertStrToDate(_startDate!) : null,
               required: true,
               listRoles: Roles.all,
               onChanged: (value) {

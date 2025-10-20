@@ -83,7 +83,7 @@ class ApiChat {
   }) async {
     debugPrint(jsonEncode(thisData.toJson()));
     var response = await baseClient.post(
-        '/api/chat/$chatId/addmessage?ssid=$ssId', thisData.toJson());
+        '/api/chat/$chatId/addmessage?ssid=$ssId', thisData.toJson(), isChat: true);
     DataChatMessage? thisDataRecord = dataChatMessageFromJson(response.body);
     debugPrint(jsonEncode(thisDataRecord));
     return thisDataRecord;
@@ -97,7 +97,7 @@ class ApiChat {
   }) async {
     debugPrint('Удалить сообщения: ${msgId.join(', ')}');
     var response = await baseClient
-        .delete('/api/chat/$chatId/delete?ssid=$ssId', msgId);
+        .delete('/api/chat/$chatId/delete?ssid=$ssId', object: msgId, isChat: true);
     DataResult3? result = dataResult3FromJson(response.body);
     debugPrint(jsonEncode(result));
     return result;
@@ -127,7 +127,7 @@ class ApiChat {
     debugPrint('Сделать прочитанными: ${thisData.join(', ')}');
     if (thisData.isEmpty) return null;
     var response = await baseClient.put(
-        '/api/chat/$chatId/setread?ssid=$ssId', thisData);
+        '/api/chat/$chatId/setread?ssid=$ssId', thisData, isChat: true);
     DataResult3? result = dataResult3FromJson(response.body);
     debugPrint(jsonEncode(result));
     return result;
@@ -143,7 +143,7 @@ class ApiChat {
     required String chatId,
   }) async {
     var response = await baseClient.put(
-        '/api/chat/$chatId/allow?ssid=$ssId', {});
+        '/api/chat/$chatId/allow?ssid=$ssId', {}, isChat: true);
     DataChatInfo? result = dataChatInfoFromJson(response.body);
     debugPrint(jsonEncode(result));
     return result;
@@ -161,7 +161,7 @@ class ApiChat {
     required String chatId,
   }) async {
     var response = await baseClient.put(
-        '/api/chat/$chatId/close?ssid=$ssId', {});
+        '/api/chat/$chatId/close?ssid=$ssId', {}, isChat: true);
     DataChatInfo? result = dataChatInfoFromJson(response.body);
     debugPrint(jsonEncode(result));
     return result;
@@ -176,7 +176,7 @@ class ApiChat {
     required String chatId,
   }) async {
     var response = await baseClient.put(
-        '/api/chat/$chatId/open?ssid=$ssId', {});
+        '/api/chat/$chatId/open?ssid=$ssId', {}, isChat: true);
     DataChatInfo? result = dataChatInfoFromJson(response.body);
     debugPrint(jsonEncode(result));
     return result;

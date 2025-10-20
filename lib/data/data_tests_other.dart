@@ -17,10 +17,10 @@ class DataTestsOther {
   String? id;
   String? patientsId;
   int? date;
-  String parametersId;
-  String analys;
+  String? parametersId;
+  String? analys;
   Znach znach;
-  String unitsId;
+  String? unitsId;
   int? creationDate;
   bool? norma;
 
@@ -63,8 +63,8 @@ class DataTestsOther {
 
 
 class Znach {
-  double num;
-  String sel;
+  double? num;
+  String? sel;
 
   Znach({
     required this.num,

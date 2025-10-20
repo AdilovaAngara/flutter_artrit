@@ -89,8 +89,8 @@ class InputSelectDateState extends State<InputSelectDate> {
 
     if (widget.initialDate != null) {
       candidateDate = widget.initialDate!;
-    } else if (widget.value != null && converStrToDate(widget.value) != null) {
-      candidateDate = converStrToDate(widget.value)!;
+    } else if (widget.value != null && convertStrToDate(widget.value) != null) {
+      candidateDate = convertStrToDate(widget.value)!;
     } else {
       candidateDate = now;
     }

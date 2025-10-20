@@ -100,7 +100,7 @@ class ChatMessageWidget extends StatelessWidget {
                                         fileId: file.url,
                                         isLocal: false,
                                         isChatFiles: true,
-                                        chatId: thisDataChatInfo!.result.id,
+                                        chatId: thisDataChatInfo!.result!.id,
                                       );
                                     },
                                     child: Row(
@@ -132,7 +132,7 @@ class ChatMessageWidget extends StatelessWidget {
                                         fileId: file.url,
                                         isLocal: false,
                                         isChatFiles: true,
-                                        chatId: thisDataChatInfo!.result.id,
+                                        chatId: thisDataChatInfo!.result!.id,
                                       );
                                     },
                                     child: SizedBox(
@@ -141,7 +141,7 @@ class ChatMessageWidget extends StatelessWidget {
                                         imageId: file.url,
                                         isFullSize: false,
                                         isChatFiles: true,
-                                        chatId: thisDataChatInfo!.result.id,
+                                        chatId: thisDataChatInfo!.result!.id,
                                       ),
                                     ),
                                   ),
@@ -160,7 +160,7 @@ class ChatMessageWidget extends StatelessWidget {
                                         fileId: file.url,
                                         isLocal: false,
                                         isChatFiles: true,
-                                        chatId: thisDataChatInfo!.result.id,
+                                        chatId: thisDataChatInfo!.result!.id,
                                       );
                                     },
                                     child: ClipRRect(
@@ -216,7 +216,7 @@ class ChatMessageWidget extends StatelessWidget {
                                         fileId: file.url,
                                         isLocal: false,
                                         isChatFiles: true,
-                                        chatId: thisDataChatInfo!.result.id,
+                                        chatId: thisDataChatInfo!.result!.id,
                                       );
                                     },
                                     child: Row(

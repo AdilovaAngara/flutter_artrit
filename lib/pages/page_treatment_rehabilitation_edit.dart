@@ -236,12 +236,12 @@ class _PageTreatmentRehabilitationEditState extends State<PageTreatmentRehabilit
           fieldKey: _keys[Enum.dateStart]!,
           value: _dateStart,
           initialDate: _dateStart != null
-              ? converStrToDate(_dateStart!)
+              ? convertStrToDate(_dateStart!)
               : _dateEnd != null
-              ? converStrToDate(_dateEnd!)
+              ? convertStrToDate(_dateEnd!)
               : null,
           lastDate: _dateEnd != null
-              ? converStrToDate(_dateEnd!)
+              ? convertStrToDate(_dateEnd!)
               : null,
           required: true,
           listRoles: Roles.asPatient,
@@ -258,7 +258,7 @@ class _PageTreatmentRehabilitationEditState extends State<PageTreatmentRehabilit
             fieldKey: _keys[Enum.dateEnd]!,
             value: _dateEnd,
             firstDate: _dateStart != null
-                ? converStrToDate(_dateStart!)
+                ? convertStrToDate(_dateStart!)
                 : null,
             required: true,
             listRoles: Roles.asPatient,

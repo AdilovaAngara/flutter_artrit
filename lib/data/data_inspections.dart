@@ -135,8 +135,8 @@ class DataInspections {
 }
 
 class Ardav {
-  int sis;
-  int dia;
+  int? sis;
+  int? dia;
 
   Ardav({
     required this.sis,

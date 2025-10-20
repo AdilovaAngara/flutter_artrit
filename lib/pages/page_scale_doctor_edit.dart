@@ -94,7 +94,7 @@ class _PageScaleDoctorEditState extends State<PageScaleDoctorEdit> {
   Future<void> _request() async {
     DataScaleDoctor thisData = DataScaleDoctor(
       creationDate: _creationDate,
-      scaleDate: converStrToDateTime(convertTimestampToDateTime(_creationDate)),
+      scaleDate: convertStrToDateTime(convertTimestampToDateTime(_creationDate)),
       scale: _scale,
       doctorId: _doctorId!,
       patientId: _patientsId

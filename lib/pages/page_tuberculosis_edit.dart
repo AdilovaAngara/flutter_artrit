@@ -135,8 +135,8 @@ class PageTuberculosisEditState extends State<PageTuberculosisEdit> {
 
   Future<void> _request() async {
     DataTuberculosis thisData = DataTuberculosis(
-        treatmentBeginDate: converStrToDate(_treatmentBeginDate!),
-        treatmentEndDate: converStrToDate(_treatmentEndDate!),
+        treatmentBeginDate: convertStrToDate(_treatmentBeginDate!),
+        treatmentEndDate: convertStrToDate(_treatmentEndDate!),
         createdOn: _createdOn,
         drugIds: _getDrugIds(),
         sideEffectIds: _getSideEffectIds(),
@@ -187,8 +187,8 @@ class PageTuberculosisEditState extends State<PageTuberculosisEdit> {
     }
     // Иначе Сравниваем поля
     final w = widget.thisData!;
-    return w.treatmentBeginDate != converStrToDate(_treatmentBeginDate ?? '') ||
-        w.treatmentEndDate != converStrToDate(_treatmentEndDate ?? '') ||
+    return w.treatmentBeginDate != convertStrToDate(_treatmentBeginDate ?? '') ||
+        w.treatmentEndDate != convertStrToDate(_treatmentEndDate ?? '') ||
         !listEquals(
             (w.drugs?.map((e) => e.id).toList() ?? [])..sort(),
             (_getDrugIds())..sort()) ||
@@ -269,12 +269,12 @@ class PageTuberculosisEditState extends State<PageTuberculosisEdit> {
           fieldKey: _keys[Enum.treatmentBeginDate]!,
           value: _treatmentBeginDate,
           initialDate: _treatmentBeginDate != null
-              ? converStrToDate(_treatmentBeginDate!)
+              ? convertStrToDate(_treatmentBeginDate!)
               : _treatmentEndDate != null
-                  ? converStrToDate(_treatmentEndDate!)
+                  ? convertStrToDate(_treatmentEndDate!)
                   : null,
           lastDate: _treatmentEndDate != null
-              ? converStrToDate(_treatmentEndDate!)
+              ? convertStrToDate(_treatmentEndDate!)
               : null,
           required: true,
           listRoles: Roles.asPatient,
@@ -290,7 +290,7 @@ class PageTuberculosisEditState extends State<PageTuberculosisEdit> {
           fieldKey: _keys[Enum.treatmentEndDate]!,
           value: _treatmentEndDate,
           firstDate: _treatmentBeginDate != null
-              ? converStrToDate(_treatmentBeginDate!)
+              ? convertStrToDate(_treatmentBeginDate!)
               : null,
           lastDate: getMoscowDateTime().add(Duration(days: 365 * 18)),
           required: true,

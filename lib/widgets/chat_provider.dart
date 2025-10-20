@@ -19,6 +19,8 @@ class ChatProvider with ChangeNotifier {
   String? _currentChatId; // ID текущего чата, если пользователь в PageChatMessages
   bool _hasNewMessages = false; // Флаг новых сообщений
   String? get currentChatId => _currentChatId;
+  int _seconds = 20;
+
 
   List<ResultContacts> get chatContacts => _chatContacts;
   int get messageCount => _messageCount;
@@ -49,7 +51,8 @@ class ChatProvider with ChangeNotifier {
     }
     debugPrint('ChatProvider: Запуск таймера обновления...');
     _refreshTimer?.cancel();
-    _refreshTimer = Timer.periodic(const Duration(seconds: 20), (timer) async {
+    _seconds = _currentChatId == null || _currentChatId!.isEmpty ? 20 : 5;
+    _refreshTimer = Timer.periodic(Duration(seconds: _seconds), (timer) async {
       debugPrint('ChatProvider: Таймер сработал, обновление messageCount...');
       await refreshMessageCount();
       if (_currentChatId != null) {
@@ -182,6 +185,10 @@ class ChatProvider with ChangeNotifier {
     debugPrint('ChatProvider: Установка текущего чата: $chatId');
     _currentChatId = chatId;
     _hasNewMessages = false; // Сбрасываем флаг при смене чата
+    // Меняем интервал обновления сообщений
+    _seconds = _currentChatId == null || _currentChatId!.isEmpty ? 20 : 5;
+    // Перезапускаем таймер с новым интервалом
+    _startRefreshTimer();
     notifyListeners();
   }
 

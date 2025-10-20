@@ -258,12 +258,12 @@ class _PageTreatmentSideEffectsEditState extends State<PageTreatmentSideEffectsE
           fieldKey: _keys[Enum.date]!,
           value: _date,
           initialDate: _date != null
-              ? converStrToDate(_date!)
+              ? convertStrToDate(_date!)
               : _dateEnd != null
-              ? converStrToDate(_dateEnd!)
+              ? convertStrToDate(_dateEnd!)
               : null,
           lastDate: _dateEnd != null
-              ? converStrToDate(_dateEnd!)
+              ? convertStrToDate(_dateEnd!)
               : null,
           required: true,
           listRoles: Roles.asPatient,
@@ -280,7 +280,7 @@ class _PageTreatmentSideEffectsEditState extends State<PageTreatmentSideEffectsE
             fieldKey: _keys[Enum.dateEnd]!,
             value: _dateEnd,
             firstDate: _date != null
-                ? converStrToDate(_date!)
+                ? convertStrToDate(_date!)
                 : null,
             required: true,
             listRoles: Roles.asPatient,

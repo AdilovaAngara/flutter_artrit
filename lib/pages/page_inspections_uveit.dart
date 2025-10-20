@@ -74,7 +74,7 @@ class _PageInspectionsUveitState extends State<PageInspectionsUveit> {
     }
     if (_uveitExists) {
       _uveit = Uveit(
-          consultationDate: converStrToDate(_consultationDate!),
+          consultationDate: convertStrToDate(_consultationDate!),
           sideType: _sideType,
           diseaseCourse: _diseaseCourse!,
           complications: _complications,
@@ -102,7 +102,7 @@ class _PageInspectionsUveitState extends State<PageInspectionsUveit> {
 
     // Сравниваем поля
     final w = widget.uveit!;
-    return w.consultationDate != converStrToDate(_consultationDate!) ||
+    return w.consultationDate != convertStrToDate(_consultationDate!) ||
         w.sideType != _sideType ||
         w.diseaseCourse != _diseaseCourse ||
         w.complications != _complications ||

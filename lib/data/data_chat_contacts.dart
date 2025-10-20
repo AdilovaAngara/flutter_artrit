@@ -34,7 +34,7 @@ class DataChatContacts {
 
 class ResultContacts {
   String clientUserId;
-  String userFio;
+  String? userFio;
   int messageCount;
 
   ResultContacts({

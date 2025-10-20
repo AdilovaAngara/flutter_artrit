@@ -52,7 +52,8 @@ class _PageChatMainState extends State<PageChatMain> {
       builder: (context, chatProvider, child) {
         // Фильтруем контакты на основе поискового запроса
         final filteredContacts = chatProvider.chatContacts.where((contact) {
-          return contact.userFio.toLowerCase().contains(_searchQuery);
+          String userFio = contact.userFio ?? '';
+          return userFio.toLowerCase().contains(_searchQuery);
         }).toList()
           ..sort((b, a) => a.messageCount.compareTo(b.messageCount));
 
@@ -101,7 +102,7 @@ class _PageChatMainState extends State<PageChatMain> {
                             return ListTile(
                               leading: CircleAvatar(
                                 radius: 25,
-                                child: Text(_getInitials(contact.userFio)),
+                                child: Text(_getInitials(contact.userFio ?? '')),
                               ),
                               trailing: contact.messageCount > 0
                                   ? Badge.count(
@@ -111,7 +112,7 @@ class _PageChatMainState extends State<PageChatMain> {
                               )
                                   : null,
                               title: Text(
-                                contact.userFio,
+                                contact.userFio ?? '',
                                 style: captionMiniTextStyle,
                               ),
                               // subtitle: Text(

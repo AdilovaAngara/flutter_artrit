@@ -11,7 +11,7 @@ String dataChatInfoToJson(DataChatInfo data) => json.encode(data.toJson());
 class DataChatInfo {
   bool success;
   dynamic userMessage;
-  ResultChatInfo result;
+  ResultChatInfo? result;
 
   DataChatInfo({
     required this.success,
@@ -22,13 +22,13 @@ class DataChatInfo {
   factory DataChatInfo.fromJson(Map<String, dynamic> json) => DataChatInfo(
     success: json["Success"],
     userMessage: json["UserMessage"],
-    result: ResultChatInfo.fromJson(json["Result"]),
+    result: json["Result"] != null ? ResultChatInfo.fromJson(json["Result"]) : null,
   );
 
   Map<String, dynamic> toJson() => {
     "Success": success,
     "UserMessage": userMessage,
-    "Result": result.toJson(),
+    "Result": result?.toJson(),
   };
 }
 

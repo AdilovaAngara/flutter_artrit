@@ -299,7 +299,7 @@ class PageLoginState extends State<PageLogin> {
                       InkWell(
                         onTap: () {
                           setState(() {
-                            _login = 'angara.pie1@mail.ru';
+                            _login = 'angara.pie@mail.ru';
                             _password = '123456';
                             _keys[Enum.login]!.currentState?.didChange(_login);
                             _keys[Enum.password]!

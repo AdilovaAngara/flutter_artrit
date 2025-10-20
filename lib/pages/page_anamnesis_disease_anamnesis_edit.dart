@@ -174,12 +174,12 @@ class _PageAnamnesisDiseaseAnamnesisEditState
           fieldKey: _keys[Enum.dateDisease]!,
           value: _dateDisease,
           initialDate: _dateDisease != null
-              ? converStrToDate(_dateDisease!)
+              ? convertStrToDate(_dateDisease!)
               : _dateDiagnosis != null
-                  ? converStrToDate(_dateDiagnosis!)
+                  ? convertStrToDate(_dateDiagnosis!)
                   : null,
           lastDate:
-              _dateDiagnosis != null ? converStrToDate(_dateDiagnosis!) : null,
+              _dateDiagnosis != null ? convertStrToDate(_dateDiagnosis!) : null,
           required: true,
           listRoles: Roles.asPatient,
           role: _role,
@@ -194,7 +194,7 @@ class _PageAnamnesisDiseaseAnamnesisEditState
           fieldKey: _keys[Enum.dateDiagnosis]!,
           value: _dateDiagnosis,
           firstDate:
-              _dateDisease != null ? converStrToDate(_dateDisease!) : null,
+              _dateDisease != null ? convertStrToDate(_dateDisease!) : null,
           required: true,
           listRoles: Roles.asPatient,
           role: _role,

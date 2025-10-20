@@ -37,7 +37,7 @@ class TestsBiochemicalViewWidgetState extends State<TestsBiochemicalViewWidget> 
               title: widget.thisData.astName ?? 'АСТ',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                    date: converStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
+                    date: convertStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
                     value: item.ast,
                     unit: item.astUnit,
                     isNorma: item.asTnorma
@@ -57,7 +57,7 @@ class TestsBiochemicalViewWidgetState extends State<TestsBiochemicalViewWidget> 
               title: widget.thisData.altName ?? 'АЛТ',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                    date: converStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
+                    date: convertStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
                     value: item.alt,
                     unit: item.altUnit,
                     isNorma: item.alTnorma
@@ -77,7 +77,7 @@ class TestsBiochemicalViewWidgetState extends State<TestsBiochemicalViewWidget> 
               title: widget.thisData.bilirubinTotalName ?? 'Общий билирубин',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                    date: converStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
+                    date: convertStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
                     value: item.bilirubinTotal,
                     unit: item.bilirubinTotalUnit,
                     isNorma: item.bilirubinTotalnorma
@@ -97,7 +97,7 @@ class TestsBiochemicalViewWidgetState extends State<TestsBiochemicalViewWidget> 
               title: widget.thisData.mochevinaName ?? 'Мочевина',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                    date: converStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
+                    date: convertStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
                     value: item.mochevina,
                     unit: item.mochevinaUnit,
                     isNorma: item.mochevinanorma
@@ -117,7 +117,7 @@ class TestsBiochemicalViewWidgetState extends State<TestsBiochemicalViewWidget> 
               title: widget.thisData.creatinineName ?? 'Креатинин',
               thisData: widget.allData.map((item) {
                 return DataDynamic(
-                    date: converStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
+                    date: convertStrToDateTime(convertTimestampToDateTime(item.dateNew!)),
                     value: item.creatinine,
                     unit: item.creatinineUnit,
                     isNorma: item.creatininenorma
