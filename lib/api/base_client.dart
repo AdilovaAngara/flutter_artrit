@@ -48,7 +48,7 @@ class BaseClient {
     }
   }
 
-  Future<dynamic> post(String api, dynamic object, {bool isChat = false}) async {
+  Future<dynamic> post(String api, dynamic object) async {
     try {
       var url = Uri.parse(baseUrl + api);
       var headers = await _getHeaders();
@@ -70,7 +70,7 @@ class BaseClient {
     }
   }
 
-  Future<dynamic> put(String api, dynamic object, {bool isChat = false}) async {
+  Future<dynamic> put(String api, dynamic object) async {
     try {
       var url = Uri.parse(baseUrl + api);
       var headers = await _getHeaders();
@@ -93,7 +93,7 @@ class BaseClient {
   }
 
 
-  Future<dynamic> delete(String api, {dynamic object, bool isChat = false}) async {
+  Future<dynamic> delete(String api, {dynamic object}) async {
     try {
       var url = Uri.parse(baseUrl + api);
       var headers = await _getHeaders();
@@ -120,7 +120,7 @@ class BaseClient {
 
 
 
-  Future<http.StreamedResponse?> sendFile(String filePath, {bool isChat = false}) async {
+  Future<http.StreamedResponse?> sendFile(String filePath) async {
     try {
       String api = '/files/send';
       var url = Uri.parse(baseUrl + api);
