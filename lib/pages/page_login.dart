@@ -274,48 +274,48 @@ class PageLoginState extends State<PageLogin> {
                         ),
                       ),
                       SizedBox(height: 20),
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            _login = 'piepim@mail.ru';
-                            _password = '00112299p-';
-                            // _login = 'fortest2@nitrosdata.com';
-                            // _password = 'aSc47wCU';
-                            _keys[Enum.login]!.currentState?.didChange(_login);
-                            _keys[Enum.password]!
-                                .currentState
-                                ?.didChange(_password);
-                          });
-                        },
-                        child: Text(
-                          'ПАЦИЕНТ',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black54, // Цвет текста
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            _login = 'angara.pie@mail.ru';
-                            _password = '123456';
-                            _keys[Enum.login]!.currentState?.didChange(_login);
-                            _keys[Enum.password]!
-                                .currentState
-                                ?.didChange(_password);
-                          });
-                        },
-                        child: Text(
-                          'ВРАЧ',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black54, // Цвет текста
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                      ),
+                      // InkWell(
+                      //   onTap: () {
+                      //     setState(() {
+                      //       _login = 'piepim@mail.ru';
+                      //       _password = '00112299p-';
+                      //       // _login = 'fortest2@nitrosdata.com';
+                      //       // _password = 'aSc47wCU';
+                      //       _keys[Enum.login]!.currentState?.didChange(_login);
+                      //       _keys[Enum.password]!
+                      //           .currentState
+                      //           ?.didChange(_password);
+                      //     });
+                      //   },
+                      //   child: Text(
+                      //     'ПАЦИЕНТ',
+                      //     style: TextStyle(
+                      //       fontSize: 18,
+                      //       color: Colors.black54, // Цвет текста
+                      //       decoration: TextDecoration.none,
+                      //     ),
+                      //   ),
+                      // ),
+                      // InkWell(
+                      //   onTap: () {
+                      //     setState(() {
+                      //       _login = 'angara.pie@mail.ru';
+                      //       _password = '123456';
+                      //       _keys[Enum.login]!.currentState?.didChange(_login);
+                      //       _keys[Enum.password]!
+                      //           .currentState
+                      //           ?.didChange(_password);
+                      //     });
+                      //   },
+                      //   child: Text(
+                      //     'ВРАЧ',
+                      //     style: TextStyle(
+                      //       fontSize: 18,
+                      //       color: Colors.black54, // Цвет текста
+                      //       decoration: TextDecoration.none,
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
