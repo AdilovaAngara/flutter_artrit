@@ -56,8 +56,6 @@ class AppBarWidgetState extends State<AppBarWidget> {
   }
 
 
-
-
   @override
   Widget build(BuildContext context) {
     return Consumer2<ChatProvider, NotificationsProvider>(
