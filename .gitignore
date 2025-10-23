@@ -4,6 +4,7 @@
 *.pyc
 *.swp
 .DS_Store
+Thumbs.db
 .atom/
 .build/
 .buildlog/
@@ -17,6 +18,7 @@ migrate_working_dir/
 *.ipr
 *.iws
 .idea/
+.vscode/
 
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
@@ -31,21 +33,41 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
+.flutter/
+.packages
 /build/
+build/
 
 # Android
 android/app/debug/
 android/app/profile/
 android/app/release/
+*.apk
+*.aab
 
-# iOS
-ios/Flutter/flutter_assets/
-ios/Flutter/App.framework/
-ios/Flutter/Flutter.framework/
-ios/Flutter/Flutter.podspec/
-ios/Flutter/Generated.xcconfig
-ios/ServiceDefinitions.json
+# iOS - КРИТИЧЕСКИ ВАЖНО!
+ios/**/*.mobileprovision
+ios/**/*.p8
+ios/**/*.p12
+ios/**/*.cer
+ios/**/*.keystore
+ios/Runner.xcworkspace/xcuserdata/
+ios/Pods/
+ios/.symlinks/
 
+# Certificates & Keys (общее)
+*.p8
+*.p12
+*.keystore
+*.jks
+*.key
+*.crt
+*.cer
+
+
+# iOS provisioning profiles
+*.mobileprovision
+ios/*.mobileprovision
 
 # Symbolication related
 app.*.symbols
@@ -53,11 +75,6 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
-
-
-# APK files
-*.apk
-*.aab
 
 # Misc
 *.dill

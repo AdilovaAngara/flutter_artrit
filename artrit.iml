@@ -51,6 +51,9 @@
       <excludeFolder url="file://$MODULE_DIR$/linux/flutter/ephemeral/.plugin_symlinks/audioplayers_linux/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/linux/flutter/ephemeral/.plugin_symlinks/audioplayers_linux/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/linux/flutter/ephemeral/.plugin_symlinks/audioplayers_linux/build" />
+      <excludeFolder url="file://$MODULE_DIR$/.git-rewrite/t/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/.git-rewrite/t/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/.git-rewrite/t/build" />
     </content>
     <orderEntry type="jdk" jdkName="Android API 34, extension level 7 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
