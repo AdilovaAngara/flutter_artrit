@@ -50,30 +50,20 @@ class FileUtils {
           }
         }
         showBottomBanner(context: context, message: 'Файл сохранён в Downloads: $fileName');
-      } if (Platform.isIOS) {
+      } else if (Platform.isIOS) {
         final tempFilePath = await saveTempFile(fileData, fileName);
-        await Share.shareXFiles(
-          [XFile(tempFilePath, mimeType: 'application/octet-stream')],
-          subject: fileName,
-          text: 'Сохраните файл или поделитесь им:',
-        );
-        showBottomBanner(context: context, message: 'Откройте диалог сохранения файла');
-      }
 
-      // else if (Platform.isIOS) {
-      //   final tempFilePath = await saveTempFile(fileData, fileName);
-      //   debugPrint('Открываем диалог сохранения на iOS...');
-      //   await Share.share(
-      //     tempFilePath,
-      //     subject: fileName,
-      //   );
-      //   filePath = tempFilePath;
-      //   debugPrint('Файл подготовлен для сохранения на iOS: $filePath');
-      //   //showBottomBanner(context: context, message: 'Выберите место для сохранения файла: $fileName');
-      // }
+        final xFile = XFile(tempFilePath, name: fileName);
+        await Share.shareXFiles(
+          [xFile],
+          subject: fileName,
+          text: 'Сохранить файл $fileName',
+        );
+        filePath = tempFilePath;
+      }
       return filePath;
     } catch (e) {
-      debugPrint('Ошибка при сохранении файла: $e');
+      //debugPrint('Ошибка при сохранении файла: $e');
       showBottomBanner(context: context, message: 'Ошибка при сохранении файла: $e');
       return null;
     }

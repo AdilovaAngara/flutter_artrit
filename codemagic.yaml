@@ -1,4 +1,4 @@
-version: 1.0.3+10  # Увеличиваем номер сборки
+version: 1.0.3+11  # Увеличиваем номер сборки
 workflows:
   ios-release:
     name: iOS Release Build
