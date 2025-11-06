@@ -21,7 +21,7 @@ void main() async {
     MediaStore.appFolder = '/';
   }
   // Этот код отключает проверку сертификата (раскомментировать только для тестирования, если андроид ругается на сертификат)
-  HttpOverrides.global = MyHttpOverrides();
+  //HttpOverrides.global = MyHttpOverrides();
   runApp(
       MultiProvider(
           providers: [
