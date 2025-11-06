@@ -112,7 +112,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
     _listSprHospitals = _dataSprHospitals.map((e) => e.name ?? '').toList()..sort();
     _listSprDoctors.addAll(_dataSprDoctors.map((e) => e.name ?? '').toList()..sort());
     _listSprRelationship = _dataSprRelationship.map((e) => e.name ?? '').toList()..sort();
-    _listSprDiagnoses = _dataSprDiagnoses.map((e) => '${e.mkbCode} ${e.synonym.replaceAll('\n', '')}').toList()..sort();
+    _listSprDiagnoses = _dataSprDiagnoses.map((e) => '${e.mkbCode.trim()} ${e.synonym.trim().replaceAll('\n', '')}').toList()..sort();
     setState(() {});
   }
 
@@ -551,9 +551,10 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
                   _mkbName = value;
                   if (value.isNotEmpty) {
                     _mkbCode = _dataSprDiagnoses
-                        .firstWhereOrNull((e) => '${e.mkbCode} ${e.synonym.replaceAll('\n', '')}' == value)
+                        .firstWhereOrNull((e) => '${e.mkbCode.trim()} ${e.synonym.trim().replaceAll('\n', '')}' == value)
                         ?.mkbCode ??
                         '';
+                    debugPrint(_mkbCode);
                   } else {
                     _mkbCode = '';
                   }
@@ -562,18 +563,18 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
             });
           },
         ),
-        SizedBox(height: 12.0,),
-        InputText(
-          labelText: 'Код МКБ-10',
-          fieldKey: _keysDiagnoses[EnumDiagnoses.mkbCode]!,
-          value: _mkbCode,
-          required: true,
-          readOnly: true,
-          listRoles: Roles.all,
-          onChanged: (value) {
-          },
-        ),
-        if (_mkbCode == 'M31.8' || _mkbCode == 'M32.8')
+        //SizedBox(height: 12.0,),
+        // InputText(
+        //   labelText: 'Код МКБ-10',
+        //   fieldKey: _keysDiagnoses[EnumDiagnoses.mkbCode]!,
+        //   value: _mkbCode,
+        //   required: true,
+        //   readOnly: true,
+        //   listRoles: Roles.all,
+        //   onChanged: (value) {
+        //   },
+        // ),
+        if (_mkbCode.toString().trim() == 'M31.8' || _mkbCode.toString().trim() == 'M32.8')
           InputText(
             labelText: 'Комментарий к диагнозу',
             fieldKey: _keysDiagnoses[EnumDiagnoses.diagnosisComment]!,

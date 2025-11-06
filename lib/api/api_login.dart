@@ -1,10 +1,8 @@
 import 'dart:convert';
 import 'package:artrit/data/data_login.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../data/data_login_recovery.dart';
 import '../data/data_result.dart';
-import '../widgets/chat_provider.dart';
 import 'base_client.dart';
 import '../secure_storage.dart';
 

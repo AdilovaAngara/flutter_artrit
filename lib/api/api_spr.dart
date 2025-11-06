@@ -93,7 +93,7 @@ class ApiSpr {
     List<DataSprTemperature> thisData = dataSprTemperatureFromJson(response.body);
     thisData = thisData.where((e) => !e.isHidden).toList();
     List<double> listSprTemperature = thisData
-        .map((e) => e.name)
+        .map((e) => e.name ?? 0)
         .toList()
       ..sort();
     return listSprTemperature;

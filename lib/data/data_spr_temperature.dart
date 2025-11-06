@@ -8,8 +8,8 @@ List<DataSprTemperature> dataSprTemperatureFromJson(String str) => List<DataSprT
 String dataSprTemperatureToJson(List<DataSprTemperature> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class DataSprTemperature {
-  String id;
-  double name;
+  String? id;
+  double? name;
   bool isHidden;
 
   DataSprTemperature({

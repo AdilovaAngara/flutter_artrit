@@ -1,10 +1,3 @@
-import 'dart:io';
-import 'dart:typed_data';
-import 'package:artrit/my_functions.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
-import '../widgets/download_file_widget.dart';
 import 'base_client.dart';
 
 enum Enum{

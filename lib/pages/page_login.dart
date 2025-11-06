@@ -274,6 +274,7 @@ class PageLoginState extends State<PageLogin> {
                         ),
                       ),
                       SizedBox(height: 20),
+                      /// Тестовые кнопки
                       // InkWell(
                       //   onTap: () {
                       //     setState(() {

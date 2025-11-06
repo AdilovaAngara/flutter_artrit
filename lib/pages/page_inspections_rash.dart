@@ -1,4 +1,5 @@
 import 'package:artrit/data/data_inspections_photo.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import '../api/api_inspections_photo.dart';
 import '../data/data_inspections.dart';
@@ -46,6 +47,7 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
   late int _role;
   late String _patientsId;
   late String _inspectionsId;
+  late String? _siplist;
   late List<Syssind> _listSyssind;
   bool _isBack = false;
   String? _selectedPart; // Идентификатор активной части
@@ -59,6 +61,7 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
 
   @override
   void initState() {
+    _siplist = widget.siplist;
     // Если будем делать так, то при клике "Назад" передаются изменения
     //_listSyssind = widget.listSyssind;
     // Поэтому делаем глубокую копию списка
@@ -68,6 +71,8 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
               isActive: syssind.isActive,
             ))
         .toList();
+
+    _applySiplistToListSyssind(widget.siplist ?? '[]');
 
     _future = _loadData();
     super.initState();
@@ -97,7 +102,7 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
         showChat: false,
         showNotifications: false,
         onPressed: () {
-          onBack(context, (areDifferent(widget.listSyssind, _listSyssind)));
+          onBack(context, (widget.siplist != _siplist));
         },
       ),
       body: FutureBuilder(
@@ -115,7 +120,7 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
                 SizedBox(height: 15),
                 Expanded(
                   child: Center(
-                    child: buildInteractiveBody(_isBack),
+                    child: _buildInteractiveBody(_isBack),
                   ),
                 ),
                 (_selectedPart != null && !widget.viewRegime) ?
@@ -152,7 +157,7 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
                   height: 100,
                   child: ImageStripGallery(
                     addPhotoEnabled: (_selectedPart != null &&
-                        partPhotoActive(_selectedPart!)),
+                        _partPhotoActive(_selectedPart!)),
                     addPhotoEnabledText:
                         'Сначала нужно отметить наличие сыпи',
                     addPhotoBtnShow:
@@ -175,10 +180,10 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
                         listRoles: Roles.asPatient,
                         role: _role,
                         onPressed: () {
-                          String siplist = getSiplist();
+                          _siplist = _getSiplist();
                           Navigator.pop(context, [
                             _listSyssind,
-                            siplist
+                            _siplist
                           ]); // Передача значения назад
                         },
                       ),
@@ -190,7 +195,7 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
     );
   }
 
-  Widget buildInteractiveBody(bool isBack) {
+  Widget _buildInteractiveBody(bool isBack) {
     return Center(
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -428,9 +433,11 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
                 'Нельзя удалить сыпь с участка кожи, где есть фотография');
       } else {
         _listSyssind.firstWhere((item) => item.name == part).isActive = false;
+        _siplist = _getSiplist();
       }
     } else {
       _listSyssind.firstWhere((item) => item.name == part).isActive = true;
+      _siplist = _getSiplist();
     }
   }
 
@@ -444,7 +451,7 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
     return _listSyssind.firstWhere((item) => item.name == part).isActive;
   }
 
-  bool partPhotoActive(String part) {
+  bool _partPhotoActive(String part) {
     if (part == 'Затылок' || part == 'Челка') {
       return false;
     }
@@ -456,8 +463,83 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
     return _listSyssind.firstWhere((item) => item.name == part).isActive;
   }
 
-  String getSiplist() {
+
+
+
+  void _applySiplistToListSyssind(String siplistJson) {
+    // 1. Сначала деактивируем ВСЁ в _listSyssind
+    for (var item in _listSyssind) {
+      item.isActive = false;
+    }
+
+    try {
+      // 2. Парсим JSON
+      final List<dynamic> activeParts = jsonDecode(siplistJson);
+
+      // 3. Проходим по каждому активному элементу
+      for (var part in activeParts) {
+        final int numericId = part["numeric_id"];
+
+        // Находим, какой элемент в _listSyssind нужно активировать
+        String? targetName;
+
+        switch (numericId) {
+          case 1:
+            targetName = bodyHead;           // 'Голова + шея'
+            break;
+          case 4:
+            targetName = bodyBreast;           // 'Туловище'
+            break;
+          case 8:
+            targetName = bodyRightLeg;         // 'Правая нога'
+            break;
+          case 3:
+            targetName = bodyLeftHand;         // 'Левая рука'
+            break;
+          case 7:
+            targetName = bodyLeftLeg;          // 'Левая нога'
+            break;
+          case 14:
+            targetName = bodyHips;             // 'Бедро'
+            break;
+          case 2:
+            targetName = bodyRightHand;        // 'Правая рука'
+            break;
+          case 17:
+            targetName = bodyBreastBack;       // 'Спина'
+            break;
+          case 5:
+            targetName = bodyHipsBack;         // 'Бедро(Сзади)'
+            break;
+          case 15:
+            targetName = 'Правая нога(Сзади)';
+            break;
+        }
+
+        if (targetName != null) {
+          // Ищем и активируем
+          final item = _listSyssind.firstWhereOrNull(
+                (e) => e.name == targetName);
+          if (item != null) {
+            item.isActive = true;
+          }
+        }
+      }
+    } catch (e) {
+      print("Ошибка применения siplist: $e");
+    }
+  }
+
+
+
+  String _getSiplist() {
     String siplist = jsonEncode([
+      {
+        "numeric_id": 1,
+        "name": bodyHead,
+        "bol":
+        _listSyssind.firstWhere((item) => item.name == bodyHead).isActive
+      },
       {
         "numeric_id": 4,
         "name": bodyBreast,
