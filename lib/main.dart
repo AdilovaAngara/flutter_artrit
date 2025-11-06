@@ -11,6 +11,17 @@ import 'package:media_store_plus/media_store_plus.dart';
 import 'package:provider/provider.dart';
 import 'my_functions.dart';
 
+
+
+// Перед публикацией
+// 1. Скрыть тестовые кнопки
+// 2. Заменить адрес API
+// 3. Закомментировать код, который отключает проверку сертификата HttpOverrides.global = MyHttpOverrides();
+// 4. Увеличить номер сборки в pubspec.yaml и codemagic.yaml
+// 5. При сборке для Android надо указывать после знака + версию, которая выше той, что уже опубликована. Андроид почему-то не смотрит, что предыдущие цифры стали выше
+
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   int role = await getUserRole();
