@@ -158,7 +158,7 @@ class PageQuestionnaireState extends State<PageQuestionnaire> {
                               borderRadius: BorderRadius.circular(12.0),
                             ),
                             title: Text(
-                              'Вопросник качества жизни',
+                              'Опросник качества жизни',
                               style: captionMenuTextStyle,
                             ),
                             subtitle: Column(

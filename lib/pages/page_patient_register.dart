@@ -5,6 +5,7 @@ import 'package:artrit/data/data_patient_register.dart';
 import 'package:artrit/data/data_spr_doctors.dart';
 import 'package:artrit/data/data_spr_hospitals.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/gestures.dart' show TapGestureRecognizer;
 import 'package:flutter/material.dart';
 import '../data/data_result.dart';
 import '../data/data_spr_diagnoses.dart';
@@ -16,7 +17,6 @@ import '../widgets/app_bar_widget.dart';
 import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/checkbox_group_widget.dart';
-import '../widgets/input_checkbox.dart';
 import '../widgets/input_select_date.dart';
 import '../widgets/input_select.dart';
 import '../widgets/input_text.dart';
@@ -268,17 +268,50 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
                             color: Colors.grey.shade300,
                           ),
                           SizedBox(height: 20),
-                          InputCheckbox(
-                            fieldKey: _keysPatient[EnumPatient.canContainCookies]!,
-                            labelText: 'Согласие на обработку персональных данных',
-                            requiredTrue: true,
-                            value: _canContainCookies,
-                            listRoles: Roles.all,
-                            onChanged: (value) {
-                              setState(() {
-                                _canContainCookies = value;
-                              });
-                            },
+                          // InputCheckbox(
+                          //   fieldKey: _keysPatient[EnumPatient.canContainCookies]!,
+                          //   labelText: 'Согласие на обработку персональных данных',
+                          //   requiredTrue: true,
+                          //   value: _canContainCookies,
+                          //   listRoles: Roles.all,
+                          //   onChanged: (value) {
+                          //     setState(() {
+                          //       _canContainCookies = value;
+                          //     });
+                          //   },
+                          // ),
+                          Row(
+                            children: [
+                              Checkbox(
+                                value: _canContainCookies,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _canContainCookies = value ?? false;
+                                  });
+                                },
+                              ),
+                              Expanded(
+                                child: Text.rich(
+                                  TextSpan(
+                                    text: 'Я прочитал(а) и соглашаюсь с условиями ',
+                                    style: listLabelStyle,
+                                    children: [
+                                      TextSpan(
+                                        text: 'Политики конфиденциальности',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.blue,
+                                          decoration: TextDecoration.underline,
+                                        ),
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () =>
+                                            openUrl('https://ja.aspirre-russia.ru/static/PrivacyPolicy.docx'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                           SizedBox(height: 30,),
                         ],

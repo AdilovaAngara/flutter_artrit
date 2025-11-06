@@ -43,7 +43,7 @@ class DataPatient {
   dynamic unknownHospital;
   String? roleId;
   String? doctorFio;
-  double questionnaireResult;
+  double? questionnaireResult;
   int lastInspectionUveit;
 
   DataPatient({

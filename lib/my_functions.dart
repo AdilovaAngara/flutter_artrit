@@ -14,6 +14,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'data/data_anamnesis_disease_anamnesis.dart';
 import 'data/data_dynamic.dart';
 import 'data/data_inspections.dart';
@@ -254,6 +255,17 @@ void navigateToPageMenu(BuildContext context, EnumMenu menu) {
 }
 
 
+
+// Функция для перехода по ссылке
+Future<void> openUrl(String url) async {
+  final Uri uri = Uri.parse(url);
+  if (await canLaunchUrl(uri)) {
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  } else {
+    // Можно показать сообщение об ошибке, если ссылка не открывается
+    debugPrint('Could not launch $url');
+  }
+}
 
 
 

@@ -265,7 +265,7 @@ extension EnumMenuExtension on EnumMenu {
       case EnumMenu.vaccination:
         return 'Вакцинация';
       case EnumMenu.questionnaire:
-        return 'Вопросник качества жизни';
+        return 'Опросник качества жизни';
       case EnumMenu.scale:
         return 'Шкалы';
       case EnumMenu.report:

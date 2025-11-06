@@ -62,5 +62,11 @@
         <!-- Если ваш API использует веб-авторизацию, укажите домен -->
         <string>applinks:nitrosbase.com</string>
       </array>
+        <!--Даем разрешение на переход по ссылкам-->
+      <key>LSApplicationQueriesSchemes</key>
+      <array>
+          <string>https</string>
+          <string>http</string>
+      </array>
 </dict>
 </plist>
