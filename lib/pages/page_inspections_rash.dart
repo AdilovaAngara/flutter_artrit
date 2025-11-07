@@ -1,5 +1,4 @@
 import 'package:artrit/data/data_inspections_photo.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import '../api/api_inspections_photo.dart';
 import '../data/data_inspections.dart';
@@ -17,14 +16,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:convert';
 
 class PageInspectionsRash extends StatefulWidget {
-  final List<Syssind> listSyssind;
   final String? siplist;
   final String inspectionsId;
   final bool viewRegime;
 
   const PageInspectionsRash({
     super.key,
-    required this.listSyssind,
     this.siplist,
     required this.inspectionsId,
     required this.viewRegime,
@@ -47,12 +44,22 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
   late int _role;
   late String _patientsId;
   late String _inspectionsId;
-  late String? _siplist;
-  late List<Syssind> _listSyssind;
   bool _isBack = false;
-  String? _selectedPart; // Идентификатор активной части
+  int? _selectedPart; // Идентификатор активной части
   String? _jointsId;
   static const String _bodyType = 'skin';
+  String _siplist = '[]';
+  List<Siplist> _listSiplist = [
+    Siplist(numericId: 4, name: "Туловище", bol: false),
+    Siplist(numericId: 8, name: "Правая нога", bol: false),
+    Siplist(numericId: 1, name: "Голова + шея", bol: false),
+    Siplist(numericId: 3, name: "Левая рука", bol: false),
+    Siplist(numericId: 7, name: "Левая нога", bol: false),
+    Siplist(numericId: 14, name: "Паховая область", bol: false),
+    Siplist(numericId: 2, name: "Правая рука", bol: false),
+    Siplist(numericId: 17, name: "Спина", bol: false),
+    Siplist(numericId: 5, name: "Ягодицы", bol: false),
+  ];
 
   /// Ключи
   final Map<EnumRash, GlobalKey<FormFieldState>> _keys = {
@@ -61,18 +68,10 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
 
   @override
   void initState() {
-    _siplist = widget.siplist;
-    // Если будем делать так, то при клике "Назад" передаются изменения
-    //_listSyssind = widget.listSyssind;
-    // Поэтому делаем глубокую копию списка
-    _listSyssind = widget.listSyssind
-        .map((syssind) => Syssind(
-              name: syssind.name,
-              isActive: syssind.isActive,
-            ))
-        .toList();
+    _siplist = widget.siplist ?? '[]';
 
-    _applySiplistToListSyssind(widget.siplist ?? '[]');
+    // Обновляем существующий список siplist (не меняя саму структуру)
+    _listSiplist = _updateSiplistFromJson(_siplist, _listSiplist);
 
     _future = _loadData();
     super.initState();
@@ -92,6 +91,32 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
   Future<void> _refreshData() async {
     _future = _loadData();
   }
+
+
+
+
+  List<Siplist> _updateSiplistFromJson(String jsonString, List<Siplist> targetList) {
+    if (jsonString.isEmpty) targetList;
+
+    try {
+      final decoded = jsonDecode(jsonString);
+      final List<dynamic> rawList = decoded is String ? jsonDecode(decoded) : decoded;
+
+      for (final item in rawList) {
+        final parsed = Siplist.fromJson(item);
+        final idx = targetList.indexWhere((e) => e.numericId == parsed.numericId);
+        if (idx != -1) {
+          // Обновляем только bol (и name при желании)
+          targetList[idx].bol = parsed.bol;
+        }
+      }
+    } catch (e) {
+      debugPrint('Ошибка при парсинге/обновлении siplist: $e');
+    }
+    return targetList;
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -120,25 +145,25 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
                 SizedBox(height: 15),
                 Expanded(
                   child: Center(
-                    child: _buildInteractiveBody(_isBack),
+                    child: buildInteractiveBody(_isBack),
                   ),
                 ),
                 (_selectedPart != null && !widget.viewRegime) ?
-                  InputCheckbox(
-                    fieldKey: _keys[EnumRash.isActive]!,
-                    labelText: 'Наличие сыпи',
-                    value: _partActive(_selectedPart!),
-                    readOnly: widget.viewRegime,
-                    textStyle: subtitleMiniTextStyle,
-                    padding: 0,
-                    listRoles: Roles.asPatient,
-                    role: _role,
-                    onChanged: (value) {
-                      setState(() {
-                        _isActive(_selectedPart!);
-                      });
-                    },
-                  ) : SizedBox(height: 38),
+                InputCheckbox(
+                  fieldKey: _keys[EnumRash.isActive]!,
+                  labelText: 'Наличие сыпи',
+                  value: _partActive(_selectedPart!),
+                  readOnly: widget.viewRegime,
+                  textStyle: subtitleMiniTextStyle,
+                  padding: 0,
+                  listRoles: Roles.asPatient,
+                  role: _role,
+                  onChanged: (value) {
+                    setState(() {
+                      _isActive(_selectedPart!);
+                    });
+                  },
+                ) : SizedBox(height: 38),
                 SwitchWidget(
                   labelTextFirst: 'Спереди',
                   labelTextLast: 'Сзади',
@@ -157,11 +182,11 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
                   height: 100,
                   child: ImageStripGallery(
                     addPhotoEnabled: (_selectedPart != null &&
-                        _partPhotoActive(_selectedPart!)),
+                        partPhotoActive(_selectedPart!)),
                     addPhotoEnabledText:
-                        'Сначала нужно отметить наличие сыпи',
+                    'Сначала нужно отметить наличие сыпи',
                     addPhotoBtnShow:
-                        _selectedPart != null && !widget.viewRegime,
+                    _selectedPart != null && !widget.viewRegime,
                     inspectionsId: _inspectionsId,
                     jointsId: (_selectedPart != null) ? _jointsId : null,
                     bodyType: _bodyType,
@@ -180,10 +205,10 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
                         listRoles: Roles.asPatient,
                         role: _role,
                         onPressed: () {
-                          _siplist = _getSiplist();
+                          String siplist = jsonEncode(_listSiplist);
                           Navigator.pop(context, [
-                            _listSyssind,
-                            _siplist
+                            _listSiplist.where((item) => item.bol).length,
+                            siplist
                           ]); // Передача значения назад
                         },
                       ),
@@ -195,7 +220,7 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
     );
   }
 
-  Widget _buildInteractiveBody(bool isBack) {
+  Widget buildInteractiveBody(bool isBack) {
     return Center(
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -212,7 +237,7 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
             //     height: screenHeight * 0.95,
             //     onTapAvailable: false),
             BodyParts(
-                part: 'Затылок',
+                part: 100, // 'Затылок',
                 imagePath: 'assets/body_hair_back.svg',
                 imagePathSelected: 'assets/body_hair_back.svg',
                 top: screenHeight * 0.0,
@@ -221,14 +246,14 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
                 onTapAvailable: false),
             if (!isBack)
               BodyParts(
-                  part: bodyHead,
+                  part: 1, // 'Голова + шея' // bodyHead,
                   imagePath: 'assets/body_head.svg',
                   imagePathSelected: 'assets/body_head_selected.svg',
                   top: screenHeight * 0.022,
                   left: screenHeight * 0.2952 - leftOffset,
                   height: screenHeight * 0.123),
             BodyParts(
-                part: 'Челка',
+                part: 101, // 'Челка',
                 imagePath: 'assets/body_hair_front.svg',
                 imagePathSelected: 'assets/body_hair_front.svg',
                 top: screenHeight * 0.006,
@@ -237,85 +262,85 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
                 onTapAvailable: false),
             !isBack
                 ? BodyParts(
-                    part: bodyLeftHand,
-                    imagePath: 'assets/body_left_hand.svg',
-                    imagePathSelected: 'assets/body_left_hand_selected.svg',
-                    top: screenHeight * 0.165,
-                    left: screenHeight * 0.412 - leftOffset,
-                    height: screenHeight * 0.374)
+                part: 3, // Левая рука // bodyLeftHand,
+                imagePath: 'assets/body_left_hand.svg',
+                imagePathSelected: 'assets/body_left_hand_selected.svg',
+                top: screenHeight * 0.165,
+                left: screenHeight * 0.412 - leftOffset,
+                height: screenHeight * 0.374)
                 : BodyParts(
-                    part: bodyLeftHand,
-                    imagePath: 'assets/body_right_hand.svg',
-                    imagePathSelected: 'assets/body_right_hand_selected.svg',
-                    top: screenHeight * 0.166,
-                    left: screenHeight * 0.1362 - leftOffset,
-                    height: screenHeight * 0.374),
+                part: 3, // Левая рука // bodyLeftHand,
+                imagePath: 'assets/body_right_hand.svg',
+                imagePathSelected: 'assets/body_right_hand_selected.svg',
+                top: screenHeight * 0.166,
+                left: screenHeight * 0.1362 - leftOffset,
+                height: screenHeight * 0.374),
             !isBack
                 ? BodyParts(
-                    part: bodyRightHand,
-                    imagePath: 'assets/body_right_hand.svg',
-                    imagePathSelected: 'assets/body_right_hand_selected.svg',
-                    top: screenHeight * 0.166,
-                    left: screenHeight * 0.1362 - leftOffset,
-                    height: screenHeight * 0.374)
+                part: 2, // Правая рука // bodyRightHand,
+                imagePath: 'assets/body_right_hand.svg',
+                imagePathSelected: 'assets/body_right_hand_selected.svg',
+                top: screenHeight * 0.166,
+                left: screenHeight * 0.1362 - leftOffset,
+                height: screenHeight * 0.374)
                 : BodyParts(
-                    part: bodyRightHand,
-                    imagePath: 'assets/body_left_hand.svg',
-                    imagePathSelected: 'assets/body_left_hand_selected.svg',
-                    top: screenHeight * 0.165,
-                    left: screenHeight * 0.412 - leftOffset,
-                    height: screenHeight * 0.374),
+                part: 2, // Правая рука // bodyRightHand,
+                imagePath: 'assets/body_left_hand.svg',
+                imagePathSelected: 'assets/body_left_hand_selected.svg',
+                top: screenHeight * 0.165,
+                left: screenHeight * 0.412 - leftOffset,
+                height: screenHeight * 0.374),
             !isBack
                 ? BodyParts(
-                    part: bodyLeftLeg,
-                    imagePath: 'assets/body_left_leg_front.svg',
-                    imagePathSelected:
-                        'assets/body_left_leg_front_selected.svg',
-                    top: screenHeight * 0.4273,
-                    left: screenHeight * 0.334 - leftOffset,
-                    height: screenHeight * 0.555)
+                part: 7, // bodyLeftLeg, // Левая нога
+                imagePath: 'assets/body_left_leg_front.svg',
+                imagePathSelected:
+                'assets/body_left_leg_front_selected.svg',
+                top: screenHeight * 0.4273,
+                left: screenHeight * 0.334 - leftOffset,
+                height: screenHeight * 0.555)
                 : BodyParts(
-                    part: bodyLeftLeg,
-                    imagePath: 'assets/body_left_leg_back.svg',
-                    imagePathSelected: 'assets/body_left_leg_back_selected.svg',
-                    top: screenHeight * 0.4305,
-                    left: screenHeight * 0.245 - leftOffset,
-                    height: screenHeight * 0.5),
+                part: 7, // bodyLeftLeg, // Левая нога
+                imagePath: 'assets/body_left_leg_back.svg',
+                imagePathSelected: 'assets/body_left_leg_back_selected.svg',
+                top: screenHeight * 0.4305,
+                left: screenHeight * 0.245 - leftOffset,
+                height: screenHeight * 0.5),
             !isBack
                 ? BodyParts(
-                    part: bodyRightLeg,
-                    imagePath: 'assets/body_right_leg_front.svg',
-                    imagePathSelected:
-                        'assets/body_right_leg_front_selected.svg',
-                    top: screenHeight * 0.4295,
-                    left: screenHeight * 0.2445 - leftOffset,
-                    height: screenHeight * 0.555)
+                part: 8, // bodyRightLeg, // Правая нога
+                imagePath: 'assets/body_right_leg_front.svg',
+                imagePathSelected:
+                'assets/body_right_leg_front_selected.svg',
+                top: screenHeight * 0.4295,
+                left: screenHeight * 0.2445 - leftOffset,
+                height: screenHeight * 0.555)
                 : BodyParts(
-                    part: bodyRightLeg,
-                    imagePath: 'assets/body_right_leg_back.svg',
-                    imagePathSelected:
-                        'assets/body_right_leg_back_selected.svg',
-                    top: screenHeight * 0.4275,
-                    left: screenHeight * 0.333 - leftOffset,
-                    height: screenHeight * 0.5),
+                part: 8, // bodyRightLeg, // Правая нога
+                imagePath: 'assets/body_right_leg_back.svg',
+                imagePathSelected:
+                'assets/body_right_leg_back_selected.svg',
+                top: screenHeight * 0.4275,
+                left: screenHeight * 0.333 - leftOffset,
+                height: screenHeight * 0.5),
             !isBack
                 ? BodyParts(
-                    part: bodyBreast,
-                    imagePath: 'assets/body_breast.svg',
-                    imagePathSelected: 'assets/body_breast_selected.svg',
-                    top: screenHeight * 0.1455,
-                    left: screenHeight * 0.245 - leftOffset,
-                    height: screenHeight * 0.215)
+                part: 4, // Туловище // bodyBreast,
+                imagePath: 'assets/body_breast.svg',
+                imagePathSelected: 'assets/body_breast_selected.svg',
+                top: screenHeight * 0.1455,
+                left: screenHeight * 0.245 - leftOffset,
+                height: screenHeight * 0.215)
                 : BodyParts(
-                    part: bodyBreastBack,
-                    imagePath: 'assets/body_breast.svg',
-                    imagePathSelected: 'assets/body_breast_selected.svg',
-                    top: screenHeight * 0.1455,
-                    left: screenHeight * 0.245 - leftOffset,
-                    height: screenHeight * 0.215),
+                part: 17, // Спина // bodyBreastBack,
+                imagePath: 'assets/body_breast.svg',
+                imagePathSelected: 'assets/body_breast_selected.svg',
+                top: screenHeight * 0.1455,
+                left: screenHeight * 0.245 - leftOffset,
+                height: screenHeight * 0.215),
             if (isBack)
               BodyParts(
-                part: bodyLopatki,
+                part: 102, // Лопатки // bodyLopatki,
                 imagePath: 'assets/body_breast_back.svg',
                 imagePathSelected: 'assets/body_breast_back.svg',
                 top: screenHeight * 0.2,
@@ -324,22 +349,22 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
               ),
             !isBack
                 ? BodyParts(
-                    part: bodyHips,
-                    imagePath: 'assets/body_hips.svg',
-                    imagePathSelected: 'assets/body_hips_selected.svg',
-                    top: screenHeight * 0.36,
-                    left: screenHeight * 0.25 - leftOffset,
-                    height: screenHeight * 0.135)
+                part: 14, // Бедро или Паховая область // bodyHips,
+                imagePath: 'assets/body_hips.svg',
+                imagePathSelected: 'assets/body_hips_selected.svg',
+                top: screenHeight * 0.36,
+                left: screenHeight * 0.25 - leftOffset,
+                height: screenHeight * 0.135)
                 : BodyParts(
-                    part: bodyHipsBack,
-                    imagePath: 'assets/body_hips.svg',
-                    imagePathSelected: 'assets/body_hips_selected.svg',
-                    top: screenHeight * 0.36,
-                    left: screenHeight * 0.25 - leftOffset,
-                    height: screenHeight * 0.135),
+                part: 5, // bodyHipsBack // Ягодицы или Бедро(Сзади)
+                imagePath: 'assets/body_hips.svg',
+                imagePathSelected: 'assets/body_hips_selected.svg',
+                top: screenHeight * 0.36,
+                left: screenHeight * 0.25 - leftOffset,
+                height: screenHeight * 0.135),
             if (isBack)
               BodyParts(
-                part: bodyButtocks,
+                part: 103, // bodyButtocks, // Ягодицы
                 imagePath: 'assets/body_hips_back.svg',
                 imagePathSelected: 'assets/body_hips_back.svg',
                 top: screenHeight * 0.472,
@@ -406,214 +431,78 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
     );
   }
 
-  void _togglePart(String part) {
+  void _togglePart(int part) {
     setState(() {
-      if (part == bodyLopatki) {
-        part = bodyBreastBack;
-      } else if (part == bodyButtocks) {
-        part = bodyHipsBack;
+      if (part == 102) {
+        part = 17;
+      } else if (part == 103) {
+        part = 5;
       }
+      debugPrint(part.toString());
       _selectedPart = part;
-      _jointsId = _listJointId.firstWhere((item) => item.bodyName == part).id;
+      _jointsId = _listJointId.firstWhere((item) => item.bodyNumber == part).id;
     });
   }
 
-  void _isActive(String part) {
-    if (part == bodyLopatki) {
-      part = bodyBreastBack;
-    } else if (part == bodyButtocks) {
-      part = bodyHipsBack;
+  void _isActive(int part) {
+    if (part == 102) {
+      part = 17;
+    } else if (part == 103) {
+      part = 5;
     }
-    if (_listSyssind.firstWhere((item) => item.name == part).isActive) {
+    if (_listSiplist.firstWhere((item) => item.numericId == part).bol) {
       int photoCount =
           _thisData!.where((e) => e.jointsId == _jointsId).toList().length;
       if (photoCount > 0) {
         ShowMessage.show(context: context,
             message:
-                'Нельзя удалить сыпь с участка кожи, где есть фотография');
+            'Нельзя удалить сыпь с участка кожи, где есть фотография');
       } else {
-        _listSyssind.firstWhere((item) => item.name == part).isActive = false;
-        _siplist = _getSiplist();
+        _listSiplist.firstWhere((item) => item.numericId == part).bol = false;
       }
     } else {
-      _listSyssind.firstWhere((item) => item.name == part).isActive = true;
-      _siplist = _getSiplist();
+      _listSiplist.firstWhere((item) => item.numericId == part).bol = true;
     }
   }
 
-  bool _partActive(String part) {
-    if (part == bodyLopatki ||
-        part == bodyButtocks ||
-        part == 'Затылок' ||
-        part == 'Челка') {
+  bool _partActive(int part) {
+    if (part == 102 ||
+        part == 103 ||
+        part == 100 ||
+        part == 101) {
       return false;
     }
-    return _listSyssind.firstWhere((item) => item.name == part).isActive;
+    return _listSiplist.firstWhere((item) => item.numericId == part).bol;
   }
 
-  bool _partPhotoActive(String part) {
-    if (part == 'Затылок' || part == 'Челка') {
+  bool partPhotoActive(int part) {
+    if (part == 100 || part == 101) {
       return false;
     }
-    if (part == bodyLopatki) {
-      part = bodyBreastBack;
-    } else if (part == bodyButtocks) {
-      part = bodyHipsBack;
+    if (part == 102) {
+      part = 17;
+    } else if (part == 103) {
+      part = 5;
     }
-    return _listSyssind.firstWhere((item) => item.name == part).isActive;
-  }
-
-
-
-
-  void _applySiplistToListSyssind(String siplistJson) {
-    // 1. Сначала деактивируем ВСЁ в _listSyssind
-    for (var item in _listSyssind) {
-      item.isActive = false;
-    }
-
-    try {
-      // 2. Парсим JSON
-      final List<dynamic> activeParts = jsonDecode(siplistJson);
-
-      // 3. Проходим по каждому активному элементу
-      for (var part in activeParts) {
-        final int numericId = part["numeric_id"];
-
-        // Находим, какой элемент в _listSyssind нужно активировать
-        String? targetName;
-
-        switch (numericId) {
-          case 1:
-            targetName = bodyHead;           // 'Голова + шея'
-            break;
-          case 4:
-            targetName = bodyBreast;           // 'Туловище'
-            break;
-          case 8:
-            targetName = bodyRightLeg;         // 'Правая нога'
-            break;
-          case 3:
-            targetName = bodyLeftHand;         // 'Левая рука'
-            break;
-          case 7:
-            targetName = bodyLeftLeg;          // 'Левая нога'
-            break;
-          case 14:
-            targetName = bodyHips;             // 'Бедро'
-            break;
-          case 2:
-            targetName = bodyRightHand;        // 'Правая рука'
-            break;
-          case 17:
-            targetName = bodyBreastBack;       // 'Спина'
-            break;
-          case 5:
-            targetName = bodyHipsBack;         // 'Бедро(Сзади)'
-            break;
-          case 15:
-            targetName = 'Правая нога(Сзади)';
-            break;
-        }
-
-        if (targetName != null) {
-          // Ищем и активируем
-          final item = _listSyssind.firstWhereOrNull(
-                (e) => e.name == targetName);
-          if (item != null) {
-            item.isActive = true;
-          }
-        }
-      }
-    } catch (e) {
-      print("Ошибка применения siplist: $e");
-    }
-  }
-
-
-
-  String _getSiplist() {
-    String siplist = jsonEncode([
-      {
-        "numeric_id": 1,
-        "name": bodyHead,
-        "bol":
-        _listSyssind.firstWhere((item) => item.name == bodyHead).isActive
-      },
-      {
-        "numeric_id": 4,
-        "name": bodyBreast,
-        "bol":
-            _listSyssind.firstWhere((item) => item.name == bodyBreast).isActive
-      },
-      {
-        "numeric_id": 8,
-        "name": bodyRightLeg,
-        "bol": _listSyssind
-            .firstWhere((item) => item.name == bodyRightLeg)
-            .isActive
-      },
-      {
-        "numeric_id": 3,
-        "name": bodyLeftHand,
-        "bol": _listSyssind
-            .firstWhere((item) => item.name == bodyLeftHand)
-            .isActive
-      },
-      {
-        "numeric_id": 7,
-        "name": bodyLeftLeg,
-        "bol":
-            _listSyssind.firstWhere((item) => item.name == bodyLeftLeg).isActive
-      },
-      {
-        "numeric_id": 14,
-        "name": "Паховая область",
-        "bol": _listSyssind.firstWhere((item) => item.name == bodyHips).isActive
-      },
-      {
-        "numeric_id": 2,
-        "name": bodyRightHand,
-        "bol": _listSyssind
-            .firstWhere((item) => item.name == bodyRightHand)
-            .isActive
-      },
-      {
-        "numeric_id": 17,
-        "name": bodyBreastBack,
-        "bol": _listSyssind
-            .firstWhere((item) => item.name == bodyBreastBack)
-            .isActive
-      },
-      {
-        "numeric_id": 5,
-        "name": bodyButtocks,
-        "bol": _listSyssind
-            .firstWhere((item) => item.name == bodyHipsBack)
-            .isActive
-      },
-      {"numeric_id": 15, "name": "Правая нога(Сзади)", "bol": false}
-    ]);
-    siplist = jsonEncode(
-        jsonDecode(siplist).where((item) => item["bol"] == true).toList());
-    return siplist;
+    return _listSiplist.firstWhere((item) => item.numericId == part).bol;
   }
 }
 
-const String bodyHead = 'Голова + шея';
-const String bodyLeftHand = 'Левая рука';
-const String bodyRightHand = 'Правая рука';
-const String bodyLeftLeg = 'Левая нога';
-const String bodyRightLeg = 'Правая нога';
-const String bodyBreast = 'Туловище';
-const String bodyBreastBack = 'Спина';
-const String bodyLopatki = 'Лопатки';
-const String bodyHips = 'Бедро';
-const String bodyHipsBack = 'Бедро(Сзади)';
-const String bodyButtocks = 'Ягодицы';
+
+// const String bodyHead = 'Голова + шея';
+// const String bodyLeftHand = 'Левая рука';
+// const String bodyRightHand = 'Правая рука';
+// const String bodyLeftLeg = 'Левая нога';
+// const String bodyRightLeg = 'Правая нога';
+// const String bodyBreast = 'Туловище';
+// const String bodyBreastBack = 'Спина';
+// const String bodyLopatki = 'Лопатки';
+// const String bodyHips = 'Бедро';
+// const String bodyHipsBack = 'Бедро(Сзади)';
+// const String bodyButtocks = 'Ягодицы';
 
 class BodyParts {
-  final String part;
+  final int part;
   final String imagePath;
   final String imagePathSelected; // Путь к SVG с контуром
   final double top;
@@ -639,23 +528,23 @@ class BodyParts {
 }
 
 class BodyId {
-  final String bodyName;
+  final int bodyNumber;
   String id;
 
   BodyId({
-    required this.bodyName,
+    required this.bodyNumber,
     required this.id,
   });
 }
 
 List<BodyId> _listJointId = [
-  BodyId(bodyName: bodyHead, id: '6554660f-de03-4db3-9d7d-f7cf307f8374'),
-  BodyId(bodyName: bodyLeftHand, id: '3267c7fd-8e44-45f2-bd58-1774394a9bdc'),
-  BodyId(bodyName: bodyRightHand, id: 'fd6220b0-c47e-4383-b9a0-cfd26292b7c7'),
-  BodyId(bodyName: bodyLeftLeg, id: 'fd86f9ba-07cd-4187-889a-227b2dcd4685'),
-  BodyId(bodyName: bodyRightLeg, id: 'bae85dcf-f3ed-43c7-a10b-a5557536634e'),
-  BodyId(bodyName: bodyBreast, id: 'f2289751-f85f-4c5d-8046-c474bd2c23db'),
-  BodyId(bodyName: bodyBreastBack, id: '7b47c00b-80dd-4344-9c84-80bd25558db1'),
-  BodyId(bodyName: bodyHips, id: '9adea69f-6d79-480b-8d87-4ecbc2b583e3'),
-  BodyId(bodyName: bodyHipsBack, id: '5969802e-7521-4bc2-b745-a899df78cd10'),
+  BodyId(bodyNumber: 1, id: '6554660f-de03-4db3-9d7d-f7cf307f8374'),
+  BodyId(bodyNumber: 3, id: '3267c7fd-8e44-45f2-bd58-1774394a9bdc'),
+  BodyId(bodyNumber: 2, id: 'fd6220b0-c47e-4383-b9a0-cfd26292b7c7'),
+  BodyId(bodyNumber: 7, id: 'fd86f9ba-07cd-4187-889a-227b2dcd4685'),
+  BodyId(bodyNumber: 8, id: 'bae85dcf-f3ed-43c7-a10b-a5557536634e'),
+  BodyId(bodyNumber: 4, id: 'f2289751-f85f-4c5d-8046-c474bd2c23db'),
+  BodyId(bodyNumber: 17, id: '7b47c00b-80dd-4344-9c84-80bd25558db1'),
+  BodyId(bodyNumber: 14, id: '9adea69f-6d79-480b-8d87-4ecbc2b583e3'),
+  BodyId(bodyNumber: 5, id: '5969802e-7521-4bc2-b745-a899df78cd10'),
 ];

@@ -294,13 +294,28 @@ String truncateString(String text, {int length = 10}) {
   return text.length > length ? '${text.substring(0, length)}...' : text;
 }
 
-// Вычисляет количество записей, имеющих isActive: true
-int countActive(List<Syssind> list) {
-  return list.where((item) => item.isActive).length;
+
+
+// возвращаем артериальное давление в виде 120/60
+String formatArdavSisDia(Ardav? ardav) {
+  if (ardav == null || ardav.sis == null || ardav.dia == null) {
+    return '';
+  }
+
+  // Если оба равны 0 — тоже ничего не показываем
+  if (ardav.sis == 0 && ardav.dia == 0) return '';
+
+  // Если sis не 0 — показываем его с косой чертой
+  final sisPart = ardav.sis != 0 ? '${ardav.sis} / ' : '';
+  // Если dia не 0 — просто добавляем число
+  final diaPart = ardav.dia != 0 ? '${ardav.dia}' : '';
+
+  return '$sisPart$diaPart';
 }
 
+
 // Метод для сравнения содержимого двух списков
-bool areDifferent(oldList, newList) {
+bool areDifferent(dynamic oldList, dynamic newList) {
   if (oldList.length != newList.length) return true;
   for (int i = 0; i < oldList.length; i++) {
     if (oldList[i].name != newList[i].name ||

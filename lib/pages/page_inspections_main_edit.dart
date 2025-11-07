@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:artrit/api/api_spr.dart';
 import 'package:artrit/pages/page_inspections_pain.dart';
 import 'package:artrit/pages/page_inspections_uveit.dart';
@@ -64,8 +65,11 @@ class PageInspectionsMainEditState extends State<PageInspectionsMainEdit> {
   int? _chss;
   int? _utscov;
   int _ocbol = 0;
+  int _sipCount = 0;
   String _siplist = '[]';
-  List<Syssind> _listSyssind1 = [
+
+  // Не используется
+  List<Syssind> _listSyssindNotUse1 = [
     Syssind(isActive: false, name: 'Туловище'),
     Syssind(isActive: false, name: 'Голова + шея'),
     Syssind(isActive: false, name: 'Правая нога'),
@@ -117,8 +121,9 @@ class PageInspectionsMainEditState extends State<PageInspectionsMainEdit> {
       _chss = widget.thisData?.chss;
       _utscov = widget.thisData?.utscov ?? _utscov;
       _ocbol = widget.thisData?.ocbol ?? _ocbol;
+      _sipCount = widget.thisData?.sip ?? 0;
       _siplist = widget.thisData?.siplist ?? _siplist;
-      _listSyssind1 = widget.thisData?.syssind1 ?? _listSyssind1;
+      //_listSyssind1 = widget.thisData?.syssind1 ?? _listSyssind1;
       _listSyssind2 = widget.thisData?.syssind2 ?? _listSyssind2;
       _joints = widget.thisData!.joints;
       _uveit = widget.thisData!.uveit;
@@ -127,6 +132,9 @@ class PageInspectionsMainEditState extends State<PageInspectionsMainEdit> {
     _listSprTemperature = await _apiSpr.getTemperature();
     setState(() {});
   }
+
+
+
 
   Future<bool> _changeData(bool closeForm) async {
     if (!_formKey.currentState!.validate()) {
@@ -164,10 +172,10 @@ class PageInspectionsMainEditState extends State<PageInspectionsMainEdit> {
       ocbol: _ocbol,
       uveit: _uveit,
       joints: _joints,
-      sip: countActive(_listSyssind1),
-      syssind1: _listSyssind1,
+      sip: _sipCount,
+      syssind1: _listSyssindNotUse1,
       siplist: _siplist,
-      uvellim: countActive(_listSyssind2),
+      uvellim: _listSyssind2.where((item) => item.isActive).length,
       syssind2: _listSyssind2,
       creationDate: _creationDate,
     );
@@ -205,7 +213,6 @@ class PageInspectionsMainEditState extends State<PageInspectionsMainEdit> {
         _ocbol != w.ocbol ||
         !listEquals([_siplist]..sort(), [w.siplist]..sort()) ||
         !listEquals([_joints]..sort(), [w.joints]..sort()) ||
-        !listEquals([_listSyssind1]..sort(), [w.syssind1]..sort()) ||
         !listEquals([_listSyssind2]..sort(), [w.syssind2]..sort()) ||
         _uveit != w.uveit;
   }
@@ -452,7 +459,6 @@ class PageInspectionsMainEditState extends State<PageInspectionsMainEdit> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => PageInspectionsRash(
-                      listSyssind: _listSyssind1,
                       siplist: _siplist,
                       inspectionsId: _recordId!,
                       viewRegime: false,
@@ -461,7 +467,7 @@ class PageInspectionsMainEditState extends State<PageInspectionsMainEdit> {
                 );
 
                 if (result != null && result.length == 2) {
-                  _listSyssind1 = result[0] as List<Syssind>; // Первый элемент
+                  _sipCount = result[0] as int; // Первый элемент
                   _siplist = result[1] as String; // Второй элемент
                 }
                 setState(() {}); // Обновляем UI после изменения данных

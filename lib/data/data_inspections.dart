@@ -206,6 +206,43 @@ class Syssind {
   };
 }
 
+
+
+
+
+class Siplist {
+  int numericId;
+  String name;
+  bool bol;
+
+  Siplist({
+    required this.numericId,
+    required this.name,
+    required this.bol,
+  });
+
+  factory Siplist.fromJson(Map<String, dynamic> json) {
+    return Siplist(
+      numericId: json['numeric_id'] ?? 0,
+      name: json['name'] ?? '',
+      bol: json['bol'] ?? false,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'numeric_id': numericId,
+      'name': name,
+      'bol': bol,
+    };
+  }
+}
+
+
+
+
+
+
 class Uveit {
   String? inspectionId;
   DateTime? consultationDate;

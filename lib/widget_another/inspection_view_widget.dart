@@ -166,10 +166,9 @@ class InspectionViewWidgetState extends State<InspectionViewWidget> {
         ),
         LabelJoinWidget(
           labelText: 'Давление',
-          value: '${widget.thisData.ardav.sis != 0 ? '${widget.thisData.ardav.sis} / ' : ''}'
-              '${widget.thisData.ardav.dia == 0 ? '' : widget.thisData.ardav.dia}',
+          value: formatArdavSisDia(widget.thisData.ardav),
           unit: 'мм.рт.ст.',
-          isNorma: widget.thisData.ardav.sis == 0 ? true : _getNormaartDav(widget.thisData.ardav.sis ?? 0, widget.thisData.ardav.dia ?? 0),
+          isNorma: (widget.thisData.ardav.sis == null || widget.thisData.ardav.dia == null || widget.thisData.ardav.sis == 0) ? true : _getNormaartDav(widget.thisData.ardav.sis ?? 0, widget.thisData.ardav.dia ?? 0),
           onPressed: () {
             navigateToPageDynamic(
               context,
@@ -178,10 +177,9 @@ class InspectionViewWidgetState extends State<InspectionViewWidget> {
                 return DataDynamic(
                     date: convertStrToDateTime(convertTimestampToDateTime(item.date!)),
                     value: item.ardav.sis == 0 ? null : item.ardav.sis,
-                    visibleValue: '${item.ardav.sis != 0 ? '${item.ardav.sis} / ' : ''}'
-                        '${item.ardav.dia == 0 ? '' : item.ardav.dia}',
+                    visibleValue: formatArdavSisDia(item.ardav),
                     unit: 'мм.рт.ст.',
-                    isNorma: item.ardav.sis == 0 ? true : _getNormaartDav(item.ardav.sis ?? 0, item.ardav.dia ?? 0),
+                    isNorma: (item.ardav.sis == null || item.ardav.dia == null || item.ardav.sis == 0) ? true : _getNormaartDav(item.ardav.sis ?? 0, item.ardav.dia ?? 0),
                 );
               }).toList(),
             );
@@ -262,7 +260,6 @@ class InspectionViewWidgetState extends State<InspectionViewWidget> {
             navigateToPage(
               context,
               PageInspectionsRash(
-                listSyssind: widget.thisData.syssind1,
                 siplist: widget.thisData.siplist,
                 inspectionsId: widget.thisData.id ?? '',
                 viewRegime: true,
