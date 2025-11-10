@@ -9,9 +9,9 @@ const String baseUrl = 'https://artritdevapi.nitrosbase.com';
 
 class BaseClient {
   /// Тест
-  String baseUrl = 'https://artritdevapi.nitrosbase.com';
+  //String baseUrl = 'https://artritdevapi.nitrosbase.com';
   /// Релиз
-  //String baseUrl = 'https://api.aspirre-russia.ru/ja';
+  String baseUrl = 'https://api.aspirre-russia.ru/ja';
 
 
   var client = http.Client();
