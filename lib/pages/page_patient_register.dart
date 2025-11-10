@@ -17,6 +17,7 @@ import '../widgets/app_bar_widget.dart';
 import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/checkbox_group_widget.dart';
+import '../widgets/input_checkbox.dart';
 import '../widgets/input_select_date.dart';
 import '../widgets/input_select.dart';
 import '../widgets/input_text.dart';
@@ -282,13 +283,20 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
                           // ),
                           Row(
                             children: [
-                              Checkbox(
-                                value: _canContainCookies,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _canContainCookies = value ?? false;
-                                  });
-                                },
+                              SizedBox(
+                                width: 50,
+                                child: InputCheckbox(
+                                  fieldKey: _keysPatient[EnumPatient.canContainCookies]!,
+                                  labelText: '',
+                                  requiredTrue: true,
+                                  value: _canContainCookies,
+                                  listRoles: Roles.all,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _canContainCookies = value;
+                                    });
+                                  },
+                                ),
                               ),
                               Expanded(
                                 child: Text.rich(
