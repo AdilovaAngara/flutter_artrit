@@ -8,6 +8,7 @@ import 'package:artrit/pages/page_dynamic.dart';
 import 'package:artrit/routes.dart';
 import 'package:artrit/secure_storage.dart';
 import 'package:artrit/theme.dart';
+import 'package:artrit/widgets/banners.dart' as WidgetBanners;
 import 'package:artrit/widgets/show_dialog_back.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -286,6 +287,17 @@ Future<File?> pickImage(ImageSource source) async {
   return File(pickedFile.path);
 }
 
+
+
+
+/// Метод для копирования в буфер обмена
+void copyToClipboard(context, {required String textToCopy, required String textName}) {
+  Clipboard.setData(ClipboardData(text: textToCopy));
+  WidgetBanners.showBottomBanner(
+    context: context,
+    message: '$textName скопирован в буфер обмена!',
+  );
+}
 
 
 

@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import '../my_functions.dart';
+import '../roles.dart';
 import '../secure_storage.dart';
 import '../theme.dart';
 import '../widgets/app_bar_widget.dart';
@@ -75,7 +76,6 @@ class _MenuDrawerState extends State<MenuDrawer> {
 
   Future<void> getRole() async {
     _role = await getUserRole();
-    setState(() {});
   }
 
 
@@ -114,6 +114,14 @@ class _MenuDrawerState extends State<MenuDrawer> {
     EnumMenu.logOut,
   ];
 
+
+  static const List<EnumMenu> _menuItemsAnonymous = [
+    EnumMenu.library,
+    EnumMenu.help,
+    EnumMenu.info,
+  ];
+
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -125,7 +133,11 @@ class _MenuDrawerState extends State<MenuDrawer> {
           return errorDataWidget(snapshot.error);
         }
 
-        final menuItems = _role == 1 ? _menuItemsPatient : _menuItemsDoctor;
+        final menuItems = Roles.asPatient.contains(_role)
+            ? _menuItemsPatient
+            : Roles.asDoctor.contains(_role)
+            ? _menuItemsDoctor
+            : _menuItemsAnonymous;
 
         return Drawer(
           width: MediaQuery.of(context).size.width * 0.70,

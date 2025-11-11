@@ -185,7 +185,26 @@ class PageLoginState extends State<PageLogin> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(height: 20),
+                      InkWell(
+                        onTap: () => navigateToPageMenu(context, EnumMenu.help),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              'Помощь',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.black87,
+                                decoration: TextDecoration.none,
+                              ),
+                            ),
+                            SizedBox(width: 5,),
+                            Icon(Icons.help, color: Colors.orange,)
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(height: 30),
                       InputText(
                         fieldKey: _keys[Enum.login]!,
                         labelText: 'Логин',
