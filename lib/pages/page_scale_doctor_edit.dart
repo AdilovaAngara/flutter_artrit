@@ -168,6 +168,8 @@ class _PageScaleDoctorEditState extends State<PageScaleDoctorEdit> {
                           ),
                           AnimatedColorScaleWidget(
                             value: _scale.toDouble(),
+                            labelStart: 'Хорошее',
+                            labelEnd: 'Плохое',
                             listRoles: Roles.asDoctor,
                             role: _role,
                             onChanged: (value) {

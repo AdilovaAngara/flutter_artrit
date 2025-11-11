@@ -92,7 +92,7 @@ class _PageHelpState extends State<PageHelp> {
     final Uri emailLaunchUri = Uri(
       scheme: 'mailto',
       path: supportEmail,
-      queryParameters: {'subject': 'Вопрос о приложении Appee'},
+      queryParameters: {'subject': 'Приложение Ювенильный артрит'},
     );
 
     if (await canLaunchUrl(emailLaunchUri)) {

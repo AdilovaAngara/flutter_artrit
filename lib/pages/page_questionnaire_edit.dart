@@ -1164,6 +1164,8 @@ class PageQuestionnaireEditState extends State<PageQuestionnaireEdit> {
           child: AnimatedColorScaleWidget(
             key: _keyPain,
             value: _listQuestions[_currentIndex].answerForRadio!.toDouble(),
+            labelStart: (qItem.id == 'painAsses') ? 'Не болит' : 'Хорошее',
+            labelEnd: (qItem.id == 'painAsses') ? 'Очень болит' : 'Плохое',
             listRoles: Roles.asPatient,
             role: _role,
             onChanged: (value) {

@@ -4,6 +4,8 @@ import '../roles.dart';
 
 class AnimatedColorScaleWidget extends StatefulWidget {
   final double value;
+  final String labelStart;
+  final String labelEnd;
   final ValueChanged<double> onChanged;
   final int? role;
   final List<int>? listRoles;
@@ -11,6 +13,8 @@ class AnimatedColorScaleWidget extends StatefulWidget {
   const AnimatedColorScaleWidget({
     super.key,
     required this.value,
+    required this.labelStart,
+    required this.labelEnd,
     required this.onChanged,
     this.role,
     required this.listRoles,
@@ -93,6 +97,8 @@ class AnimatedColorScaleWidgetState extends State<AnimatedColorScaleWidget> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              // Text(widget.labelStart, style: TextStyle(color: Colors.green, fontSize: 16, fontWeight: FontWeight.bold),),
+              // Text(widget.labelEnd, style: TextStyle(color: Colors.red, fontSize: 16, fontWeight: FontWeight.bold),),
               Text('0-29', style: TextStyle(color: Colors.green, fontSize: 18, fontWeight: FontWeight.bold),),
               Text('30-69', style: TextStyle(color: Colors.orange, fontSize: 18, fontWeight: FontWeight.bold),),
               Text('70-100', style: TextStyle(color: Colors.red, fontSize: 18, fontWeight: FontWeight.bold),),

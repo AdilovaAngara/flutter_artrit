@@ -71,6 +71,8 @@ class PageInspectionsPainState extends State<PageInspectionsPain> {
             Expanded(
               child: AnimatedColorScaleWidget(
                 value: _ocbol.toDouble(),
+                labelStart: 'Не болит',
+                labelEnd: 'Очень болит',
                 listRoles: Roles.asPatient,
                 role: widget.role,
                 onChanged: (value) {
