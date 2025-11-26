@@ -195,16 +195,9 @@ class PageInspectionsAnglesPhotoAddState
       ShowMessage.show(context: context);
       return;
     }
-
-    setState(() {
-      _isLoading = true;
-    });
-
     await _post(comments, angle1, angle2);
-
-    setState(() {
-      _isLoading = false;
-    });
+    // Искусственная задержка, чтобы фото успело сохраниться на сервере
+    await Future.delayed(const Duration(seconds: 1));
   }
 
 
@@ -329,11 +322,11 @@ class PageInspectionsAnglesPhotoAddState
                        await _changeData(comments, angle1, angle2);
                       setdialogState(() {
                         _isLoading = false;
-                        if (mounted) {
-                          Navigator.pop(dialogContext);
-                          Navigator.pop(context);
-                        }
                       });
+                      if (mounted) {
+                        Navigator.pop(dialogContext);
+                        Navigator.pop(context);
+                      }
                     },
                   ),
                 ],

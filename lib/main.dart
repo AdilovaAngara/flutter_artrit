@@ -9,6 +9,7 @@ import 'package:artrit/theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:media_store_plus/media_store_plus.dart';
 import 'package:provider/provider.dart';
+import 'api/base_client.dart';
 import 'my_functions.dart';
 
 
@@ -32,7 +33,9 @@ void main() async {
     MediaStore.appFolder = '/';
   }
   // Этот код отключает проверку сертификата (раскомментировать только для тестирования, если андроид ругается на сертификат)
-  HttpOverrides.global = MyHttpOverrides();
+  if (BaseClient().isTest) {
+    HttpOverrides.global = MyHttpOverrides();
+  }
   runApp(
       MultiProvider(
           providers: [

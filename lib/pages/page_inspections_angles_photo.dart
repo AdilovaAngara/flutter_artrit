@@ -172,18 +172,18 @@ class PageInspectionsAnglesPhotoState
         showChat: false,
         showNotifications: false,
       ),
-      body: RefreshIndicator(
-        onRefresh: _refreshData,
-        child: FutureBuilder(
-          future: _future,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return errorDataWidget(snapshot.error);
-            }
+      body: FutureBuilder(
+        future: _future,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return errorDataWidget(snapshot.error);
+          }
 
-            return Form(
+          return RefreshIndicator(
+            onRefresh: _refreshData,
+            child: Form(
               key: _formKey,
               child: Padding(
                 padding: paddingForm,
@@ -274,9 +274,9 @@ class PageInspectionsAnglesPhotoState
                   ],
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

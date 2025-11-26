@@ -1,4 +1,5 @@
 import 'package:artrit/api/api_login.dart';
+import 'package:artrit/api/base_client.dart';
 import 'package:artrit/pages/page_login_recovery.dart';
 import 'package:artrit/pages/page_patient_register.dart';
 import 'package:artrit/pages/page_questionnaire_edit.dart';
@@ -38,6 +39,7 @@ class PageLoginState extends State<PageLogin> {
   String _login = '';
   String _password = '';
   late int? _role;
+  final bool _isTest = BaseClient().isTest;
 
   /// Ключи
   final _formKey = GlobalKey<FormState>();
@@ -293,48 +295,50 @@ class PageLoginState extends State<PageLogin> {
                       ),
                       SizedBox(height: 20),
                       /// Тестовые кнопки
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            _login = 'piepim@mail.ru';
-                            _password = '00112299p-';
-                            // _login = 'fortest2@nitrosdata.com';
-                            // _password = 'aSc47wCU';
-                            _keys[Enum.login]!.currentState?.didChange(_login);
-                            _keys[Enum.password]!
-                                .currentState
-                                ?.didChange(_password);
-                          });
-                        },
-                        child: Text(
-                          'ПАЦИЕНТ',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black54, // Цвет текста
-                            decoration: TextDecoration.none,
+                      if (_isTest) ...[
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              _login = 'piepim@mail.ru';
+                              _password = '00112299p-';
+                              // _login = 'fortest2@nitrosdata.com';
+                              // _password = 'aSc47wCU';
+                              _keys[Enum.login]!.currentState?.didChange(_login);
+                              _keys[Enum.password]!
+                                  .currentState
+                                  ?.didChange(_password);
+                            });
+                          },
+                          child: Text(
+                            'ПАЦИЕНТ',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black54, // Цвет текста
+                              decoration: TextDecoration.none,
+                            ),
                           ),
                         ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            _login = 'angara.pie@mail.ru';
-                            _password = '123456';
-                            _keys[Enum.login]!.currentState?.didChange(_login);
-                            _keys[Enum.password]!
-                                .currentState
-                                ?.didChange(_password);
-                          });
-                        },
-                        child: Text(
-                          'ВРАЧ',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black54, // Цвет текста
-                            decoration: TextDecoration.none,
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              _login = 'angara.pie@mail.ru';
+                              _password = '123456';
+                              _keys[Enum.login]!.currentState?.didChange(_login);
+                              _keys[Enum.password]!
+                                  .currentState
+                                  ?.didChange(_password);
+                            });
+                          },
+                          child: Text(
+                            'ВРАЧ',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black54, // Цвет текста
+                              decoration: TextDecoration.none,
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     ],
                   ),
                 ),

@@ -5,14 +5,16 @@ import 'package:http/http.dart' as http;
 import 'package:artrit/secure_storage.dart';
 import "package:path/path.dart" as path;
 
-const String baseUrl = 'https://artritdevapi.nitrosbase.com';
-
 class BaseClient {
-  /// Тест
-  String baseUrl = 'https://artritdevapi.nitrosbase.com';
-  /// Релиз
-  //String baseUrl = 'https://api.aspirre-russia.ru/ja';
+  bool isTest = false;
+  //bool isTest = true;
 
+  String get baseUrl {
+    /// Релиз
+    if (!isTest) return 'https://api.aspirre-russia.ru/ja';
+    /// Тест
+    return 'https://artritdevapi.nitrosbase.com';
+  }
 
   var client = http.Client();
 
