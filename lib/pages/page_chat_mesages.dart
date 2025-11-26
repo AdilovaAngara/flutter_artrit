@@ -5,6 +5,7 @@ import 'package:artrit/widget_another/chat_message_widget.dart';
 import 'package:artrit/widgets/show_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:grouped_list/grouped_list.dart';
 import 'package:provider/provider.dart';
 import '../api/api_chat.dart';
 import '../data/data_chat_contacts.dart';
@@ -32,8 +33,6 @@ import '../widgets/download_file_widget.dart';
 import '../widgets/file_picker_widget.dart';
 import '../widgets/show_dialog_confirm.dart';
 import 'menu.dart';
-import 'package:grouped_list/grouped_list.dart';
-
 
 class PageChatMessages extends StatefulWidget {
   final ResultContacts contact;
@@ -185,25 +184,27 @@ class PageChatMessagesState extends State<PageChatMessages> {
 
 
   /// Прокручивает список сообщений вниз, если не внизу
-  void _scrollToBottom() {
-    Future.delayed(
-        const Duration(milliseconds: 500), ()
-    {
-      if (_scrollController.hasClients && mounted) {
-        final position = _scrollController.position;
-        // Проверяем, находится ли список уже внизу (допуск 10 пикселей)
-        if (position.pixels < position.maxScrollExtent - 10) {
-          _scrollController.animateTo(
-            position.maxScrollExtent,
-            duration: Duration(milliseconds: 500),
-            curve: Curves.fastOutSlowIn,
-          );
-        }
-      }
-    }
-    );
-  }
+  void _scrollToBottom({bool animated = true}) {
+    if (!_scrollController.hasClients || !mounted) return;
 
+    // При reverse: true — "внизу" = pixels близко к 0
+    final isNearBottom = _scrollController.position.pixels <= 150;
+
+    if (isNearBottom) {
+      // Уже внизу — ничего не делаем
+      return;
+    }
+
+    if (animated) {
+      _scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    } else {
+      _scrollController.jumpTo(0);
+    }
+  }
 
 
 
@@ -257,22 +258,6 @@ class PageChatMessagesState extends State<PageChatMessages> {
     _sendVisibilityNotifier.value = _textController.text.isNotEmpty || _fileItems.isNotEmpty;
   }
 
-  /// Вставляет сообщение в отсортированный список
-  void _insertSortedMessage00(List<Message> messages, Message newMsg) {
-    final insertIndex = messages.indexWhere((msg) => msg.id > newMsg.id);
-    if (insertIndex == -1) {
-      messages.add(newMsg);
-    } else {
-      messages.insert(insertIndex, newMsg);
-    }
-    if (!_messageKeys.containsKey(newMsg.id)) {
-      _messageKeys[newMsg.id] = GlobalKey();
-    }
-  }
-
-
-
-
 
   Future<void> _updateMessages(bool showBanner) async {
     bool newMsgExists = false;
@@ -310,16 +295,8 @@ class PageChatMessagesState extends State<PageChatMessages> {
           );
           hasChanges = true; // Устанавливаем флаг, так как изменился isRead
         } else {
-          // Добавляем новое сообщение в список в правильной позиции
-          //_insertSortedMessage(currentMessages, updatedMsg);
-
           // Добавляем новое сообщение в конец, так как GroupedListView сортирует
           currentMessages.add(updatedMsg);
-
-          // Обновляем GlobalKey для нового сообщения
-          if (!_messageKeys.containsKey(updatedMsg.id)) {
-            _messageKeys[updatedMsg.id] = GlobalKey();
-          }
           hasChanges = true; // Устанавливаем флаг, так как добавлено новое сообщение
           if (!updatedMsg.isRead && updatedMsg.artritFromId != _userId) {
             newMsgExists = true;
@@ -341,13 +318,16 @@ class PageChatMessagesState extends State<PageChatMessages> {
     }
     _isLoadingMessagesNotifier.value = false;
 
-    bool isAtBottom = _scrollController.hasClients &&
-        _scrollController.position.pixels >=
-            _scrollController.position.maxScrollExtent - 100; // Допуск 100 пикселей
+    // Скролл и баннер для reverse: true
+    final isAtBottom = _scrollController.hasClients &&
+        _scrollController.position.pixels <= 150; // низ списка
 
     if (isAtBottom && mounted) {
-      // Прокручиваем взниз, если был почти внизу
-      _scrollToBottom();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _scrollController.hasClients) {
+          _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
+        }
+      });
     }
 
     // Показываем баннер для новых сообщений, если пользователь не внизу
@@ -367,115 +347,53 @@ class PageChatMessagesState extends State<PageChatMessages> {
 
 
 
-
-
   /// Загрузка истории сообщений
   Future<void> _loadMsgHistory() async {
-    if (_isLoadingHistoryNotifier.value) return;
+    if (_isLoadingHistoryNotifier.value || _lastMessageId == 0) return;
     _isLoadingHistoryNotifier.value = true;
 
     try {
-      // Получаем информацию о верхнем видимом сообщении
-      final topMessageInfo = await Future.delayed(
-        const Duration(milliseconds: 100),
-        _getTopVisibleMessageInfo,
-      );
-
       final dataHistoryMessages = await _api.getMessagesHistory(
         ssId: _ssId,
         lastMessageId: _lastMessageId,
         chatId: _chatId,
       );
 
-      if (dataHistoryMessages != null && dataHistoryMessages.success == true) {
-        final historyMessages = dataHistoryMessages.result.messages;
-        final currentMessages = List<Message>.from(_messagesNotifier.value);
-
-        // Добавляем новые сообщения
-        // for (final historyMsg in historyMessages) {
-        //   if (!currentMessages.any((e) => e.id == historyMsg.id)) {
-        //     _insertSortedMessage(currentMessages, historyMsg);
-        //     // Обновляем GlobalKey для нового сообщения
-        //     if (!_messageKeys.containsKey(historyMsg.id)) {
-        //       _messageKeys[historyMsg.id] = GlobalKey();
-        //     }
-        //   }
-        // }
-
-        // Обновляем список сообщений
-        if (mounted) {
-          _messagesNotifier.value = List<Message>.from([...historyMessages, ...currentMessages]);
-        }
-        _lastMessageId = dataHistoryMessages.result.lastMessageId ?? _lastMessageId;
-
-        // Восстанавливаем позицию прокрутки
-        if (topMessageInfo != null && _scrollController.hasClients && mounted) {
-          _renderStabilizationTimer?.cancel();
-          _renderStabilizationTimer = Timer(const Duration(milliseconds: 300), () {
-            if (!mounted || !_scrollController.hasClients) {
-              debugPrint('Scroll restoration aborted: not mounted or no clients');
-              return;
-            }
-
-            final messages = _messagesNotifier.value;
-            final topMessageIndex = messages.indexWhere((msg) => msg.id == topMessageInfo.messageId);
-
-            debugPrint('Restoring history scroll: topMessageId=${topMessageInfo.messageId}, index=$topMessageIndex');
-
-            if (topMessageIndex != -1) {
-              final key = _messageKeys[topMessageInfo.messageId];
-              if (key != null && key.currentContext != null) {
-                final renderBox = key.currentContext!.findRenderObject() as RenderBox?;
-                if (renderBox != null) {
-                  final newPosition = renderBox.localToGlobal(Offset.zero).dy;
-                  final newOffset = (newPosition - topMessageInfo.offsetFromViewportTop).clamp(
-                    _scrollController.position.minScrollExtent,
-                    _scrollController.position.maxScrollExtent,
-                  );
-                  Future.delayed(Duration(milliseconds: 200));
-                  _scrollController.jumpTo(newOffset);
-                  debugPrint('Scrolled to message ID: ${topMessageInfo.messageId} at offset: $newOffset');
-                  return;
-                }
-              }
-            } else {
-              // Если сообщение не найдено, сохраняем текущую позицию
-              debugPrint('Top message ID ${topMessageInfo.messageId} not found, maintaining position');
-              _scrollController.jumpTo(_scrollController.offset);
-            }
-          });
-        }
-      } else {
-        debugPrint('Failed to load message history: ${dataHistoryMessages?.userMessage}');
+      if (dataHistoryMessages?.success != true || dataHistoryMessages!.result.messages.isEmpty) {
+        return;
       }
+      final historyMessages = dataHistoryMessages.result.messages;
+
+      // Добавляем ключи
+      for (final msg in historyMessages) {
+        _messageKeys.putIfAbsent(msg.id, () => GlobalKey());
+      }
+
+      // Просто вставляем в начало — и всё!
+      final updatedMessages = [...historyMessages, ..._messagesNotifier.value];
+
+      _lastMessageId = dataHistoryMessages.result.lastMessageId ?? _lastMessageId;
+      _messagesNotifier.value = updatedMessages;
+
     } catch (e) {
-      debugPrint('Ошибка загрузки истории сообщений: $e');
+      debugPrint('Ошибка загрузки истории: $e');
     } finally {
       _isLoadingHistoryNotifier.value = false;
     }
-
-    // Помечаем сообщения как прочитанные
-    DataResult3? readMsgResult = await _setAsRead();
-    if (readMsgResult?.success == true && mounted) {
-      // Обновляем messageCount в ChatProvider после чтения сообщений
-      await _chatProvider.onMessagesRead(context: context);
-      _readMsg(isAwait: true);
-    }
   }
+
+
+
+
 
   void _scrollListener() {
-    if (_scrollController.position.pixels == _scrollController.position.minScrollExtent &&
-        !_isLoadingHistoryNotifier.value) {
-      final messages = _messagesNotifier.value;
-      if (messages.isNotEmpty) {
-        debugPrint('Scroll reached top, loading history for: $_lastMessageId');
-        _loadMsgHistory();
-      }
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200 &&
+        !_isLoadingHistoryNotifier.value &&
+        _lastMessageId != 0) {
+      _loadMsgHistory();
     }
   }
-
-
-
 
 
 
@@ -528,55 +446,6 @@ class PageChatMessagesState extends State<PageChatMessages> {
       }
     }
   }
-
-
-
-
-  /// Метод для получения информации о верхнем видимом сообщении
-  TopMessageInfo? _getTopVisibleMessageInfo() {
-    if (!_scrollController.hasClients || _messagesNotifier.value.isEmpty) {
-      return null;
-    }
-
-    final messages = _messagesNotifier.value;
-    double minDistance = double.infinity;
-    TopMessageInfo? topMessageInfo;
-
-    for (final message in messages) {
-      final key = _messageKeys[message.id];
-      if (key == null || key.currentContext == null) continue;
-
-      final renderBox = key.currentContext!.findRenderObject() as RenderBox?;
-      if (renderBox == null) continue;
-
-      final position = renderBox.localToGlobal(Offset.zero).dy;
-      final messageHeight = renderBox.size.height;
-      final viewportTop = _scrollController.position.pixels;
-      final viewportBottom = viewportTop + _scrollController.position.viewportDimension;
-
-      // Проверяем, находится ли сообщение в видимой области
-      if (position + messageHeight >= viewportTop && position <= viewportBottom) {
-        final distance = (position - viewportTop).abs();
-        if (distance < minDistance) {
-          minDistance = distance;
-          topMessageInfo = TopMessageInfo(
-            messageId: message.id,
-            offsetFromViewportTop: position - viewportTop,
-            messageHeight: messageHeight,
-          );
-        }
-      }
-    }
-
-    return topMessageInfo;
-  }
-
-
-
-
-
-
-
 
 
 
@@ -752,11 +621,7 @@ class PageChatMessagesState extends State<PageChatMessages> {
                                               children: [
                                                 Text('У вас новое сообщение', style: chatTimeStyle,),
                                                 TextButton(onPressed: () {
-                                                  _scrollController.animateTo(
-                                                    _scrollController.position.maxScrollExtent,
-                                                    duration: const Duration(milliseconds: 300),
-                                                    curve: Curves.easeOut,
-                                                  );
+                                                  _scrollToBottom();
                                                   _isNewMessagesNotifier.value = false;
                                                 }, child: Text('Перейти', style: TextStyle(fontSize: 13),))
                                               ],
@@ -828,50 +693,86 @@ class PageChatMessagesState extends State<PageChatMessages> {
   /// Создаёт содержимое чата
   Widget _buildChatContent(List<Message>? messages) {
     /// Если еще не приняты условия чата
-    if (((Roles.asDoctor.contains(_role) && !_allowByDoctor) || (Roles.asPatient.contains(_role) && !_allowByPatient)) &&
+    if (((Roles.asDoctor.contains(_role) && !_allowByDoctor) ||
+        (Roles.asPatient.contains(_role) && !_allowByPatient)) &&
         !_isChatClosed) {
       return ChatPolitic(onConfirm: _onShowPolicy, showAgreeBtn: true);
-    } else if (messages == null || messages.isEmpty) {
-      return const Center(child: Text('Сообщений нет'));
-    } else {
-      return GroupedListView<Message, DateTime>(
-        controller: _scrollController,
-        physics: const BouncingScrollPhysics(),
-        cacheExtent: 10000,
-        useStickyGroupSeparators: true,
-        stickyHeaderBackgroundColor: Colors.white,
-        floatingHeader: true,
-        elements: messages,
-        // Группируем по дате (без времени)
-        groupBy: (message) => DateTime(message.created.year, message.created.month, message.created.day),
-        groupHeaderBuilder: (message) => ChatDividerWidget(messageDate: message.created),
-        itemBuilder: (context, message) {
-          if (!_messageKeys.containsKey(message.id)) {
-            _messageKeys[message.id] = GlobalKey();
-          }
-          return Column(
-            key: _messageKeys[message.id],
-            children: [
-              ChatDividerNewMessageWidget(
-                messages: messages,
-                messageIndex: messages.indexOf(message),
-                isRead: message.isRead,
-                userId: _userId,
-              ),
-              _messageWidget(message: message),
-            ],
-          );
-        },
-        // Сортировка элементов внутри групп
-        // Включаем автоматическую сортировку
-        sort: true,
-        //sort: false,
-        // Сортировка элементов внутри групп по id
-        itemComparator: (item1, item2) => item1.id.compareTo(item2.id),
-        // Группы сортируются по возрастанию даты (уже задано в groupBy и order)
-        order: GroupedListOrder.ASC,
-      );
     }
+
+    if (messages == null || messages.isEmpty) {
+      return const Center(child: Text('Сообщений нет'));
+    }
+
+    // Сортируем по дате — от старых к новым
+    final sortedMessages = messages
+      ..sort((a, b) => a.created.compareTo(b.created));
+
+    return CustomScrollView(
+      controller: _scrollController,
+      reverse: true, // ← КЛЮЧЕВОЙ ПАРАМЕТР! Скролл начинается снизу
+      physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+      cacheExtent: 3000,
+      slivers: [
+        // Индикатор загрузки сверху (при reverse он будет снизу)
+        SliverToBoxAdapter(
+          child: ValueListenableBuilder<bool>(
+            valueListenable: _isLoadingHistoryNotifier,
+            builder: (_, loading, __) {
+              return loading
+                  ? const Padding(
+                padding: EdgeInsets.all(16),
+                child: Center(child: CircularProgressIndicator()),
+              )
+                  : const SizedBox.shrink();
+            },
+          ),
+        ),
+
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+                (context, index) {
+              // reverse: true → индекс 0 = последнее сообщение
+              final messageIndex = sortedMessages.length - 1 - index;
+              final message = sortedMessages[messageIndex];
+
+              // Создаём ключ один раз
+              _messageKeys.putIfAbsent(message.id, () => GlobalKey());
+
+              // Определяем, нужно ли показывать дату
+              DateTime? groupDate;
+              if (messageIndex == sortedMessages.length - 1 ||
+                  !isSameDay(sortedMessages[messageIndex + 1].created, message.created)) {
+                groupDate = message.created;
+              }
+
+              return Column(
+                key: _messageKeys[message.id],
+                children: [
+                  if (groupDate != null)
+                    ChatDividerWidget(messageDate: groupDate),
+
+                  ChatDividerNewMessageWidget(
+                    messages: sortedMessages,
+                    messageIndex: messageIndex,
+                    isRead: message.isRead,
+                    userId: _userId,
+                  ),
+
+                  _messageWidget(message: message),
+                ],
+              );
+            },
+            childCount: sortedMessages.length,
+            // Это критично! Без этого будет прыгать
+            addAutomaticKeepAlives: false,
+            addRepaintBoundaries: false,
+          ),
+        ),
+
+        // Пустое место снизу (чтобы первое сообщение не прилипало к низу)
+        const SliverToBoxAdapter(child: SizedBox(height: 16)),
+      ],
+    );
   }
 
 
@@ -880,6 +781,15 @@ class PageChatMessagesState extends State<PageChatMessages> {
 
 
 
+
+
+  /// Проверяет, являются ли две даты одним и тем же днём (без учёта времени)
+  bool isSameDay(DateTime? date1, DateTime? date2) {
+    if (date1 == null || date2 == null) return false;
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
+  }
 
 
   /// Создаёт нижнюю панель с превью файлов, прогресс-баром и вводом
