@@ -20,14 +20,12 @@ class PageResearchesTuberculinEdit extends StatefulWidget {
   final String title;
   final DataResearchesTuberculin? thisData;
   final bool isEditForm;
-  final VoidCallback? onDataUpdated;
 
   const PageResearchesTuberculinEdit({
     super.key,
     required this.title,
     this.thisData,
     required this.isEditForm,
-    required this.onDataUpdated,
   });
 
   @override
@@ -118,7 +116,6 @@ class PageResearchesTuberculinEditState extends State<PageResearchesTuberculinEd
       _isLoading = false;
     });
 
-    widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
     if (mounted) Navigator.pop(context);
   }
 

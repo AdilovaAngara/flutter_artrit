@@ -21,14 +21,12 @@ class PageTestsOtherEdit extends StatefulWidget {
   final String title;
   final DataTestsOther? thisData;
   final bool isEditForm;
-  final VoidCallback? onDataUpdated;
 
   const PageTestsOtherEdit({
     super.key,
     required this.title,
     required this.thisData,
     required this.isEditForm,
-    required this.onDataUpdated,
   });
 
   @override
@@ -111,7 +109,6 @@ class _PageTestsOtherEditState extends State<PageTestsOtherEdit> {
       _isLoading = false;
     });
 
-    widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
     if (mounted) Navigator.pop(context);
   }
 

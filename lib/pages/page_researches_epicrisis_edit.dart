@@ -20,14 +20,12 @@ class PageResearchesEpicrisisEdit extends StatefulWidget {
   final String title;
   final DataResearchesEpicrisis? thisData;
   final bool isEditForm;
-  final VoidCallback? onDataUpdated;
 
   const PageResearchesEpicrisisEdit({
     super.key,
     required this.title,
     this.thisData,
     required this.isEditForm,
-    required this.onDataUpdated,
   });
 
   @override
@@ -103,7 +101,6 @@ class PageResearchesEpicrisisEditState extends State<PageResearchesEpicrisisEdit
       _isLoading = false;
     });
 
-    widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
     if (mounted) Navigator.pop(context);
   }
 

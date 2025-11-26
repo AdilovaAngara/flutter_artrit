@@ -27,14 +27,12 @@ class PageTreatmentMedicamentsEdit extends StatefulWidget {
   final String title;
   final DataTreatmentMedicaments? thisData;
   final bool isEditForm;
-  final VoidCallback? onDataUpdated;
 
   const PageTreatmentMedicamentsEdit({
     super.key,
     required this.title,
     required this.thisData,
     required this.isEditForm,
-    required this.onDataUpdated,
   });
 
   @override
@@ -171,7 +169,6 @@ class _PageTreatmentMedicamentsEditState extends State<PageTreatmentMedicamentsE
     if (!result.success) {
       ShowMessage.show(context: context, message: result.userMessage?.toString() ?? 'Неизвестная ошибка');
     } else {
-      widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
       if (mounted) Navigator.pop(context);
     }
   }

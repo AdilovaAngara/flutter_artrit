@@ -24,7 +24,6 @@ class PageInspectionsAnglesPhotoAdd extends StatefulWidget {
   final File photo;
   final String jointsId;
   final String inspectionsId;
-  final VoidCallback onDataUpdated;
   final int role;
 
   const PageInspectionsAnglesPhotoAdd({
@@ -32,7 +31,6 @@ class PageInspectionsAnglesPhotoAdd extends StatefulWidget {
     required this.photo,
     required this.jointsId,
     required this.inspectionsId,
-    required this.onDataUpdated,
     required this.role
   });
 
@@ -207,8 +205,6 @@ class PageInspectionsAnglesPhotoAddState
     setState(() {
       _isLoading = false;
     });
-
-    widget.onDataUpdated.call(); // ✅ Вызываем колбэк
   }
 
 
@@ -233,8 +229,6 @@ class PageInspectionsAnglesPhotoAddState
       angle2: angle2,
       creationDate: convertToTimestamp(dateTimeFormat(getMoscowDateTime())),);
     _api.post(patientsId: _patientsId, thisData: thisData);
-
-    widget.onDataUpdated.call(); // ✅ Вызываем колбэк
   }
 
 

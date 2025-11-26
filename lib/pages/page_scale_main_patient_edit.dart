@@ -17,14 +17,12 @@ class PageScaleMainPatientEdit extends StatefulWidget {
   final String title;
   final DataScaleMainPatient? thisData;
   final bool isEditForm;
-  final VoidCallback? onDataUpdated;
 
   const PageScaleMainPatientEdit({
     super.key,
     required this.title,
     required this.thisData,
     required this.isEditForm,
-    required this.onDataUpdated,
   });
 
   @override
@@ -87,7 +85,6 @@ class _PageScaleMainPatientEditState extends State<PageScaleMainPatientEdit> {
       _isLoading = false;
     });
 
-    widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
     if (mounted) Navigator.pop(context);
   }
 

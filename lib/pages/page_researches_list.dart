@@ -16,13 +16,11 @@ import 'menu.dart';
 class PageResearchesList extends StatefulWidget {
   final String title;
   final int typeId;
-  final VoidCallback? onDataUpdated;
 
   const PageResearchesList({
     super.key,
     required this.title,
     required this.typeId,
-    required this.onDataUpdated,
   });
 
   @override
@@ -79,17 +77,19 @@ class _PageResearchesListState extends State<PageResearchesList> {
 
 
   void _navigateAndRefresh(BuildContext context, bool isEditForm,
-      {int? index}) { navigateToPage(context,
-    PageResearchesEdit(
-        title: widget.title,
-        isEditForm: isEditForm,
-        thisData: isEditForm ? _thisData![index!] : null,
-        typeId: widget.typeId,
-        onDataUpdated: () async {
-          await _refreshData();
-          widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
-        }),
-  );
+      {int? index}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PageResearchesEdit(
+          title: widget.title,
+          isEditForm: isEditForm,
+          thisData: isEditForm ? _thisData![index!] : null,
+          typeId: widget.typeId,),
+      ),
+    ).then((_) async {
+      await _refreshData();
+    });
   }
 
 
@@ -105,7 +105,6 @@ class _PageResearchesListState extends State<PageResearchesList> {
                 patientsId: _patientsId,
                 recordId: recordId);
             await _refreshData();
-            widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
           },
         );
       },

@@ -106,13 +106,16 @@ class _PageTestsState extends State<PageTests> {
                     subtitle: (_thisDataTestsClinical == null || _thisDataTestsClinical!.isEmpty) ? 'Нет данных' : convertTimestampToDateTime(_thisDataTestsClinical![0].dateNew),
                     iconTrailing: Icons.arrow_forward_ios,
                     iconSize: 15,
-                      onTap: () => navigateToPage(
-                        context,
-                        PageTestsClinical(
-                          title: 'Клинический анализ крови',
-                          onDataUpdated: _refreshData,
-                        ),
-                      ),
+                      onTap: () =>
+                          Navigator.push(context,
+                            MaterialPageRoute(
+                              builder: (context) => PageTestsClinical(
+                                title: 'Клинический анализ крови',
+                              ),
+                            ),
+                          ).then((_) async {
+                            await _refreshData();
+                          }),
                   ),
                   if (_listSprTestsGroup.contains('Биохимический анализ крови'))
                     ListTileWidget(
@@ -120,13 +123,16 @@ class _PageTestsState extends State<PageTests> {
                     subtitle: (_thisDataTestsBiochemical == null || _thisDataTestsBiochemical!.isEmpty) ? 'Нет данных' : convertTimestampToDateTime(_thisDataTestsBiochemical![0].dateNew),
                     iconTrailing: Icons.arrow_forward_ios,
                     iconSize: 15,
-                      onTap: () => navigateToPage(
-                        context,
-                        PageTestsBiochemical(
-                          title: 'Биохимический анализ крови',
-                          onDataUpdated: _refreshData,
+                      onTap: () =>
+                          Navigator.push(context,
+                        MaterialPageRoute(
+                          builder: (context) => PageTestsBiochemical(
+                            title: 'Биохимический анализ крови',
+                          ),
                         ),
-                      ),
+                      ).then((_) async {
+                        await _refreshData();
+                      }),
                   ),
                   if (_listSprTestsGroup.contains('Иные анализы'))
                     ListTileWidget(
@@ -134,13 +140,16 @@ class _PageTestsState extends State<PageTests> {
                     subtitle: (_thisDataTestsOther == null || _thisDataTestsOther!.isEmpty) ? 'Нет данных' : convertTimestampToDateTime(_thisDataTestsOther![0].date),
                     iconTrailing: Icons.arrow_forward_ios,
                     iconSize: 15,
-                      onTap: () => navigateToPage(
-                        context,
-                        PageTestsOther(
-                          title: 'Иные анализы',
-                          onDataUpdated: _refreshData,
-                        ),
-                      ),
+                      onTap: () =>
+                          Navigator.push(context,
+                            MaterialPageRoute(
+                              builder: (context) => PageTestsOther(
+                                title: 'Иные анализы'
+                              ),
+                            ),
+                          ).then((_) async {
+                            await _refreshData();
+                          }),
                   ),
                   if (_listSprTestsGroup.contains('Иммунология'))
                   ListTileWidget(
@@ -148,13 +157,16 @@ class _PageTestsState extends State<PageTests> {
                     subtitle: (_thisDataTestsImmunology == null || _thisDataTestsImmunology!.isEmpty) ? 'Нет данных' : convertTimestampToDateTime(_thisDataTestsImmunology![0].dateNew),
                     iconTrailing: Icons.arrow_forward_ios,
                     iconSize: 15,
-                    onTap: () => navigateToPage(
-                      context,
-                      PageTestsImmunology(
-                        title: 'Иммунология',
-                        onDataUpdated: _refreshData,
-                      ),
-                    ),
+                    onTap: () =>
+                        Navigator.push(context,
+                          MaterialPageRoute(
+                            builder: (context) => PageTestsImmunology(
+                              title: 'Иммунология',
+                            ),
+                          ),
+                        ).then((_) async {
+                          await _refreshData();
+                        }),
                   ),
                 ],
               ),

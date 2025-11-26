@@ -15,12 +15,10 @@ import 'menu.dart';
 
 class PageAnamnesisConcomitants extends StatefulWidget {
   final String title;
-  final VoidCallback? onDataUpdated;
 
   const PageAnamnesisConcomitants({
     super.key,
-    required this.title,
-    required this.onDataUpdated,
+    required this.title
   });
 
   @override
@@ -75,16 +73,18 @@ class PageAnamnesisConcomitantsState extends State<PageAnamnesisConcomitants> {
 
 
   void _navigateAndRefresh(BuildContext context, bool isEditForm,
-      {int? index}) {navigateToPage(context,
-    PageAnamnesisConcomitantsEdit(
-        title: widget.title,
-        isEditForm: isEditForm,
-        thisData: isEditForm ? _thisData![index!] : null,
-        onDataUpdated: () async {
-          await _refreshData();
-          widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
-        }),
-  );}
+      {int? index}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) =>
+          PageAnamnesisConcomitantsEdit(
+          title: widget.title,
+          isEditForm: isEditForm,
+          thisData: isEditForm ? _thisData![index!] : null),),
+    ).then((_) async {
+      await _refreshData();
+    });
+  }
 
 
 
@@ -101,7 +101,6 @@ class PageAnamnesisConcomitantsState extends State<PageAnamnesisConcomitants> {
                 patientsId: _patientsId,
                 recordId: recordId);
             await _refreshData();
-            widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
           },
         );
       },

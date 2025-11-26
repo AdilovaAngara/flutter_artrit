@@ -99,10 +99,11 @@ class _PageAnamnesisState extends State<PageAnamnesis> {
                       MaterialPageRoute(
                         builder: (context) => PageAnamnesisFamilyHistoryEdit(
                           title: 'Семейный анамнез',
-                          onDataUpdated: () async { await _refreshData(); },
                         ),
                       ),
-                    ),
+                    ).then((_) async {
+                      await _refreshData();
+                    }),
                   ),
                   ListTileWidget(
                     title: 'Анамнез заболевания',
@@ -115,10 +116,11 @@ class _PageAnamnesisState extends State<PageAnamnesis> {
                       MaterialPageRoute(
                         builder: (context) => PageAnamnesisDiseaseAnamnesisEdit(
                           title: 'Анамнез заболевания',
-                          onDataUpdated: () async { await _refreshData(); },
                         ),
                       ),
-                    ),
+                    ).then((_) async {
+                      await _refreshData();
+                    }),
                   ),
                   ListTileWidget(
                     title: 'Сопутствующие заболевания',
@@ -130,10 +132,11 @@ class _PageAnamnesisState extends State<PageAnamnesis> {
                       MaterialPageRoute(
                         builder: (context) => PageAnamnesisConcomitants(
                           title: 'Сопутствующие заболевания',
-                          onDataUpdated: () async { await _refreshData(); },
                         ),
                       ),
-                    ),
+                    ).then((_) async {
+                      await _refreshData();
+                    }),
                   ),
                   SizedBox(height: 30.0),
                 ],

@@ -73,14 +73,20 @@ class PageTuberculosisState extends State<PageTuberculosis> {
 
 
   void _navigateAndRefresh(BuildContext context, bool isEditForm,
-      {int? index}) {navigateToPage(context,
-    PageTuberculosisEdit(
-      title: widget.title,
-      isEditForm: isEditForm,
-      thisData: (isEditForm) ? _thisData![index!] : null,
-      onDataUpdated: () => _refreshData(),
-    ),
-  );}
+      {int? index}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PageTuberculosisEdit(
+          title: widget.title,
+          isEditForm: isEditForm,
+          thisData: (isEditForm) ? _thisData![index!] : null,
+        ),
+      ),
+    ).then((_) async {
+      await _refreshData();
+    });
+  }
 
 
   void _showDeleteDialog(int index) {

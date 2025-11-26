@@ -21,14 +21,12 @@ class PageVaccinationEdit extends StatefulWidget {
   final String title;
   final DataVaccination? thisData;
   final bool isEditForm;
-  final VoidCallback? onDataUpdated;
 
   const PageVaccinationEdit({
     super.key,
     required this.title,
     this.thisData,
     required this.isEditForm,
-    required this.onDataUpdated,
   });
 
   @override
@@ -107,7 +105,6 @@ class _PageVaccinationEditState extends State<PageVaccinationEdit> {
       _isLoading = false;
     });
 
-    widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
     if (mounted) Navigator.pop(context);
   }
 

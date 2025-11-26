@@ -21,7 +21,6 @@ class PageResearchesEdit extends StatefulWidget {
   final DataResearches? thisData;
   final int typeId;
   final bool isEditForm;
-  final VoidCallback? onDataUpdated;
 
   const PageResearchesEdit({
     super.key,
@@ -29,7 +28,6 @@ class PageResearchesEdit extends StatefulWidget {
     this.thisData,
     required this.typeId,
     required this.isEditForm,
-    required this.onDataUpdated,
   });
 
   @override
@@ -105,7 +103,6 @@ class PageResearchesEditState extends State<PageResearchesEdit> {
       _isLoading = false;
     });
 
-    widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
     if (mounted) Navigator.pop(context);
   }
 

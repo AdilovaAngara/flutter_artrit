@@ -16,12 +16,10 @@ import 'menu.dart';
 
 class PageResearchesEpicrisis extends StatefulWidget {
   final String title;
-  final VoidCallback? onDataUpdated;
 
   const PageResearchesEpicrisis({
     super.key,
     required this.title,
-    required this.onDataUpdated,
   });
 
   @override
@@ -76,17 +74,19 @@ class _PageResearchesEpicrisisState extends State<PageResearchesEpicrisis> {
 
 
   void _navigateAndRefresh(BuildContext context, bool isEditForm,
-      {int? index}) { navigateToPage(context,
-    PageResearchesEpicrisisEdit(
-        title: widget.title,
-        isEditForm: isEditForm,
-        thisData: (isEditForm) ? _thisData![index!] : null,
-        onDataUpdated: () async {
-          await _refreshData();
-          widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
-        }
-    ),
-  );
+      {int? index}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PageResearchesEpicrisisEdit(
+          title: widget.title,
+          isEditForm: isEditForm,
+          thisData: (isEditForm) ? _thisData![index!] : null,
+        ),
+      ),
+    ).then((_) async {
+      await _refreshData();
+    });
   }
 
 
@@ -102,7 +102,6 @@ class _PageResearchesEpicrisisState extends State<PageResearchesEpicrisis> {
                 patientsId: _patientsId,
                 recordId: recordId);
             await _refreshData();
-            widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
           },
         );
       },

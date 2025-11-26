@@ -17,14 +17,12 @@ class PageResearchesOtherEdit extends StatefulWidget {
   final String title;
   final DataResearchesOther? thisData;
   final bool isEditForm;
-  final VoidCallback? onDataUpdated;
 
   const PageResearchesOtherEdit({
     super.key,
     required this.title,
     this.thisData,
     required this.isEditForm,
-    required this.onDataUpdated,
   });
 
   @override
@@ -102,7 +100,6 @@ class PageResearchesOtherEditState extends State<PageResearchesOtherEdit> {
       _isLoading = false;
     });
 
-    widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
     if (mounted) Navigator.pop(context);
   }
 

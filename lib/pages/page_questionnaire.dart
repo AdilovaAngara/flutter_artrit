@@ -69,10 +69,11 @@ class PageQuestionnaireState extends State<PageQuestionnaire> {
           isEditForm: isEditForm,
           isAnonymous: false,
           thisData: (isEditForm) ? _thisData![index!] : null,
-          onDataUpdated: () => _refreshData(), // ✅ Вызываем колбэк
         ),
       ),
-    );
+    ).then((_) async {
+      await _refreshData();
+    });
   }
 
   void _showDeleteDialog(int index) {

@@ -17,12 +17,10 @@ import 'menu.dart';
 
 class PageTestsBiochemical extends StatefulWidget {
   final String title;
-  final VoidCallback? onDataUpdated;
 
   const PageTestsBiochemical({
     super.key,
     required this.title,
-    required this.onDataUpdated,
   });
 
   @override
@@ -94,16 +92,18 @@ class _PageTestsBiochemicalState extends State<PageTestsBiochemical> {
       _isLoading = false;
     });
 
-    navigateToPage(context, PageTestsBiochemicalEdit(
-          title: widget.title,
-          isEditForm: isEditForm,
-          thisData: _thisDataRecord,
-            onDataUpdated: () async {
-              await _refreshData();
-              widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
-            }
-        ),
-    );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => PageTestsBiochemicalEdit(
+            title: widget.title,
+            isEditForm: isEditForm,
+            thisData: _thisDataRecord,
+          ),
+      ),
+    ).then((_) async {
+      await _refreshData();
+    });
   }
 
 
@@ -119,7 +119,6 @@ class _PageTestsBiochemicalState extends State<PageTestsBiochemical> {
                 patientsId: _patientsId,
                 recordId: recordId);
             await _refreshData();
-            widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
           },
         );
       },

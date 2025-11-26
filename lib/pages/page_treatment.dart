@@ -96,14 +96,15 @@ class _PageTreatmentState extends State<PageTreatment> {
                     iconTrailing: Icons.arrow_forward_ios,
                     iconSize: 15,
                     onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PageTreatmentMedicaments(
-                          title: 'Лекарственные препараты',
-                          onDataUpdated: _refreshData,
-                        ),
-                      ),
-                    ),
+                          context,
+                            MaterialPageRoute(
+                              builder: (context) => PageTreatmentMedicaments(
+                                title: 'Лекарственные препараты',
+                              ),
+                            ),
+                        ).then((_) async {
+                          await _refreshData();
+                        }),
                   ),
                   ListTileWidget(
                     title: 'Нежелательные явления терапии',
@@ -111,14 +112,15 @@ class _PageTreatmentState extends State<PageTreatment> {
                     iconTrailing: Icons.arrow_forward_ios,
                     iconSize: 15,
                     onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PageTreatmentSideEffects(
-                          title: 'Нежелательные явления терапии',
-                          onDataUpdated: _refreshData,
-                        ),
-                      ),
-                    ),
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PageTreatmentSideEffects(
+                              title: 'Нежелательные явления терапии',
+                            ),
+                          ),
+                        ).then((_) async {
+                          await _refreshData();
+                        }),
                   ),
                   ListTileWidget(
                     title: 'Реабилитация',
@@ -126,16 +128,16 @@ class _PageTreatmentState extends State<PageTreatment> {
                     iconTrailing: Icons.arrow_forward_ios,
                     iconSize: 15,
                     onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PageTreatmentRehabilitation(
-                          title: 'Реабилитация',
-                          onDataUpdated: _refreshData,
-                        ),
-                      ),
-                    ),
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PageTreatmentRehabilitation(
+                              title: 'Реабилитация',
+                            ),
+                          ),
+                        ).then((_) async {
+                          await _refreshData();
+                        }),
                   ),
-
                 ],
               ),
             ),

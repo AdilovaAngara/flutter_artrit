@@ -1,5 +1,6 @@
 import 'package:artrit/pages/page_inspections_main.dart';
 import 'package:artrit/pages/page_patient_edit.dart';
+import 'package:artrit/pages/page_questionnaire.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import '../api/api_inspections.dart';
@@ -163,13 +164,17 @@ class PagePatientMainState extends State<PagePatientMain> {
                       lastInspectionUveit: _dataPatient.lastInspectionUveit,
                     ),
                     iconSize: 35,
-                    onTap: () => navigateToPage(
-                      context,
-                      PagePatientEdit(
-                        title: EnumMenu.profilePatient.displayName,
-                        onDataUpdated: _refreshData,
-                      ),
-                    ),
+                    onTap: () =>
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>
+                              PagePatientEdit(
+                                title: EnumMenu.profilePatient.displayName
+                              ),
+                          ),
+                        ).then((_) async {
+                          await _refreshData();
+                        }),
                   ),
                   ListTileWidget(
                     title: EnumMenu.anamnesis.displayName,
@@ -184,13 +189,17 @@ class PagePatientMainState extends State<PagePatientMain> {
                     title: EnumMenu.inspections.displayName,
                     iconTrailing: EnumMenu.inspections.icon,
                     colorIconTrailing: EnumMenu.inspections.iconColor,
-                    onTap: () => navigateToPage(
-                      context,
-                      PageInspectionsMain(
-                        title: EnumMenu.inspections.displayName,
-                        onDataUpdated: _refreshData,
-                      ),
-                    ),
+                    onTap: () =>
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>
+                              PageInspectionsMain(
+                                title: EnumMenu.inspections.displayName
+                              ),
+                          ),
+                        ).then((_) async {
+                          await _refreshData();
+                        }),
                   ),
                   ListTileWidget(
                     title: EnumMenu.tests.displayName,
@@ -257,10 +266,15 @@ class PagePatientMainState extends State<PagePatientMain> {
                     ),
                     iconTrailing: EnumMenu.questionnaire.icon,
                     colorIconTrailing: EnumMenu.questionnaire.iconColor,
-                    onTap: () => navigateToPageMenu(
-                      context,
-                      EnumMenu.questionnaire,
-                    ),
+                    onTap: () => Navigator.push(context,
+                      MaterialPageRoute(
+                        builder: (context) => PageQuestionnaire(
+                          title: EnumMenu.questionnaire.displayName,
+                        ),
+                      ),
+                    ).then((_) async {
+                      await _refreshData();
+                    }),
                   ),
                   ListTileWidget(
                     title: EnumMenu.scale.displayName,

@@ -18,14 +18,12 @@ class PageTestsImmunologyEdit extends StatefulWidget {
   final String title;
   final DataTestsImmunology? thisData;
   final bool isEditForm;
-  final VoidCallback? onDataUpdated;
 
   const PageTestsImmunologyEdit({
     super.key,
     required this.title,
     required this.thisData,
     required this.isEditForm,
-    required this.onDataUpdated,
   });
 
   @override
@@ -118,7 +116,6 @@ class _PageTestsImmunologyEditState extends State<PageTestsImmunologyEdit> {
       _isLoading = false;
     });
 
-    widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
     if (mounted) Navigator.pop(context);
   }
 

@@ -16,12 +16,10 @@ import '../widgets/input_switch.dart';
 
 class PageAnamnesisFamilyHistoryEdit extends StatefulWidget {
   final String title;
-  final VoidCallback? onDataUpdated;
 
   const PageAnamnesisFamilyHistoryEdit({
     super.key,
-    required this.title,
-    required this.onDataUpdated,
+    required this.title
   });
 
   @override
@@ -118,8 +116,6 @@ class _PageAnamnesisFamilyHistoryEditState extends State<PageAnamnesisFamilyHist
     setState(() {
       _isLoading = false;
     });
-
-    widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
 
     if (mounted) {
       Navigator.pop(context);

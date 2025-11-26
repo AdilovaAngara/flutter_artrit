@@ -11,12 +11,10 @@ import '../widgets/input_select_date.dart';
 
 class PageAnamnesisDiseaseAnamnesisEdit extends StatefulWidget {
   final String title;
-  final VoidCallback? onDataUpdated;
 
   const PageAnamnesisDiseaseAnamnesisEdit({
     super.key,
-    required this.title,
-    required this.onDataUpdated,
+    required this.title
   });
 
   @override
@@ -77,8 +75,6 @@ class _PageAnamnesisDiseaseAnamnesisEditState
     setState(() {
       _isLoading = false;
     });
-
-    widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
 
     if (mounted) {
       Navigator.pop(context);

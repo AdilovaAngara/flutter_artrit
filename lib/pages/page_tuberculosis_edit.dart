@@ -20,14 +20,12 @@ class PageTuberculosisEdit extends StatefulWidget {
   final String title;
   final DataTuberculosis? thisData;
   final bool isEditForm;
-  final VoidCallback? onDataUpdated;
 
   const PageTuberculosisEdit({
     super.key,
     required this.title,
     this.thisData,
     required this.isEditForm,
-    required this.onDataUpdated,
   });
 
   @override
@@ -128,7 +126,6 @@ class PageTuberculosisEditState extends State<PageTuberculosisEdit> {
       _isLoading = false;
     });
 
-    widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
     if (mounted) Navigator.pop(context);
   }
 

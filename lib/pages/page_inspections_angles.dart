@@ -6,12 +6,10 @@ import 'page_inspections_angles_select.dart';
 
 class PageInspectionsAngles extends StatefulWidget {
   final String inspectionsId;
-  final VoidCallback? onDataUpdated;
 
   const PageInspectionsAngles({
     super.key,
-    required this.inspectionsId,
-    required this.onDataUpdated,
+    required this.inspectionsId
   });
 
   @override
@@ -45,19 +43,19 @@ class PageInspectionsAnglesState extends State<PageInspectionsAngles> {
 
 
   void _navigateAndRefresh(BuildContext context, {required int index}) {
-    navigateToPage(
+    Navigator.push(
       context,
-      PageInspectionsAnglesSelect(
-        cornersTitle: _imagesItem[index].label,
-        index: index,
-        inspectionsId: widget.inspectionsId,
-        onDataUpdated: () async {
-          await _refreshData();
-          widget.onDataUpdated?.call();
-        },
-        isFavoritePage: index == 0,
+      MaterialPageRoute(
+        builder: (context) => PageInspectionsAnglesSelect(
+          cornersTitle: _imagesItem[index].label,
+          index: index,
+          inspectionsId: widget.inspectionsId,
+          isFavoritePage: index == 0,
+        ),
       ),
-    );
+    ).then((_) async {
+      await _refreshData();
+    });
   }
 
 

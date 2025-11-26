@@ -18,14 +18,12 @@ class PageTestsBiochemicalEdit extends StatefulWidget {
   final String title;
   final DataTestsBiochemical? thisData;
   final bool isEditForm;
-  final VoidCallback? onDataUpdated;
 
   const PageTestsBiochemicalEdit({
     super.key,
     required this.title,
     required this.thisData,
     required this.isEditForm,
-    required this.onDataUpdated,
   });
 
   @override
@@ -123,7 +121,6 @@ class _PageTestsBiochemicalEditState extends State<PageTestsBiochemicalEdit> {
       _isLoading = false;
     });
 
-    widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
     if (mounted) Navigator.pop(context);
   }
 

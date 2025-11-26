@@ -24,12 +24,10 @@ import '../theme.dart';
 
 class PagePatientEdit extends StatefulWidget {
   final String title;
-  final VoidCallback? onDataUpdated;
 
   const PagePatientEdit({
     super.key,
-    required this.title,
-    this.onDataUpdated,
+    required this.title
   });
 
   @override
@@ -160,8 +158,6 @@ class PagePatientEditState extends State<PagePatientEdit> {
     setState(() {
       _isLoading = false;
     });
-
-    widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
 
     if (mounted) {
       Navigator.pop(context);

@@ -17,12 +17,10 @@ import 'menu.dart';
 
 class PageInspectionsMain extends StatefulWidget {
   final String title;
-  final VoidCallback? onDataUpdated;
 
   const PageInspectionsMain({
     super.key,
     required this.title,
-    this.onDataUpdated,
   });
 
   @override
@@ -83,17 +81,16 @@ class PageInspectionsMainState extends State<PageInspectionsMain> {
   }
 
   void _navigateAndRefresh(BuildContext context, bool isEditForm, {int? index}) {
-    navigateToPage(
+    Navigator.push(
       context,
-      PageInspectionsMainEdit(
-          title: title,
-          isEditForm: isEditForm,
-          thisData: (isEditForm) ? _thisData![index!] : null,
-          onDataUpdated: () async {
-            await _refreshData();
-            widget.onDataUpdated?.call();
-          }),
-    );
+      MaterialPageRoute(builder: (context) =>
+          PageInspectionsMainEdit(
+            title: title,
+            isEditForm: isEditForm,
+            thisData: (isEditForm) ? _thisData![index!] : null,),),
+    ).then((_) async {
+      await _refreshData();
+    });
   }
 
   void _showDeleteDialog(int index) {
@@ -113,7 +110,6 @@ class PageInspectionsMainState extends State<PageInspectionsMain> {
                   recordId: id); // Дождаться удаления
             }
             await _refreshData();
-            widget.onDataUpdated?.call();
           },
         );
       },

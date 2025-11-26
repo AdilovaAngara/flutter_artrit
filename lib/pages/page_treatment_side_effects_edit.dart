@@ -20,14 +20,12 @@ class PageTreatmentSideEffectsEdit extends StatefulWidget {
   final String title;
   final DataTreatmentSideEffects? thisData;
   final bool isEditForm;
-  final VoidCallback? onDataUpdated;
 
   const PageTreatmentSideEffectsEdit({
     super.key,
     required this.title,
     required this.thisData,
     required this.isEditForm,
-    required this.onDataUpdated,
   });
 
   @override
@@ -121,7 +119,6 @@ class _PageTreatmentSideEffectsEditState extends State<PageTreatmentSideEffectsE
       _isLoading = false;
     });
 
-    widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
     if (mounted) Navigator.pop(context);
   }
 

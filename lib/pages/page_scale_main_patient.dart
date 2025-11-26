@@ -14,12 +14,10 @@ import 'menu.dart';
 
 class PageScaleMainPatient extends StatefulWidget {
   final String title;
-  final VoidCallback? onDataUpdated;
 
   const PageScaleMainPatient({
     super.key,
     required this.title,
-    required this.onDataUpdated,
   });
 
   @override
@@ -60,16 +58,19 @@ class _PageScaleMainPatientState extends State<PageScaleMainPatient> {
 
 
   void _navigateAndRefresh(BuildContext context, bool isEditForm,
-      {int? index}) {navigateToPage(context,
-    PageScaleMainPatientEdit(
-        title: widget.title,
-        isEditForm: isEditForm,
-        thisData: isEditForm ? _thisData![index!] : null,
-        onDataUpdated: () async {
-          await _refreshData();
-          widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
-        }),
-  );}
+      {int? index}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PageScaleMainPatientEdit(
+          title: widget.title,
+          isEditForm: isEditForm,
+          thisData: isEditForm ? _thisData![index!] : null,),
+      ),
+    ).then((_) async {
+      await _refreshData();
+    });
+}
 
 
   void _showDeleteDialog(int index) {
@@ -84,7 +85,6 @@ class _PageScaleMainPatientState extends State<PageScaleMainPatient> {
                 patientsId: _patientsId,
                 recordId: recordId);
             await _refreshData();
-            widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
           },
         );
       },

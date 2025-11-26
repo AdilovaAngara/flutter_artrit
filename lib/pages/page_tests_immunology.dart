@@ -17,12 +17,10 @@ import 'menu.dart';
 
 class PageTestsImmunology extends StatefulWidget {
   final String title;
-  final VoidCallback? onDataUpdated;
 
   const PageTestsImmunology({
     super.key,
     required this.title,
-    required this.onDataUpdated,
   });
 
   @override
@@ -94,15 +92,18 @@ class _PageTestsImmunologyState extends State<PageTestsImmunology> {
       _isLoading = false;
     });
 
-    navigateToPage(context, PageTestsImmunologyEdit(
-        title: widget.title,
-        isEditForm: isEditForm,
-        thisData: _thisDataRecord,
-        onDataUpdated: () async {
-          await _refreshData();
-          widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
-        }
-    ),);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PageTestsImmunologyEdit(
+          title: widget.title,
+          isEditForm: isEditForm,
+          thisData: _thisDataRecord,
+        ),
+      ),
+    ).then((_) async {
+      await _refreshData();
+    });
   }
 
 
@@ -118,7 +119,6 @@ class _PageTestsImmunologyState extends State<PageTestsImmunology> {
                 patientsId: _patientsId,
                 recordId: recordId);
             await _refreshData();
-            widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
           },
         );
       },

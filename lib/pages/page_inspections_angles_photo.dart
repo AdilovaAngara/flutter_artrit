@@ -20,14 +20,12 @@ class PageInspectionsAnglesPhoto extends StatefulWidget {
   final String cornersTitle;
   final String jointsId;
   final String inspectionsId;
-  final VoidCallback? onDataUpdated;
 
   const PageInspectionsAnglesPhoto({
     super.key,
     required this.cornersTitle,
     required this.jointsId,
     required this.inspectionsId,
-    required this.onDataUpdated,
   });
 
   @override
@@ -82,21 +80,24 @@ class PageInspectionsAnglesPhotoState
   }
 
   Future<void> _refreshData() async {
-    _future = _loadData();
+    await _loadData();
   }
 
 
-  void _navigateAndRefresh(BuildContext context, File pickedImage) {navigateToPage(context,
-    PageInspectionsAnglesPhotoAdd(
-        photo: pickedImage,
-        jointsId: widget.jointsId,
-        inspectionsId: widget.inspectionsId,
-        role: _role,
-        onDataUpdated: () async {
-          widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
-          await _refreshData();
-        }),
-  );}
+  void _navigateAndRefresh(BuildContext context, File pickedImage) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PageInspectionsAnglesPhotoAdd(
+            photo: pickedImage,
+            jointsId: widget.jointsId,
+            inspectionsId: widget.inspectionsId,
+            role: _role),
+      ),
+    ).then((_) async {
+      await _refreshData();
+    });
+}
 
 
 
@@ -146,7 +147,6 @@ class PageInspectionsAnglesPhotoState
                 patientsId: _patientsId,
                 recordId: recordId); // Дождаться удаления
             await _refreshData();
-            widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
             setState(() {
             });
           },

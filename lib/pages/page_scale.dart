@@ -19,7 +19,6 @@ import '../widgets/app_bar_widget.dart';
 import '../widgets/list_tile_widget.dart';
 import 'menu.dart';
 
-
 class PageScale extends StatefulWidget {
   final String title;
 
@@ -104,60 +103,67 @@ class _PageScaleState extends State<PageScale> {
                     subtitle: (_thisDataDoctor == null || _thisDataDoctor!.isEmpty) ? 'Нет данных' : '${_thisDataDoctor![0].scale  ?? ''}',
                     iconTrailing: Icons.arrow_forward_ios,
                     iconSize: 15,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PageScaleDoctor(
-                          title: 'Глобальная оценка активности болезни врачом',
-                          onDataUpdated: _refreshData,
-                        ),
-                      ),
-                    ),
+                    onTap: () =>
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PageScaleDoctor(
+                              title: 'Глобальная оценка активности болезни врачом',
+                            ),
+                          ),
+                        ).then((_) async {
+                          await _refreshData();
+                        }),
                   ),
                   ListTileWidget(
                     title: 'Общая оценка состояния здоровья пациента',
                     subtitle: (_thisDataMainPatient == null || _thisDataMainPatient!.isEmpty) ? 'Нет данных' : '${_thisDataMainPatient![0].scale  ?? ''}',
                     iconTrailing: Icons.arrow_forward_ios,
                     iconSize: 15,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PageScaleMainPatient(
-                          title: 'Общая оценка состояния здоровья пациента',
-                          onDataUpdated: _refreshData,
-                        ),
-                      ),
-                    ),
+                    onTap: () =>
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PageScaleMainPatient(
+                              title: 'Общая оценка состояния здоровья пациента',
+                            ),
+                          ),
+                        ).then((_) async {
+                          await _refreshData();
+                        }),
                   ),
                   ListTileWidget(
                     title: 'JADAS-71',
                     subtitle: (_thisDataJadas71 == null || _thisDataJadas71!.isEmpty) ? 'Нет данных' : '${_thisDataJadas71![0].indexResult ?? ''}',
                     iconTrailing: Icons.arrow_forward_ios,
                     iconSize: 15,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PageScaleJadas71(
-                          title: 'JADAS-71',
-                          onDataUpdated: _refreshData,
-                        ),
-                      ),
-                    ),
+                    onTap: () =>
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PageScaleJadas71(
+                                title: 'JADAS-71'),
+                          ),
+                        ).then((_) async {
+                          await _refreshData();
+                        }),
                   ),
                   ListTileWidget(
                     title: 'DAS-28',
                     subtitle: (_thisDataDas28 == null || _thisDataDas28!.isEmpty) ? 'Нет данных' : '${_thisDataDas28![0].indexResult ?? ''}',
                     iconTrailing: Icons.arrow_forward_ios,
                     iconSize: 15,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PageScaleDas28(
-                          title: 'DAS-28',
-                          onDataUpdated: _refreshData,
-                        ),
-                      ),
-                    ),
+                    onTap: () =>
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PageScaleDas28(
+                                title: 'DAS-28'
+                            ),
+                          ),
+                        ).then((_) async {
+                          await _refreshData();
+                        }),
                   ),
                 ],
               ),

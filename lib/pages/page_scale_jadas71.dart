@@ -17,12 +17,10 @@ import 'menu.dart';
 
 class PageScaleJadas71 extends StatefulWidget {
   final String title;
-  final VoidCallback? onDataUpdated;
 
   const PageScaleJadas71({
     super.key,
     required this.title,
-    required this.onDataUpdated,
   });
 
   @override
@@ -81,7 +79,6 @@ class _PageScaleJadas71State extends State<PageScaleJadas71> {
       {
         _showResultDialog(dataScaleResult);
         await _refreshData();
-        widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
       }
     else {
       ShowMessage.show(context: context, message: dataScaleResult.userMessage?.toString() ?? 'Неизвестная ошибка');
@@ -109,7 +106,6 @@ class _PageScaleJadas71State extends State<PageScaleJadas71> {
                 patientsId: _patientsId,
                 recordId: recordId);
             await _refreshData();
-            widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
           },
         );
       },

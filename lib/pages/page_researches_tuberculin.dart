@@ -15,12 +15,10 @@ import 'menu.dart';
 
 class PageResearchesTuberculin extends StatefulWidget {
   final String title;
-  final VoidCallback? onDataUpdated;
 
   const PageResearchesTuberculin({
     super.key,
     required this.title,
-    required this.onDataUpdated,
   });
 
   @override
@@ -75,17 +73,19 @@ class PageResearchesTuberculinState extends State<PageResearchesTuberculin> {
 
 
   void _navigateAndRefresh(BuildContext context, bool isEditForm,
-      {int? index}) {navigateToPage(context,
-    PageResearchesTuberculinEdit(
-        title: widget.title,
-        isEditForm: isEditForm,
-        thisData: (isEditForm) ? _thisData![index!] : null,
-        onDataUpdated: () async {
-          await _refreshData();
-          widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
-        }
-    ),
-  );}
+      {int? index}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PageResearchesTuberculinEdit(
+            title: widget.title,
+            isEditForm: isEditForm,
+            thisData: (isEditForm) ? _thisData![index!] : null),
+      ),
+    ).then((_) async {
+      await _refreshData();
+    });
+}
 
 
 
@@ -101,7 +101,6 @@ class PageResearchesTuberculinState extends State<PageResearchesTuberculin> {
                 patientsId: _patientsId,
                 recordId: recordId);
             await _refreshData();
-            widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
           },
         );
       },

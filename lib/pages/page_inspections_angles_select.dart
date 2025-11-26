@@ -15,7 +15,6 @@ class PageInspectionsAnglesSelect extends StatefulWidget {
   final String cornersTitle;
   final int index;
   final String inspectionsId;
-  final VoidCallback? onDataUpdated;
   final bool isFavoritePage;
 
   const PageInspectionsAnglesSelect({
@@ -23,7 +22,6 @@ class PageInspectionsAnglesSelect extends StatefulWidget {
     required this.cornersTitle,
     required this.index,
     required this.inspectionsId,
-    required this.onDataUpdated,
     required this.isFavoritePage,
   });
 
@@ -73,21 +71,20 @@ class PageInspectionsAnglesSelectState extends State<PageInspectionsAnglesSelect
 
 
 
-  void _navigateAndRefresh(BuildContext context) {navigateToPage(context,
-    PageInspectionsAnglesPhoto(
-        cornersTitle: '${_listImageAndId[_currentIndex].jointsLabel}, положение ${extractImageNumber(
-            _listImageAndId[_currentIndex].path)}',
-        jointsId: _listImageAndId[_currentIndex].jointsId,
-        inspectionsId: widget.inspectionsId,
-        onDataUpdated: () async {
-          await _refreshData();
-          widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
-        }
-    ),
-  );}
-
-
-
+  void _navigateAndRefresh(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PageInspectionsAnglesPhoto(
+            cornersTitle: '${_listImageAndId[_currentIndex].jointsLabel}, положение ${extractImageNumber(
+                _listImageAndId[_currentIndex].path)}',
+            jointsId: _listImageAndId[_currentIndex].jointsId,
+            inspectionsId: widget.inspectionsId),
+      ),
+    ).then((_) async {
+      await _refreshData();
+    });
+}
 
 
 
@@ -95,7 +92,6 @@ class PageInspectionsAnglesSelectState extends State<PageInspectionsAnglesSelect
     required bool isPost}) async {
     await _request(data: data, isPost: isPost);
     await _refreshData();
-    widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
   }
 
 

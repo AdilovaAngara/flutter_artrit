@@ -20,7 +20,6 @@ class PageQuestionnaireEdit extends StatefulWidget {
   final DataQuestionnaire? thisData;
   final bool isEditForm;
   final bool isAnonymous;
-  final VoidCallback? onDataUpdated;
 
   const PageQuestionnaireEdit({
     super.key,
@@ -28,7 +27,6 @@ class PageQuestionnaireEdit extends StatefulWidget {
     this.thisData,
     required this.isEditForm,
     required this.isAnonymous,
-    required this.onDataUpdated,
   });
 
   @override
@@ -556,7 +554,6 @@ class PageQuestionnaireEditState extends State<PageQuestionnaireEdit> {
 
     if (result != null) {
       _showResultDialog(result);
-      widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
     } else {
       ShowMessage.show(context: context, message: 'Неизвестная ошибка');
     }

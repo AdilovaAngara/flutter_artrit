@@ -19,14 +19,12 @@ class PageTreatmentRehabilitationEdit extends StatefulWidget {
   final String title;
   final DataTreatmentRehabilitations? thisData;
   final bool isEditForm;
-  final VoidCallback? onDataUpdated;
 
   const PageTreatmentRehabilitationEdit({
     super.key,
     required this.title,
     required this.thisData,
     required this.isEditForm,
-    required this.onDataUpdated,
   });
 
   @override
@@ -108,7 +106,6 @@ class _PageTreatmentRehabilitationEditState extends State<PageTreatmentRehabilit
       _isLoading = false;
     });
 
-    widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
     if (mounted) Navigator.pop(context);
   }
 

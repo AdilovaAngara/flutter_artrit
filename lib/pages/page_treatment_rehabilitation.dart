@@ -15,12 +15,10 @@ import 'menu.dart';
 
 class PageTreatmentRehabilitation extends StatefulWidget {
   final String title;
-  final VoidCallback? onDataUpdated;
 
   const PageTreatmentRehabilitation({
     super.key,
-    required this.title,
-    required this.onDataUpdated,
+    required this.title
   });
 
   @override
@@ -74,16 +72,19 @@ class PageTreatmentRehabilitationState extends State<PageTreatmentRehabilitation
   }
 
   void _navigateAndRefresh(BuildContext context, bool isEditForm,
-      {int? index}) {navigateToPage(context,
-    PageTreatmentRehabilitationEdit(
-        title: widget.title,
-        isEditForm: isEditForm,
-        thisData: isEditForm ? _thisData![index!] : null,
-        onDataUpdated: () async {
-          await _refreshData();
-          widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
-        }),
-  );}
+      {int? index}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PageTreatmentRehabilitationEdit(
+          title: widget.title,
+          isEditForm: isEditForm,
+          thisData: isEditForm ? _thisData![index!] : null,),
+      ),
+    ).then((_) async {
+      await _refreshData();
+    });
+  }
 
   void _showDeleteDialog(int index) {
     showDialog(
@@ -97,7 +98,6 @@ class PageTreatmentRehabilitationState extends State<PageTreatmentRehabilitation
                 patientsId: _patientsId,
                 recordId: recordId);
             await _refreshData();
-            widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
           },
         );
       },

@@ -16,14 +16,12 @@ class PageAnamnesisConcomitantsEdit extends StatefulWidget {
   final String title;
   final DataAnamnesisConcomitants? thisData;
   final bool isEditForm;
-  final VoidCallback? onDataUpdated;
 
   const PageAnamnesisConcomitantsEdit({
     super.key,
     required this.title,
     required this.thisData,
-    required this.isEditForm,
-    required this.onDataUpdated,
+    required this.isEditForm
   });
 
   @override
@@ -103,7 +101,6 @@ class _PageAnamnesisConcomitantsEditState
       _isLoading = false;
     });
 
-    widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
     if (mounted) Navigator.pop(context);
   }
 

@@ -224,6 +224,7 @@ bool getBoolValue(String? value) {
   return value != null && value == '1' ? true : false;
 }
 
+
 void navigateToPage(BuildContext context, Widget page) {
   Navigator.push(
     context,

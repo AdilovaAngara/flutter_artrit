@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:artrit/api/api_spr.dart';
 import 'package:artrit/pages/page_inspections_pain.dart';
 import 'package:artrit/pages/page_inspections_uveit.dart';
@@ -26,14 +25,12 @@ class PageInspectionsMainEdit extends StatefulWidget {
   final String title;
   final DataInspections? thisData;
   final bool isEditForm;
-  final VoidCallback? onDataUpdated;
 
   const PageInspectionsMainEdit({
     super.key,
     required this.title,
     this.thisData,
     required this.isEditForm,
-    required this.onDataUpdated,
   });
 
   @override
@@ -152,7 +149,6 @@ class PageInspectionsMainEditState extends State<PageInspectionsMainEdit> {
       _isLoading = false;
     });
 
-    widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
     if (mounted && closeForm) Navigator.pop(context);
     return true;
   }
@@ -526,13 +522,9 @@ class PageInspectionsMainEditState extends State<PageInspectionsMainEdit> {
                 MaterialPageRoute(
                   builder: (context) => PageInspectionsAngles(
                     inspectionsId: _recordId!,
-                    onDataUpdated: () async {
-                      widget.onDataUpdated?.call();
-                    },
                   ),
                 ),
               );
-              setState(() {}); // Обновляем UI после изменения данных
             }
           },
         ),

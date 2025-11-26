@@ -82,14 +82,17 @@ class PageResearchesState extends State<PageResearches> {
 
 
   void _navigateAndRefresh(BuildContext context, String title, int typeId) {
-    navigateToPage(
+    Navigator.push(
       context,
-      PageResearchesList(
-        title: title,
-        typeId: typeId,
-        onDataUpdated: _refreshData,
+      MaterialPageRoute(
+        builder: (context) => PageResearchesList(
+          title: title,
+          typeId: typeId,
+        ),
       ),
-    );
+    ).then((_) async {
+      await _refreshData();
+    });
   }
 
 
@@ -156,39 +159,51 @@ class PageResearchesState extends State<PageResearches> {
                     subtitle: (_thisDataOther == null || _thisDataOther!.isEmpty) ? 'Нет данных' : _thisDataOther![0].executeDate != null ? dateFormat(_thisDataOther![0].executeDate) : '',
                     iconTrailing: Icons.arrow_forward_ios,
                     iconSize: 15,
-                    onTap: () => navigateToPage(
-                      context,
-                      PageResearchesOther(
-                        title: 'Иные исследования',
-                        onDataUpdated: _refreshData,
-                      ),
-                    ),
+                    onTap: () =>
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PageResearchesOther(
+                              title: 'Иные исследования',
+                            ),
+                          ),
+                        ).then((_) async {
+                          await _refreshData();
+                        }),
                   ),
                   ListTileWidget(
                     title: 'Выписки из других медицинских учреждений',
                     subtitle: (_thisDataEpicrisis == null || _thisDataEpicrisis!.isEmpty) ? 'Нет данных' : _thisDataEpicrisis![0].date != null ? convertTimestampToDate(_thisDataEpicrisis![0].date) : '',
                     iconTrailing: Icons.arrow_forward_ios,
                     iconSize: 15,
-                    onTap: () => navigateToPage(
-                      context,
-                      PageResearchesEpicrisis(
-                        title: 'Выписки из других медицинских учреждений',
-                        onDataUpdated: _refreshData,
-                      ),
-                    ),
+                    onTap: () =>
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PageResearchesEpicrisis(
+                              title: 'Выписки из других медицинских учреждений',
+                            ),
+                          ),
+                        ).then((_) async {
+                          await _refreshData();
+                        }),
                   ),
                   ListTileWidget(
                     title: 'Туберкулиновые пробы',
                     subtitle: (_thisDataTuberculin == null || _thisDataTuberculin!.isEmpty) ? 'Нет данных' : _thisDataTuberculin![0].date != null ? dateFormat(_thisDataTuberculin![0].date) : '',
                     iconTrailing: Icons.arrow_forward_ios,
                     iconSize: 15,
-                    onTap: () => navigateToPage(
-                      context,
-                      PageResearchesTuberculin(
-                        title: 'Туберкулиновые пробы',
-                        onDataUpdated: _refreshData,
-                      ),
-                    ),
+                    onTap: () =>
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PageResearchesTuberculin(
+                              title: 'Туберкулиновые пробы',
+                            ),
+                          ),
+                        ).then((_) async {
+                          await _refreshData();
+                        }),
                   ),
                 ],
               ),
