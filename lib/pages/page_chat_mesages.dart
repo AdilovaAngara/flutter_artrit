@@ -5,7 +5,6 @@ import 'package:artrit/widget_another/chat_message_widget.dart';
 import 'package:artrit/widgets/show_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:grouped_list/grouped_list.dart';
 import 'package:provider/provider.dart';
 import '../api/api_chat.dart';
 import '../data/data_chat_contacts.dart';
