@@ -10,6 +10,7 @@ import '../widgets/button_widget.dart';
 import '../widgets/input_text.dart';
 import '../widgets/input_text_obscure.dart';
 import '../widgets/show_message.dart';
+import '../widgets/widget_input_verification_code.dart';
 
 class PageLoginRecovery extends StatefulWidget {
   const PageLoginRecovery({super.key});
@@ -28,6 +29,7 @@ class _PageLoginRecoveryState extends State<PageLoginRecovery> {
   String _code = '';
   String _password = '';
   String _repeatPassword = '';
+  bool _showEmailForm = true;
   bool _showCodeForm = false;
   bool _showNewPasswordForm = false;
   bool _showSuccessForm = false;
@@ -54,15 +56,19 @@ class _PageLoginRecoveryState extends State<PageLoginRecovery> {
       _isLoading = false;
     });
     if (!result.success) {
-      ShowMessage.show(context: context, message: result.message ?? 'Неизвестная ошибка');
+      ShowMessage.show(
+          context: context, message: result.message ?? 'Неизвестная ошибка');
     } else {
-      _showCodeForm = true;
+      setState(() {
+        _showCodeForm = true;
+        _showEmailForm = false;
+      });
     }
   }
 
   void _sendCode(bool hasEmptyInputs) async {
-    if (hasEmptyInputs) {
-      showTopBanner(context: context);
+    if (hasEmptyInputs || _code.isEmpty) {
+      showTopBanner(context: context, message: 'Введите код');
       return;
     }
     setState(() {
@@ -73,9 +79,13 @@ class _PageLoginRecoveryState extends State<PageLoginRecovery> {
       _isLoading = false;
     });
     if (!result.success) {
-      ShowMessage.show(context: context, message: result.message ?? 'Неизвестная ошибка');
+      ShowMessage.show(
+          context: context, message: result.message ?? 'Неизвестная ошибка');
     } else {
-      _showNewPasswordForm = true;
+      setState(() {
+        _showNewPasswordForm = true;
+        _showCodeForm = false;
+      });
     }
   }
 
@@ -92,7 +102,8 @@ class _PageLoginRecoveryState extends State<PageLoginRecovery> {
       _isLoading = false;
     });
     if (!result.success) {
-      ShowMessage.show(context: context, message: result.message ?? 'Неизвестная ошибка');
+      ShowMessage.show(
+          context: context, message: result.message ?? 'Неизвестная ошибка');
     } else {
       _showSuccessForm = true;
     }
@@ -152,9 +163,8 @@ class _PageLoginRecoveryState extends State<PageLoginRecovery> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (!_showNewPasswordForm) _buildEmailForm(),
-                        if (_showCodeForm && !_showNewPasswordForm)
-                          _buildCodeForm(),
+                        if (_showEmailForm) _buildEmailForm(),
+                        if (_showCodeForm) _buildCodeForm(),
                         if (_showNewPasswordForm) _buildPasswordForm(),
                       ]),
                 ),
@@ -173,12 +183,10 @@ class _PageLoginRecoveryState extends State<PageLoginRecovery> {
           SizedBox(height: 20),
           InputText(
             fieldKey: _keys[Enum.login]!,
-            labelText: !_showCodeForm
-                ? 'Введите e-mail, указанный при регистрации'
-                : 'Введите код подтверждения, отправленный на почту',
+            labelText: 'Введите e-mail, указанный при регистрации',
             value: _login,
             required: true,
-            readOnly: _showCodeForm,
+            readOnly: false,
             keyboardType: TextInputType.emailAddress,
             autofocus: true,
             border: OutlineInputBorder(),
@@ -189,21 +197,20 @@ class _PageLoginRecoveryState extends State<PageLoginRecovery> {
               });
             },
           ),
-          if (!_showCodeForm) SizedBox(height: 20),
-          if (!_showCodeForm)
-            Container(
-              padding: EdgeInsets.all(10.0),
-              child: Center(
-                child: ButtonWidget(
-                  labelText: 'Продолжить',
-                  showProgressIndicator: _isLoading,
-                  listRoles: Roles.all,
-                  onPressed: () {
-                    _sendEmail(!_formKeyEmail.currentState!.validate());
-                  },
-                ),
+          SizedBox(height: 20),
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 30.0, horizontal: 10.0),
+            child: Center(
+              child: ButtonWidget(
+                labelText: 'Продолжить',
+                showProgressIndicator: _isLoading,
+                listRoles: Roles.all,
+                onPressed: () {
+                  _sendEmail(!_formKeyEmail.currentState!.validate());
+                },
               ),
             ),
+          ),
           SizedBox(height: 30),
         ],
       ),
@@ -213,40 +220,61 @@ class _PageLoginRecoveryState extends State<PageLoginRecovery> {
   Widget _buildCodeForm() {
     return Form(
       key: _formKeyCode,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 20),
-          InputText(
-            fieldKey: _keys[Enum.code]!,
-            labelText: 'Код подтверждения',
-            value: _code,
-            required: true,
-            border: OutlineInputBorder(),
-            listRoles: Roles.all,
-            onChanged: (value) {
-              setState(() {
-                _code = value;
-              });
-            },
-          ),
-          SizedBox(height: 20),
-          Container(
-            padding: EdgeInsets.all(10.0),
-            child: Center(
-              child: ButtonWidget(
-                labelText: 'Продолжить',
-                showProgressIndicator: _isLoading,
-                listRoles: Roles.all,
-                onPressed: () {
-                  _sendCode(!_formKeyCode.currentState!.validate());
-                },
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              'На Вашу почту',
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: Colors.black87, fontSize: 15),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              _login,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Colors.blue,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              'было отправлено письмо с кодом.\nВведите его в поле ниже',
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: Colors.black87, fontSize: 15),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 30.0),
+            SizedBox(height: 20),
+
+            /// Поле ввода кода подтверждения
+            WidgetInputVerificationCode(
+              onCompleted: (code) {
+                _code = code;
+              },
+            ),
+            SizedBox(height: 20),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 30.0, horizontal: 10.0),
+              child: Center(
+                child: ButtonWidget(
+                  labelText: 'Продолжить',
+                  showProgressIndicator: _isLoading,
+                  listRoles: Roles.all,
+                  onPressed: () {
+                    _sendCode(!_formKeyCode.currentState!.validate());
+                  },
+                ),
               ),
             ),
-          ),
-          SizedBox(height: 30),
-        ],
+            SizedBox(height: 30),
+          ],
+        ),
       ),
     );
   }
@@ -296,7 +324,8 @@ class _PageLoginRecoveryState extends State<PageLoginRecovery> {
                 listRoles: Roles.all,
                 onPressed: () {
                   if (_password != _repeatPassword) {
-                    ShowMessage.show(context: context, message: 'Пароли не совпадают');
+                    ShowMessage.show(
+                        context: context, message: 'Пароли не совпадают');
                   } else {
                     _sendNewPassword(
                         !_formKeyNewPassword.currentState!.validate());
