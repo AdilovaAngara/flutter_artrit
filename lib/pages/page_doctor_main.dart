@@ -96,6 +96,15 @@ class _PageDoctorMainState extends State<PageDoctorMain> {
                         EnumMenu.patients,
                       ),
                     ),
+                    ListTileWidget(
+                      title: EnumMenu.notificationsSettings.displayName,
+                      iconTrailing: EnumMenu.notificationsSettings.icon,
+                      colorIconTrailing: EnumMenu.notificationsSettings.iconColor,
+                      onTap: () => navigateToPageMenu(
+                        context,
+                        EnumMenu.notificationsSettings,
+                      ),
+                    ),
                   ],
                 ),
               ),

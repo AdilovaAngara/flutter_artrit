@@ -3,10 +3,12 @@ import 'package:artrit/data/data_spr_diagnoses.dart';
 import 'package:artrit/data/data_spr_region.dart';
 import 'package:artrit/data/data_spr_relationship.dart';
 import 'package:artrit/data/data_spr_research_tuberculin_result.dart';
+import 'package:artrit/data/data_spr_sections.dart';
 import 'package:artrit/data/data_spr_temperature.dart';
 import 'package:flutter/cupertino.dart';
 import '../data/data_spr_doctors.dart';
 import '../data/data_spr_drugs.dart';
+import '../data/data_spr_frequency.dart';
 import '../data/data_spr_hospitals.dart';
 import '../data/data_spr_other_tests_names.dart';
 import '../data/data_spr_other_tests_units.dart';
@@ -284,6 +286,25 @@ class ApiSpr {
     return thisData;
   }
 
+
+
+
+  Future<List<DataSprFrequency>> getFrequency() async {
+    var response =
+    await baseClient.get('/api/notificationSettings/frequences');
+    List<DataSprFrequency> thisData = dataSprFrequencyFromJson(response.body);
+    return thisData;
+  }
+
+
+
+
+  Future<List<DataSprSections>> getSections() async {
+    var response =
+    await baseClient.get('/api/notificationSettings/sections');
+    List<DataSprSections> thisData = dataSprSectionsFromJson(response.body);
+    return thisData;
+  }
 
 
 

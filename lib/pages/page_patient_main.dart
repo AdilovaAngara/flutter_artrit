@@ -169,7 +169,8 @@ class PagePatientMainState extends State<PagePatientMain> {
                           context,
                           MaterialPageRoute(builder: (context) =>
                               PagePatientEdit(
-                                title: EnumMenu.profilePatient.displayName
+                                title: EnumMenu.profilePatient.displayName,
+                                isEditForm: true,
                               ),
                           ),
                         ).then((_) async {

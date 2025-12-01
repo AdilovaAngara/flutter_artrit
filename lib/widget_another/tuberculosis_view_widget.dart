@@ -21,27 +21,17 @@ class TuberculosisViewWidgetState extends State<TuberculosisViewWidget> {
     String sideEffects = '';
     String? customSideEffects;
 
-
-    String comma = '';
-    if (widget.thisData.drugs != null) {
-      for (int i = 0; i < widget.thisData.drugs!.length; i++) {
-        comma = i > 0 ? ', ' : '';
-        if (widget.thisData.drugs![i].name != null) {
-          drugs += comma + widget.thisData.drugs![i].name!.replaceAll('\n', '').trim();
-        }
-      }
-    }
+    drugs = widget.thisData.drugs!
+        .map((drug) => drug.name.replaceAll('\n', '').trim())
+        .join(', ');
 
     if (widget.thisData.sideEffects != null) {
-      for (int i = 0; i < widget.thisData.sideEffects!.length; i++) {
-        comma = i > 0 ? ', ' : '';
-        if (widget.thisData.sideEffects![i].name != null) {
-          sideEffects += comma + widget.thisData.sideEffects![i].name!.replaceAll('\n', '').trim();
-        }
-      }
-      if (widget.thisData.customSideEffects != null &&
-          widget.thisData.customSideEffects!.isNotEmpty) {
-        customSideEffects = widget.thisData.customSideEffects![0];
+      sideEffects = widget.thisData.sideEffects!
+          .map((effect) => effect.name.replaceAll('\n', '').trim())
+          .join(', ');
+
+      if (widget.thisData.customSideEffects.isNotEmpty) {
+        customSideEffects = widget.thisData.customSideEffects[0];
       }
     }
 

@@ -5,6 +5,7 @@ import 'package:artrit/theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../api/api_spr.dart';
+import '../data/data_spr_item.dart';
 import '../my_functions.dart';
 import '../roles.dart';
 import '../secure_storage.dart';
@@ -36,7 +37,6 @@ class _PageAnamnesisFamilyHistoryEditState extends State<PageAnamnesisFamilyHist
 
   // Справочники
   late List<DataSprRelatives> _thisSprDataRelatives;
-  List<String> _listSprRelatives= [];
 
   /// Параметры
   bool _isLoading = false; // Флаг загрузки
@@ -91,11 +91,6 @@ class _PageAnamnesisFamilyHistoryEditState extends State<PageAnamnesisFamilyHist
     _valuebouveit = _thisData.valuebouveit ?? [];
 
     _thisSprDataRelatives = await _apiSpr.getRelatives();
-
-    _listSprRelatives = _thisSprDataRelatives
-        .map((e) => e.name ?? '')
-        .toList()
-      ..sort();
 
     setState(() {});
   }
@@ -238,7 +233,7 @@ class _PageAnamnesisFamilyHistoryEditState extends State<PageAnamnesisFamilyHist
           multiSelectKey: Enum.valueart,
           multiSelectValue: _valueart,
           onSwitchChanged: (value) => setState(() => _radioart = value),
-          onMultiSelectChanged: (value) => setState(() => _valueart = value),
+          onMultiSelectChanged: (value) => setState(() => _valueart = value ?? []),
         ),
         _buildGroup(
           label: 'Псориаз',
@@ -247,7 +242,7 @@ class _PageAnamnesisFamilyHistoryEditState extends State<PageAnamnesisFamilyHist
           multiSelectKey: Enum.valuepsor,
           multiSelectValue: _valuepsor,
           onSwitchChanged: (value) => setState(() => _radiopsor = value),
-          onMultiSelectChanged: (value) => setState(() => _valuepsor = value),
+          onMultiSelectChanged: (value) => setState(() => _valuepsor = value ?? []),
         ),
         _buildGroup(
           label: 'Болезнь Крона',
@@ -256,7 +251,7 @@ class _PageAnamnesisFamilyHistoryEditState extends State<PageAnamnesisFamilyHist
           multiSelectKey: Enum.valuekron,
           multiSelectValue: _valuekron,
           onSwitchChanged: (value) => setState(() => _radiokron = value),
-          onMultiSelectChanged: (value) => setState(() => _valuekron = value),
+          onMultiSelectChanged: (value) => setState(() => _valuekron = value ?? []),
         ),
         _buildGroup(
           label: 'Язвенный колит',
@@ -265,7 +260,7 @@ class _PageAnamnesisFamilyHistoryEditState extends State<PageAnamnesisFamilyHist
           multiSelectKey: Enum.valueyazkol,
           multiSelectValue: _valueyazkol,
           onSwitchChanged: (value) => setState(() => _radioyazkol = value),
-          onMultiSelectChanged: (value) => setState(() => _valueyazkol = value),
+          onMultiSelectChanged: (value) => setState(() => _valueyazkol = value ?? []),
         ),
         _buildGroup(
           label: 'Болезнь Бехтерева',
@@ -274,7 +269,7 @@ class _PageAnamnesisFamilyHistoryEditState extends State<PageAnamnesisFamilyHist
           multiSelectKey: Enum.valuebolbeh,
           multiSelectValue: _valuebolbeh,
           onSwitchChanged: (value) => setState(() => _radiobolbeh = value),
-          onMultiSelectChanged: (value) => setState(() => _valuebolbeh = value),
+          onMultiSelectChanged: (value) => setState(() => _valuebolbeh = value ?? []),
         ),
         _buildGroup(
           label: 'Увеит',
@@ -283,7 +278,7 @@ class _PageAnamnesisFamilyHistoryEditState extends State<PageAnamnesisFamilyHist
           multiSelectKey: Enum.valuebouveit,
           multiSelectValue: _valuebouveit,
           onSwitchChanged: (value) => setState(() => _radiobouveit = value),
-          onMultiSelectChanged: (value) => setState(() => _valuebouveit = value),
+          onMultiSelectChanged: (value) => setState(() => _valuebouveit = value ?? []),
         ),
         _buildGroup(
           label: 'Болезнь Рейтера',
@@ -292,7 +287,7 @@ class _PageAnamnesisFamilyHistoryEditState extends State<PageAnamnesisFamilyHist
           multiSelectKey: Enum.valuebobolrey,
           multiSelectValue: _valuebobolrey,
           onSwitchChanged: (value) => setState(() => _radiobobolrey = value),
-          onMultiSelectChanged: (value) => setState(() => _valuebobolrey = value),
+          onMultiSelectChanged: (value) => setState(() => _valuebobolrey = value ?? []),
         ),
       ],
     );
@@ -306,7 +301,7 @@ class _PageAnamnesisFamilyHistoryEditState extends State<PageAnamnesisFamilyHist
     required Enum multiSelectKey,
     required List<String> multiSelectValue,
     required ValueChanged<bool> onSwitchChanged,
-    required ValueChanged<List<String>> onMultiSelectChanged,
+    required ValueChanged<List<String>?> onMultiSelectChanged,
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10.0), // Отступ между группами
@@ -330,11 +325,12 @@ class _PageAnamnesisFamilyHistoryEditState extends State<PageAnamnesisFamilyHist
             InputMultiSelect(
               labelText: 'Родственники',
               fieldKey: _keys[multiSelectKey]!,
-              listSelectValue: multiSelectValue,
+              allValues: _thisSprDataRelatives.map((e) => SprItem(id: e.name ?? '', name: e.name ?? ''))
+                  .toList(),
+              selectedValues: multiSelectValue,
               required: true,
-              listValues: _listSprRelatives,
               listRoles: Roles.asPatient,
-              role: _role,
+              roleId: _role,
               onChanged: onMultiSelectChanged,
             ),
         ],

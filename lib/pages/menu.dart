@@ -7,6 +7,7 @@ import 'package:artrit/pages/page_info.dart';
 import 'package:artrit/pages/page_inspections_main.dart';
 import 'package:artrit/pages/page_library.dart';
 import 'package:artrit/pages/page_login.dart';
+import 'package:artrit/pages/page_notifications_settings.dart';
 import 'package:artrit/pages/page_patient_edit.dart';
 import 'package:artrit/pages/page_patient_main.dart';
 import 'package:artrit/pages/page_patients.dart';
@@ -54,6 +55,7 @@ enum EnumMenu {
   info,
   logOut,
   patients,
+  notificationsSettings,
   chat,
 }
 
@@ -105,6 +107,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
   static const List<EnumMenu> _menuItemsDoctor = [
     EnumMenu.homeDoctor,
     EnumMenu.profileDoctor,
+    EnumMenu.notificationsSettings,
     EnumMenu.chat,
     EnumMenu.patients,
     EnumMenu.library,
@@ -294,6 +297,8 @@ extension EnumMenuExtension on EnumMenu {
         return 'Выход';
       case EnumMenu.patients:
         return 'Пациенты';
+      case EnumMenu.notificationsSettings:
+        return 'Настройки уведомлений';
     }
   }
 
@@ -341,6 +346,8 @@ extension EnumMenuExtension on EnumMenu {
         return Icons.logout;
       case EnumMenu.patients:
         return FontAwesomeIcons.users;
+      case EnumMenu.notificationsSettings:
+        return Icons.notifications_on_sharp;
     }
   }
 
@@ -388,6 +395,8 @@ extension EnumMenuExtension on EnumMenu {
         return Colors.deepPurple.shade200;
       case EnumMenu.patients:
         return Colors.deepPurple.shade200;
+      case EnumMenu.notificationsSettings:
+        return Colors.orange.shade200;
     }
   }
 
@@ -398,7 +407,7 @@ extension EnumMenuExtension on EnumMenu {
       case EnumMenu.homeDoctor:
         return (title) => PageDoctorMain();
       case EnumMenu.profilePatient:
-        return (title) => PagePatientEdit(title: title);
+        return (title) => PagePatientEdit(title: title, isEditForm: true,);
       case EnumMenu.profileDoctor:
         return (title) => PageDoctorEdit(title: title);
       case EnumMenu.chat:
@@ -435,6 +444,8 @@ extension EnumMenuExtension on EnumMenu {
         return (title) => PageLogin();
       case EnumMenu.patients:
         return (title) => PagePatients(title: title);
+      case EnumMenu.notificationsSettings:
+        return (title) => PageNotificationsSettings(title: title);
     }
   }
 }

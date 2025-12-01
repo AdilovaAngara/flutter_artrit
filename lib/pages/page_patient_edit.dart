@@ -24,10 +24,12 @@ import '../theme.dart';
 
 class PagePatientEdit extends StatefulWidget {
   final String title;
+  final bool isEditForm;
 
   const PagePatientEdit({
     super.key,
-    required this.title
+    required this.title,
+    required this.isEditForm,
   });
 
   @override
@@ -57,27 +59,28 @@ class PagePatientEditState extends State<PagePatientEdit> {
   late int _role;
   String _appBarTitle = '';
   late String _patientsId;
-  late String? _lastNamePatient;
-  late String? _firstNamePatient;
-  late String? _patronymicPatient;
-  late String? _birthDate;
-  late String? _gender;
-  late String? _regionName;
-  late String? _address;
+  String? _lastNamePatient;
+  String? _firstNamePatient;
+  String? _patronymicPatient;
+  String? _birthDate;
+  String? _gender;
+  String? _regionName;
+  String? _address;
   bool _invalid = false;
-  late String? _whoYouAreToThePatient;
-  late String? _lastNameParent;
-  late String? _firstNameParent;
-  late String? _patronymicParent;
-  late String? _email;
-  late String? _phone;
-  late String? _diagnosesId;
-  late String? _diagnosisComment;
-  late String? _mkbName;
-  late String? _mkbCode;
-  late String? _hospitalName;
-  late String? _doctor;
-  late String? _doctorFio;
+  String? _whoYouAreToThePatient;
+  String? _lastNameParent;
+  String? _firstNameParent;
+  String? _patronymicParent;
+  String? _email;
+  String? _phone;
+  String? _diagnosesId;
+  String? _diagnosisComment;
+  String? _mkbName;
+  String? _mkbCode;
+  String? _hospitalName;
+  String? _doctor;
+  String? _doctorFio;
+
   /// Ключи
   final _formKey = GlobalKey<FormState>();
   final Map<EnumPatient, GlobalKey<FormFieldState>> _keysPatient = {
@@ -99,46 +102,50 @@ class PagePatientEditState extends State<PagePatientEdit> {
   Future<void> _loadData() async {
     _role = await getUserRole();
     _appBarTitle = (_role == 1) ? widget.title : 'Данные пациента';
-    _patientsId = await readSecureData(SecureKey.patientsId);
-    _dataPatient = await _apiPatient.get(patientsId: _patientsId);
-    _dataParent = await _apiParent.get(patientsId: _patientsId);
-    _dataPatientDiagnoses = await _apiPatientDiagnoses.get(patientsId: _patientsId);
-    _dataSprRegion = await _apiSpr.getRegions();
-    _dataSprRelationship = await _apiSpr.getRelationship();
-    _dataSprDiagnoses = await _apiSpr.getDiagnoses();
 
-    _lastNamePatient = _dataPatient.lastName;
-    _firstNamePatient = _dataPatient.firstName;
-    _patronymicPatient = _dataPatient.patronymic;
-    _birthDate = convertTimestampToDate(_dataPatient.birthDate);
-    _gender = _dataPatient.gender;
-    _regionName = _dataPatient.regionName;
-    _address = _dataPatient.address;
-    _invalid = _getBootInvalid();
+    if (widget.isEditForm) {
+      _patientsId = await readSecureData(SecureKey.patientsId);
+      _dataPatient = await _apiPatient.get(patientsId: _patientsId);
+      _dataParent = await _apiParent.get(patientsId: _patientsId);
+      _dataPatientDiagnoses = await _apiPatientDiagnoses.get(patientsId: _patientsId);
+      _dataSprRegion = await _apiSpr.getRegions();
+      _dataSprRelationship = await _apiSpr.getRelationship();
+      _dataSprDiagnoses = await _apiSpr.getDiagnoses();
 
-    _whoYouAreToThePatient = _dataParent.whoYouAreToThePatient;
-    _lastNameParent = _dataParent.lastName;
-    _firstNameParent = _dataParent.firstName;
-    _patronymicParent = _dataParent.patronymic;
-    _email = _dataParent.email;
-    _phone = _dataParent.phone;
+      _lastNamePatient = _dataPatient.lastName;
+      _firstNamePatient = _dataPatient.firstName;
+      _patronymicPatient = _dataPatient.patronymic;
+      _birthDate = convertTimestampToDate(_dataPatient.birthDate);
+      _gender = _dataPatient.gender;
+      _regionName = _dataPatient.regionName;
+      _address = _dataPatient.address;
+      _invalid = _getBootInvalid();
 
-    _diagnosesId = _dataPatientDiagnoses.isNotEmpty ? _dataPatientDiagnoses.first.diagnosisId : null;
-    _diagnosisComment = _dataPatientDiagnoses.isNotEmpty ? _dataPatientDiagnoses.first.comment ?? '' : '';
-    if (_diagnosesId != null)
+      _whoYouAreToThePatient = _dataParent.whoYouAreToThePatient;
+      _lastNameParent = _dataParent.lastName;
+      _firstNameParent = _dataParent.firstName;
+      _patronymicParent = _dataParent.patronymic;
+      _email = _dataParent.email;
+      _phone = _dataParent.phone;
+
+      _diagnosesId = _dataPatientDiagnoses.isNotEmpty ? _dataPatientDiagnoses.first.diagnosisId : null;
+      _diagnosisComment = _dataPatientDiagnoses.isNotEmpty ? _dataPatientDiagnoses.first.comment ?? '' : '';
+      if (_diagnosesId != null)
       {
         _mkbName = _dataSprDiagnoses.firstWhereOrNull((diagnoses) => diagnoses.id == _diagnosesId)?.mkbName;
         _mkbCode = _dataSprDiagnoses.firstWhereOrNull((diagnoses) => diagnoses.id == _diagnosesId)?.mkbCode;
       }
-    else {
-      _mkbName = '';
-      _mkbCode = '';
+      else {
+        _mkbName = '';
+        _mkbCode = '';
+      }
+      _hospitalName = _dataPatient.hospitalName == 'Другое' ? _dataPatient.unknownHospital : _dataPatient.hospitalName;
+      _doctor = _dataPatient.doctor;
+      _doctorFio = _doctor == '1' ? _dataPatient.unknownDoctor : _dataPatient.doctorFio;
+      _listSprRegion = _dataSprRegion.map((e) => e.name).toList()..sort();
+      _listSprRelationship = _dataSprRelationship.map((e) => e.name ?? '').toList()..sort();
     }
-    _hospitalName = _dataPatient.hospitalName == 'Другое' ? _dataPatient.unknownHospital : _dataPatient.hospitalName;
-    _doctor = _dataPatient.doctor;
-    _doctorFio = _doctor == '1' ? _dataPatient.unknownDoctor : _dataPatient.doctorFio;
-    _listSprRegion = _dataSprRegion.map((e) => e.name).toList()..sort();
-    _listSprRelationship = _dataSprRelationship.map((e) => e.name ?? '').toList()..sort();
+
     setState(() {});
   }
 
@@ -213,6 +220,26 @@ class PagePatientEditState extends State<PagePatientEdit> {
 
 
   bool _areDifferent() {
+    if (!widget.isEditForm) {
+      // Если это форма добавления или данных нет, считаем, что есть изменения, если что-то заполнено
+      return _lastNamePatient != null ||
+          _firstNamePatient != null ||
+          _patronymicPatient != null ||
+          _patronymicPatient != null ||
+          _birthDate != null ||
+          _gender != null ||
+          _regionName != null ||
+          _address != null ||
+          _invalid == true ||
+          _whoYouAreToThePatient != null ||
+          _lastNameParent != null ||
+          _firstNameParent != null ||
+          _patronymicParent != null ||
+          _email != null ||
+          _phone != null;
+    }
+
+    // Иначе Сравниваем поля
     final w = _dataPatient;
     final p = _dataParent;
     return _lastNamePatient != w.lastName ||
@@ -292,7 +319,7 @@ bool _getBootInvalid()
                       child: ButtonWidget(
                         labelText: 'Сохранить',
                         showProgressIndicator: _isLoading,
-                        listRoles: Roles.asPatient,
+                        listRoles: Roles.all,
                         role: _role,
                         onPressed: () {
                           _changeData();
@@ -325,7 +352,7 @@ bool _getBootInvalid()
           value: _lastNamePatient,
           required: true,
           keyboardType: TextInputType.name,
-          listRoles: Roles.asPatient,
+          listRoles: Roles.all,
           role: _role,
           onChanged: (value) {
             setState(() {
@@ -339,7 +366,7 @@ bool _getBootInvalid()
           value: _firstNamePatient,
           required: true,
           keyboardType: TextInputType.name,
-          listRoles: Roles.asPatient,
+          listRoles: Roles.all,
           role: _role,
           onChanged: (value) {
             setState(() {
@@ -353,7 +380,7 @@ bool _getBootInvalid()
           value: _patronymicPatient,
           required: false,
           keyboardType: TextInputType.name,
-          listRoles: Roles.asPatient,
+          listRoles: Roles.all,
           role: _role,
           onChanged: (value) {
             setState(() {
@@ -366,7 +393,7 @@ bool _getBootInvalid()
           fieldKey: _keysPatient[EnumPatient.birthDate]!,
           value: _birthDate,
           required: true,
-          listRoles: Roles.asPatient,
+          listRoles: Roles.all,
           role: _role,
           onChanged: (value) {
             setState(() {
@@ -380,7 +407,7 @@ bool _getBootInvalid()
           value: (_gender == 'Мужчина') ? 'Мужской' : (_gender == 'Женщина') ? 'Женский' : _gender,
           required: true,
           listValues: _listGender,
-          listRoles: Roles.asPatient,
+          listRoles: Roles.all,
           role: _role,
           onChanged: (value) {
             setState(() {
@@ -394,7 +421,7 @@ bool _getBootInvalid()
           value: _regionName,
           required: true,
           listValues: _listSprRegion,
-          listRoles: Roles.asPatient,
+          listRoles: Roles.all,
           role: _role,
           onChanged: (value) {
             setState(() {
@@ -407,7 +434,7 @@ bool _getBootInvalid()
           fieldKey: _keysPatient[EnumPatient.address]!,
           value: _address,
           required: false,
-          listRoles: Roles.asPatient,
+          listRoles: Roles.all,
           role: _role,
           onChanged: (value) {
             setState(() {
@@ -419,7 +446,7 @@ bool _getBootInvalid()
           labelText: 'Инвалидность',
           fieldKey: _keysPatient[EnumPatient.invalid]!,
           value: _invalid,
-          listRoles: Roles.asPatient,
+          listRoles: Roles.all,
           role: _role,
           onChanged: (value) {
             setState(() {
@@ -449,7 +476,7 @@ bool _getBootInvalid()
           value: _whoYouAreToThePatient,
           required: true,
           listValues: _listSprRelationship,
-          listRoles: Roles.asPatient,
+          listRoles: Roles.all,
           role: _role,
           onChanged: (value) {
             setState(() {
@@ -463,7 +490,7 @@ bool _getBootInvalid()
           value: _lastNameParent,
           required: true,
           keyboardType: TextInputType.name,
-          listRoles: Roles.asPatient,
+          listRoles: Roles.all,
           role: _role,
           onChanged: (value) {
             setState(() {
@@ -477,7 +504,7 @@ bool _getBootInvalid()
           value: _firstNameParent,
           required: true,
           keyboardType: TextInputType.name,
-          listRoles: Roles.asPatient,
+          listRoles: Roles.all,
           role: _role,
           onChanged: (value) {
             setState(() {
@@ -491,7 +518,7 @@ bool _getBootInvalid()
           value: _patronymicParent,
           required: false,
           keyboardType: TextInputType.name,
-          listRoles: Roles.asPatient,
+          listRoles: Roles.all,
           role: _role,
           onChanged: (value) {
             setState(() {
@@ -505,7 +532,7 @@ bool _getBootInvalid()
           value: _email,
           required: true,
           keyboardType: TextInputType.emailAddress,
-          listRoles: Roles.asPatient,
+          listRoles: Roles.all,
           role: _role,
           onChanged: (value) {
             setState(() {
@@ -519,7 +546,7 @@ bool _getBootInvalid()
           value: _phone,
           required: true,
           keyboardType: TextInputType.phone,
-          listRoles: Roles.asPatient,
+          listRoles: Roles.all,
           role: _role,
           onChanged: (value) {
             setState(() {

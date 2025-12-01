@@ -6,8 +6,8 @@ import 'package:artrit/secure_storage.dart';
 import "package:path/path.dart" as path;
 
 class BaseClient {
-  bool isTest = false;
-  //bool isTest = true;
+  //bool isTest = false;
+  bool isTest = true;
 
   String get baseUrl {
     /// Релиз

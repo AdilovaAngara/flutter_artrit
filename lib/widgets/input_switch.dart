@@ -4,6 +4,8 @@ import '../theme.dart';
 
 class InputSwitch extends StatefulWidget {
   final String labelText;
+  final String trueLabelText;
+  final String falseLabelText;
   final GlobalKey<FormFieldState> fieldKey;
   final bool? value;
   final bool readOnly;
@@ -14,6 +16,8 @@ class InputSwitch extends StatefulWidget {
   const InputSwitch({
     super.key,
     required this.labelText,
+    this.trueLabelText = 'Да',
+    this.falseLabelText = 'Нет',
     required this.fieldKey,
     required this.value,
     this.readOnly = false,
@@ -64,8 +68,8 @@ class InputSwitchState extends State<InputSwitch> {
                     ),
                     Text(
                       _value
-                          ? '${widget.labelText}: Да'
-                          : '${widget.labelText}: Нет',
+                          ? '${widget.labelText}: ${widget.trueLabelText}'
+                          : '${widget.labelText}: ${widget.falseLabelText}',
                       style: labelStyle,
                     ),
                   ],
@@ -88,8 +92,8 @@ class InputSwitchState extends State<InputSwitch> {
                     text: (widget.value == null)
                         ? 'Нет'
                         : widget.value!
-                            ? 'Да'
-                            : 'Нет',
+                            ? widget.trueLabelText
+                            : widget.falseLabelText,
                     style: inputTextStyle,
                   ),
                 ],

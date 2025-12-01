@@ -1,14 +1,17 @@
+import 'package:artrit/pages/page_patient_edit.dart';
 import 'package:flutter/material.dart';
 import '../api/api_patients.dart';
 import '../api/api_spr.dart';
 import '../data/data_patients.dart';
 import '../data/data_spr_diagnoses.dart';
 import '../my_functions.dart';
+import '../roles.dart';
 import '../routes.dart';
 import '../secure_storage.dart';
 import '../theme.dart';
 import '../widget_another/patients_card_widget.dart';
 import '../widgets/app_bar_widget.dart';
+import '../widgets/button_widget.dart';
 import 'menu.dart';
 
 class PagePatients extends StatefulWidget {
@@ -33,6 +36,7 @@ class _PagePatientsListState extends State<PagePatients> {
   late List<DataPatients> _thisDataFiltered = [];
   late List<DataSprDiagnoses> _dataSprDiagnoses;
   /// Параметры
+  late int _role;
   late String _doctorsId;
   String _searchQuery = '';
 
@@ -43,6 +47,7 @@ class _PagePatientsListState extends State<PagePatients> {
   }
 
   Future<void> _loadData() async {
+    _role = await getUserRole();
     _doctorsId = await readSecureData(SecureKey.doctorsId);
     _thisData = await _apiPatients.get(doctorsId: _doctorsId);
     _dataSprDiagnoses= await _apiSpr.getDiagnoses();
@@ -68,6 +73,26 @@ class _PagePatientsListState extends State<PagePatients> {
       setState(() {});
     }
   }
+
+
+
+  void _navigateAndRefresh(BuildContext context) async {
+    await deleteSecureData(SecureKey.patientsId);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) =>
+          PagePatientEdit(
+              title: widget.title,
+            isEditForm: false,
+          ),),
+    ).then((_) async {
+      await _refreshData();
+    });
+  }
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -97,15 +122,31 @@ class _PagePatientsListState extends State<PagePatients> {
                     // Поле поиска
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Поиск пациента...',
-                          prefixIcon: Icon(Icons.search),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              decoration: InputDecoration(
+                                hintText: 'Поиск пациента...',
+                                prefixIcon: Icon(Icons.search),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                ),
+                              ),
+                              onChanged: _filter,
+                            ),
                           ),
-                        ),
-                        onChanged: _filter,
+                          ButtonWidget(
+                            labelText: '',
+                            icon: Icons.add_circle_rounded,
+                            onlyText: true,
+                            listRoles: Roles.asDoctor,
+                            role: _role,
+                            onPressed: () {
+                              _navigateAndRefresh(context);
+                            },
+                          ),
+                        ],
                       ),
                     ),
 
