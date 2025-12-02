@@ -58,18 +58,22 @@ class ApiSpr {
     var response =
     await baseClient.get('/api/lookups/doctors?lookupName=doctors');
     List<DataSprDoctors> thisData = dataSprDoctorsFromJson(response.body);
+    // Сортировка с учетом возможного null значения
+    thisData.sort((a, b) {
+      if (a.name == null && b.name == null) {
+        return 0; // Оба значения null, считаем их равными
+      }
+      if (a.name == null) {
+        return -1; // a.name = null, считаем его меньше
+      }
+      if (b.name == null) {
+        return 1; // b.name = null, считаем его больше
+      }
+      return a.name!.compareTo(b.name!);
+    });
     debugPrint(jsonEncode(thisData));
     return thisData;
   }
-
-  // Future<List<DataSprRelationship>> getRelationship() async {
-  //   var response =
-  //   await baseClient.get('/api/lookups/relationship-degrees?lookupName=relationship-degrees');
-  //   List<DataSprRelationship> thisData = dataSprRelationshipFromJson(response.body);
-  //   thisData = thisData.where((e) => !e.isHidden).toList();
-  //   debugPrint(jsonEncode(thisData));
-  //   return thisData;
-  // }
 
 
   Future<List<DataSprRelationship>> getRelationship() async {
@@ -89,16 +93,12 @@ class ApiSpr {
     return thisData;
   }
 
-  Future<List<double>> getTemperature() async {
+  Future<List<DataSprTemperature>> getTemperature() async {
     var response =
     await baseClient.get('/api/lookups/temperature?lookupName=temperature');
     List<DataSprTemperature> thisData = dataSprTemperatureFromJson(response.body);
     thisData = thisData.where((e) => !e.isHidden).toList();
-    List<double> listSprTemperature = thisData
-        .map((e) => e.name ?? 0)
-        .toList()
-      ..sort();
-    return listSprTemperature;
+    return thisData;
   }
 
   Future<List<String>> getTestsGroup() async {
@@ -175,56 +175,44 @@ class ApiSpr {
 
 
 
-  Future<List<String>> getTreatmentUnits({
+  Future<List<DataSprTreatmentUnits>> getTreatmentUnits({
     required String recordId,
   }) async {
     var response =
     await baseClient.get('/api/lookups/units/$recordId');
     List<DataSprTreatmentUnits> thisData = dataSprTreatmentUnitsFromJson(response.body);
     thisData = thisData.where((e) => !e.isHidden!).toList();
-    List<String> list = thisData
-        .map((e) => e.name ?? '')
-        .toList();
-    return list;
+    return thisData;
   }
 
 
 
-  Future<List<String>> getTreatmentDrugForms() async {
+  Future<List<DataSprTreatmentDrugForms>> getTreatmentDrugForms() async {
     var response =
     await baseClient.get('/api/lookups/drug-release-forms?lookupName=drug-release-forms');
     List<DataSprTreatmentDrugForms> thisData = dataSprTreatmentDrugFormsFromJson(response.body);
     thisData = thisData.where((e) => !e.isHidden!).toList();
-    List<String> list = thisData
-        .map((e) => e.name ?? '')
-        .toList();
-    return list;
+    return thisData;
   }
 
 
 
-  Future<List<String>> getTreatmentDrugProvision() async {
+  Future<List<DataSprTreatmentDrugProvision>> getTreatmentDrugProvision() async {
     var response =
     await baseClient.get('/api/lookups/drug-provision-types?lookupName=drug-provision-types');
     List<DataSprTreatmentDrugProvision> thisData = dataSprTreatmentDrugProvisionFromJson(response.body);
     thisData = thisData.where((e) => !e.isHidden!).toList();
-    List<String> list = thisData
-        .map((e) => e.name ?? '')
-        .toList();
-    return list;
+    return thisData;
   }
 
 
 
-  Future<List<String>> getTreatmentDrugUsingRate() async {
+  Future<List<DataSprTreatmentDrugUsingRate>> getTreatmentDrugUsingRate() async {
     var response =
     await baseClient.get('/api/lookups/drug-use-rates?lookupName=drug-use-rates');
     List<DataSprTreatmentDrugUsingRate> thisData = dataSprTreatmentDrugUsingRateFromJson(response.body);
     thisData = thisData.where((e) => !e.isHidden!).toList();
-    List<String> list = thisData
-        .map((e) => e.name ?? '')
-        .toList();
-    return list;
+    return thisData;
   }
 
 

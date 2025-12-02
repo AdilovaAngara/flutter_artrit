@@ -16,7 +16,7 @@ import '../widgets/app_bar_widget.dart';
 import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/widget_input_multi_select.dart';
-import '../widgets/input_select.dart';
+import '../widgets/widget_input_select.dart';
 import '../widgets/widget_input_select_date_time.dart';
 import '../widgets/input_switch.dart';
 import '../widgets/input_text.dart';
@@ -53,7 +53,7 @@ class _PageNotificationsSettingsEditState
   late String _patientsId;
   late String _recordId;
   String? _name;
-  String? _frequency;
+  int? _frequencyId;
   String? _beginDate;
   String? _endDate;
   bool _isDisabled = false;
@@ -63,7 +63,6 @@ class _PageNotificationsSettingsEditState
   /// Справочники
   late List<DataPatients> _thisDataPatients = [];
   late List<DataSprFrequency> _thisSprDataFrequency;
-  late List<String> _listSprFrequency;
   late List<DataSprSections> _thisSprDataSections;
 
   /// Ключи
@@ -85,15 +84,12 @@ class _PageNotificationsSettingsEditState
 
     _thisDataPatients = await _apiPatients.get(doctorsId: _doctorsId);
     _thisSprDataFrequency = await _apiSpr.getFrequency();
-    _listSprFrequency = _thisSprDataFrequency.map((e) => e.name).toList();
     _thisSprDataSections = await _apiSpr.getSections();
 
     if (widget.isEditForm) {
       _recordId = widget.thisData!.id;
       _name = widget.thisData!.name ?? '';
-      _frequency = _thisSprDataFrequency
-          .firstWhere((e) => e.id == widget.thisData!.frequencyId)
-          .name;
+      _frequencyId = widget.thisData!.frequencyId;
       _beginDate = dateFormat(widget.thisData!.beginDate!);
       _endDate = dateFormat(widget.thisData!.endDate!);
       _isDisabled = widget.thisData!.isDisabled;
@@ -127,8 +123,7 @@ class _PageNotificationsSettingsEditState
         id: '',
         doctorId: '',
         name: _name,
-        frequencyId: _thisSprDataFrequency
-            .firstWhere((e) => e.name == _frequency).id,
+        frequencyId: _frequencyId ?? 0,
         beginDate: convertStrToDate(_beginDate),
         endDate: convertStrToDate(_endDate),
         isDisabled: _isDisabled,
@@ -144,7 +139,7 @@ class _PageNotificationsSettingsEditState
     if (!widget.isEditForm || widget.thisData == null) {
       // Если это форма добавления или данных нет, считаем, что есть изменения, если что-то заполнено
       return _name != null ||
-          _frequency != null ||
+          _frequencyId != null ||
           _beginDate != null ||
           _endDate != null ||
           _isDisabled == true ||
@@ -247,17 +242,21 @@ class _PageNotificationsSettingsEditState
             });
           },
         ),
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Периодичность',
           fieldKey: _keys[Enum.frequency]!,
-          value: _frequency,
+          allValues: _thisSprDataFrequency.map((e) => SprItem(id: e.id.toString(), name: e.name)).toList(),
+          selectedValue: _frequencyId?.toString(),
           required: true,
-          listValues: _listSprFrequency,
           listRoles: Roles.asDoctor,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
-              _frequency = value;
+              if (value != null) {
+                _frequencyId = int.parse(value);
+              } else {
+                _frequencyId = null;
+              }
             });
           },
         ),
@@ -265,7 +264,6 @@ class _PageNotificationsSettingsEditState
           labelText: 'Дата начала срока действия',
           fieldKey: _keys[Enum.beginDate]!,
           value: _beginDate,
-          initialDate: convertStrToDate(_beginDate),
           firstDateTime: getMoscowDateTime(),
           lastDateTime: convertStrToDate(_endDate) ?? getMoscowDateTime().add(Duration(days: 6000)),
           required: true,
@@ -281,7 +279,7 @@ class _PageNotificationsSettingsEditState
           labelText: 'Дата окончания срока действия',
           fieldKey: _keys[Enum.endDate]!,
           value: _endDate,
-          firstDateTime: convertStrToDate(_beginDate),
+          firstDateTime: convertStrToDate(_beginDate) ?? getMoscowDateTime(),
           lastDateTime: getMoscowDateTime().add(Duration(days: 6000)),
           required: true,
           listRoles: Roles.asDoctor,

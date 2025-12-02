@@ -4,11 +4,11 @@ import 'package:artrit/api/api_spr.dart';
 import 'package:artrit/data/data_patient_register.dart';
 import 'package:artrit/data/data_spr_doctors.dart';
 import 'package:artrit/data/data_spr_hospitals.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart' show TapGestureRecognizer;
 import 'package:flutter/material.dart';
 import '../data/data_result.dart';
 import '../data/data_spr_diagnoses.dart';
+import '../data/data_spr_item.dart';
 import '../data/data_spr_region.dart';
 import '../data/data_spr_relationship.dart';
 import '../my_functions.dart';
@@ -19,7 +19,7 @@ import '../widgets/button_widget.dart';
 import '../widgets/checkbox_group_widget.dart';
 import '../widgets/input_checkbox.dart';
 import '../widgets/widget_input_select_date_time.dart';
-import '../widgets/input_select.dart';
+import '../widgets/widget_input_select.dart';
 import '../widgets/input_text.dart';
 import '../theme.dart';
 import '../widgets/show_message.dart';
@@ -38,9 +38,11 @@ class PagePatientRegister extends StatefulWidget {
 
 class PagePatientRegisterState extends State<PagePatientRegister> {
   late Future<void> _future;
+
   /// API
   final ApiPatient _apiPatient = ApiPatient();
   final ApiSpr _apiSpr = ApiSpr();
+
   /// Данные
   late List<DataSprHospitals> _dataSprHospitals;
   late List<DataSprRegion> _dataSprRegion;
@@ -48,14 +50,12 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
   late List<DataSprRelationship> _dataSprRelationship;
   late List<DataSprDiagnoses> _dataSprDiagnoses;
 
-  // Справочники
-  final List<String> _listGender = ['Мужской', 'Женский'];
-  final List<String> _listSprUveitExists = ['Отсутствует', 'Присутствует'];
-  List<String> _listSprRegion = [];
-  final List<String> _listSprDoctors = ['Другой', 'Отсутствует'];
-  List<String> _listSprHospitals = [];
-  List<String> _listSprRelationship = [];
-  List<String> _listSprDiagnoses = [];
+  /// Справочники
+  List<SprItem> _listSprDoctors = [];
+  final List<SprItem> _listSprUveitExists = [
+    SprItem(id: '1', name: 'Отсутствует'),
+    SprItem(id: '2', name: 'Присутствует')
+  ];
 
   /// Параметры
   bool _isLoading = false; // Флаг загрузки
@@ -64,25 +64,24 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
   String? _patronymicPatient;
   String? _birthDate;
   String? _gender;
-  String? _regionName;
+  String? _regionId;
   bool? _uveit;
-  String? _whoYouAreToThePatient;
+  String? _relationshipDegreeId;
   String? _lastNameParent;
   String? _firstNameParent;
   String? _patronymicParent;
   String? _email;
   String? _phone;
-  String? _mkbName;
-  String? _mkbCode;
+  String? _diagnosisId;
   String? _diagnosisComment;
-  String? _hospitalName;
+  String? _hospitalId;
   String? _unknownHospital;
-  String? _doctorFio;
   String? _doctorId;
   String? _unknownDoctor;
   bool _canContainCookies = false;
   bool _agreeEmail = false;
   bool _agreeLk = false;
+
   /// Ключи
   final _formKey = GlobalKey<FormState>();
   final Map<EnumPatient, GlobalKey<FormFieldState>> _keysPatient = {
@@ -107,16 +106,17 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
     _dataSprRegion = await _apiSpr.getRegions();
     _dataSprHospitals = await _apiSpr.getHospitals();
     _dataSprDoctors = await _apiSpr.getDoctors();
+    _listSprDoctors = _dataSprDoctors
+        .map((e) => SprItem(id: e.id, name: e.name ?? ''))
+        .toList();
+    _listSprDoctors.addAll([
+      SprItem(id: '1', name: 'Другой'),
+      SprItem(id: '2', name: 'Отсутствует'),
+    ]);
     _dataSprRelationship = await _apiSpr.getRelationship();
     _dataSprDiagnoses = await _apiSpr.getDiagnoses();
-    _listSprRegion = _dataSprRegion.map((e) => e.name).toList()..sort();
-    _listSprHospitals = _dataSprHospitals.map((e) => e.name ?? '').toList()..sort();
-    _listSprDoctors.addAll(_dataSprDoctors.map((e) => e.name ?? '').toList()..sort());
-    _listSprRelationship = _dataSprRelationship.map((e) => e.name ?? '').toList()..sort();
-    _listSprDiagnoses = _dataSprDiagnoses.map((e) => '${e.mkbCode.trim()} ${e.synonym.trim().replaceAll('\n', '')}').toList()..sort();
     setState(() {});
   }
-
 
   void _changeData() async {
     if (!_formKey.currentState!.validate()) {
@@ -134,79 +134,69 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
       _isLoading = false;
     });
 
-    if (result.message != null)
-    {
+    if (result.message != null) {
       ShowMessage.show(context: context, message: result.message!);
-    }
-    else {
+    } else {
       if (mounted) {
         Navigator.pop(context);
-        ShowMessage.show(context: context, message: 'Вы успешно зарегистрированы в системе. Логин и пароль придут на почту, указанную при регистрации');
+        ShowMessage.show(
+            context: context,
+            message:
+                'Вы успешно зарегистрированы в системе. Логин и пароль придут на почту, указанную при регистрации');
       }
     }
   }
 
-
-
-
-
-
-    Future<DataResult1> _request() async {
-      DataPatientRegister thisData = DataPatientRegister(
-          firstName: _firstNamePatient,
-          lastName: _lastNamePatient,
-          patrynomic: _patronymicPatient,
-          birthDate: convertStrToDate(_birthDate) ?? getMoscowDateTime(),
-          regionId: _dataSprRegion.firstWhereOrNull((region) => region.name == _regionName)?.id ?? '',
-          isMale: _gender == _listGender[0] ? 'true' : 'false',
-          isFemale: _gender == _listGender[1] ? 'true' : 'false',
-          diagnosisId: _dataSprDiagnoses.firstWhereOrNull((e) => '${e.mkbCode} ${e.synonym.replaceAll('\n', '')}' == _mkbName)?.id ?? '',
-          diagnosisComment: _diagnosisComment,
-          uveit: _uveit ?? false,
-          doctorId: _doctorId,
-          unknownDoctor: _unknownDoctor,
-          hospitalId: _dataSprHospitals.firstWhereOrNull((e) => e.name == _hospitalName)?.id ?? '',
-          unknownHospital: _unknownHospital,
-          canContainCookies: _canContainCookies,
-          relationshipDegreeId: _dataSprRelationship.firstWhereOrNull((e) => e.name == _whoYouAreToThePatient)?.id ?? '',
-          applicantFirstName: _firstNameParent,
-          applicantLastName: _lastNameParent,
-          applicantPatrynomic: _patronymicParent,
-          applicantEmail: _email,
-          applicantPhone: _phone,
-          notificationReceiveType: getNotificationReceiveType(agreeEmail: _agreeEmail, agreeLk: _agreeLk));
-      return await _apiPatient.postRegister(thisData: thisData);
-    }
-
-
-
-
+  Future<DataResult1> _request() async {
+    DataPatientRegister thisData = DataPatientRegister(
+        firstName: _firstNamePatient,
+        lastName: _lastNamePatient,
+        patrynomic: _patronymicPatient,
+        birthDate: convertStrToDate(_birthDate) ?? getMoscowDateTime(),
+        regionId: _regionId,
+        isMale: _gender == listGender[0].name ? 'true' : 'false',
+        isFemale: _gender == listGender[1].name ? 'true' : 'false',
+        diagnosisId: _diagnosisId,
+        diagnosisComment: _diagnosisComment,
+        uveit: _uveit ?? false,
+        doctorId: _doctorId,
+        unknownDoctor: _unknownDoctor,
+        hospitalId: _hospitalId,
+        unknownHospital: _unknownHospital,
+        canContainCookies: _canContainCookies,
+        relationshipDegreeId: _relationshipDegreeId,
+        applicantFirstName: _firstNameParent,
+        applicantLastName: _lastNameParent,
+        applicantPatrynomic: _patronymicParent,
+        applicantEmail: _email,
+        applicantPhone: _phone,
+        notificationReceiveType: getNotificationReceiveType(
+            agreeEmail: _agreeEmail, agreeLk: _agreeLk));
+    return await _apiPatient.postRegister(thisData: thisData);
+  }
 
   bool _areDifferent() {
     return _lastNamePatient != null ||
-    _firstNamePatient != null ||
-    _patronymicPatient != null ||
-    _birthDate != null ||
-    _gender != null ||
-    _regionName != null ||
-    _uveit != null ||
-    _whoYouAreToThePatient != null ||
-    _lastNameParent != null ||
-    _firstNameParent != null ||
-    _patronymicParent != null ||
-    _email != null ||
-    _phone != null ||
-    _mkbName != null ||
-    _mkbCode != null ||
-    _diagnosisComment != null ||
-    _hospitalName != null ||
-    _unknownHospital != null ||
-    _doctorFio != null ||
-    _doctorId != null ||
-    _unknownDoctor != null;
+        _firstNamePatient != null ||
+        _patronymicPatient != null ||
+        _birthDate != null ||
+        _gender != null ||
+        _regionId != null ||
+        _uveit != null ||
+        _relationshipDegreeId != null ||
+        _lastNameParent != null ||
+        _firstNameParent != null ||
+        _patronymicParent != null ||
+        _email != null ||
+        _phone != null ||
+        _diagnosisId != null ||
+        _diagnosisComment != null ||
+        _hospitalId != null ||
+        _unknownHospital != null ||
+        _doctorId != null ||
+        _doctorId != null ||
+        _unknownDoctor != null;
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -286,7 +276,8 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
                               SizedBox(
                                 width: 50,
                                 child: InputCheckbox(
-                                  fieldKey: _keysPatient[EnumPatient.canContainCookies]!,
+                                  fieldKey: _keysPatient[
+                                      EnumPatient.canContainCookies]!,
                                   labelText: '',
                                   requiredTrue: true,
                                   value: _canContainCookies,
@@ -301,7 +292,8 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
                               Expanded(
                                 child: Text.rich(
                                   TextSpan(
-                                    text: 'Я прочитал(а) и соглашаюсь с условиями ',
+                                    text:
+                                        'Я прочитал(а) и соглашаюсь с условиями ',
                                     style: listLabelStyle,
                                     children: [
                                       TextSpan(
@@ -312,8 +304,8 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
                                           decoration: TextDecoration.underline,
                                         ),
                                         recognizer: TapGestureRecognizer()
-                                          ..onTap = () =>
-                                            openUrl('https://ja.aspirre-russia.ru/static/PrivacyPolicy.docx'),
+                                          ..onTap = () => openUrl(
+                                              'https://ja.aspirre-russia.ru/static/PrivacyPolicy.docx'),
                                       ),
                                     ],
                                   ),
@@ -321,7 +313,9 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 30,),
+                          SizedBox(
+                            height: 30,
+                          ),
                         ],
                       ),
                     ),
@@ -348,15 +342,16 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
     );
   }
 
-
-
-
   Widget buildPatientForm() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Информация о пациенте', style: captionTextStyle, textAlign: TextAlign.start,),
+        Text(
+          'Информация о пациенте',
+          style: captionTextStyle,
+          textAlign: TextAlign.start,
+        ),
         SizedBox(height: 10),
         InputText(
           labelText: 'Фамилия',
@@ -410,12 +405,16 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
             });
           },
         ),
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Пол',
           fieldKey: _keysPatient[EnumPatient.gender]!,
-          value: (_gender == 'Мужчина') ? 'Мужской' : (_gender == 'Женщина') ? 'Женский' : _gender,
+          allValues: listGender,
+          selectedValue: (_gender == 'Мужчина')
+              ? 'Мужской'
+              : (_gender == 'Женщина')
+                  ? 'Женский'
+                  : _gender,
           required: true,
-          listValues: _listGender,
           listRoles: Roles.all,
           onChanged: (value) {
             setState(() {
@@ -423,16 +422,18 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
             });
           },
         ),
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Регион',
           fieldKey: _keysPatient[EnumPatient.regionName]!,
-          value: _regionName,
+          allValues: _dataSprRegion
+              .map((e) => SprItem(id: e.id, name: e.name))
+              .toList(),
+          selectedValue: _regionId,
           required: true,
-          listValues: _listSprRegion,
           listRoles: Roles.all,
           onChanged: (value) {
             setState(() {
-              _regionName = value;
+              _regionId = value;
             });
           },
         ),
@@ -440,28 +441,29 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
     );
   }
 
-
-
-
-
-
   Widget buildParentForm() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Информация об опекуне', style: captionTextStyle, textAlign: TextAlign.start,),
+        Text(
+          'Информация об опекуне',
+          style: captionTextStyle,
+          textAlign: TextAlign.start,
+        ),
         SizedBox(height: 10),
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Степень родства',
-          fieldKey: _keysParent[EnumParent.whoYouAreToThePatient]!,
-          value: _whoYouAreToThePatient,
+          fieldKey: _keysParent[EnumParent.relationshipDegreeId]!,
+          allValues: _dataSprRelationship
+              .map((e) => SprItem(id: e.id, name: e.name ?? ''))
+              .toList(),
+          selectedValue: _relationshipDegreeId,
           required: true,
-          listValues: _listSprRelationship,
           listRoles: Roles.all,
           onChanged: (value) {
             setState(() {
-              _whoYouAreToThePatient = value;
+              _relationshipDegreeId = value;
             });
           },
         ),
@@ -534,56 +536,41 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
     );
   }
 
-
-
-
-
-  Widget buildDiagnosesForm()
-  {
+  Widget buildDiagnosesForm() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Диагноз', style: captionTextStyle, textAlign: TextAlign.start,),
+        Text(
+          'Диагноз',
+          style: captionTextStyle,
+          textAlign: TextAlign.start,
+        ),
         SizedBox(height: 10),
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Название',
           fieldKey: _keysDiagnoses[EnumDiagnoses.mkbName]!,
-          value: _mkbName,
+          allValues: _dataSprDiagnoses
+              .map((e) => SprItem(
+                  id: e.id,
+                  name:
+                      '${e.mkbCode.trim()} ${e.synonym.trim().replaceAll('\n', '')}'))
+              .toList(),
+          selectedValue: _diagnosisId,
           required: true,
-          listValues: _listSprDiagnoses,
           listRoles: Roles.all,
           onChanged: (value) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (mounted) {
                 setState(() {
-                  _mkbName = value;
-                  if (value.isNotEmpty) {
-                    _mkbCode = _dataSprDiagnoses
-                        .firstWhereOrNull((e) => '${e.mkbCode.trim()} ${e.synonym.trim().replaceAll('\n', '')}' == value)
-                        ?.mkbCode ??
-                        '';
-                    debugPrint(_mkbCode);
-                  } else {
-                    _mkbCode = '';
-                  }
+                  _diagnosisId = value;
                 });
               }
             });
           },
         ),
-        //SizedBox(height: 12.0,),
-        // InputText(
-        //   labelText: 'Код МКБ-10',
-        //   fieldKey: _keysDiagnoses[EnumDiagnoses.mkbCode]!,
-        //   value: _mkbCode,
-        //   required: true,
-        //   readOnly: true,
-        //   listRoles: Roles.all,
-        //   onChanged: (value) {
-        //   },
-        // ),
-        if (_mkbCode.toString().trim() == 'M31.8' || _mkbCode.toString().trim() == 'M32.8')
+        if (_diagnosisId == '18ff07ab-5fb5-49b1-8fe4-b301968df8af' ||
+            _diagnosisId == '13019398-b69c-4d4b-a58b-d3ed4f485ed0')
           InputText(
             labelText: 'Комментарий к диагнозу',
             fieldKey: _keysDiagnoses[EnumDiagnoses.diagnosisComment]!,
@@ -597,16 +584,24 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
               });
             },
           ),
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Увеит',
           fieldKey: _keysPatient[EnumPatient.uveit]!,
-          value: _uveit == null || _uveit.toString().isEmpty ? '' : _uveit! ? _listSprUveitExists[1] : _listSprUveitExists[0],
+          allValues: _listSprUveitExists,
+          selectedValue: _uveit == null || _uveit.toString().isEmpty
+              ? ''
+              : _uveit!
+                  ? _listSprUveitExists[1].name
+                  : _listSprUveitExists[0].name,
           required: true,
-          listValues: _listSprUveitExists,
           listRoles: Roles.all,
           onChanged: (value) {
             setState(() {
-              _uveit = (value == _listSprUveitExists[0]) ? false : (value == _listSprUveitExists[1]) ? true : null;
+              _uveit = (value == _listSprUveitExists[0].name)
+                  ? false
+                  : (value == _listSprUveitExists[1].name)
+                      ? true
+                      : null;
             });
           },
         ),
@@ -614,37 +609,41 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
     );
   }
 
-
-
-
-  Widget buildDoctorForm()
-  {
+  Widget buildDoctorForm() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Данные о враче', style: captionTextStyle, textAlign: TextAlign.start,),
+        Text(
+          'Данные о враче',
+          style: captionTextStyle,
+          textAlign: TextAlign.start,
+        ),
         SizedBox(height: 10),
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Название учреждения',
           fieldKey: _keysPatient[EnumPatient.hospitalName]!,
-          value: _hospitalName,
+          allValues: _dataSprHospitals
+              .map((e) => SprItem(id: e.id, name: e.name ?? ''))
+              .toList(),
+          selectedValue: _hospitalId,
           required: true,
-          listValues: _listSprHospitals,
           listRoles: Roles.all,
           onChanged: (value) {
             setState(() {
-              _hospitalName = value;
+              _hospitalId = value;
             });
           },
         ),
-        if (_hospitalName == 'Другое')
+        if (_hospitalId == '2a1101a8-0df3-4ac1-9c9e-4e5c15e9b422') // Другое
           InputText(
             labelText: 'Название учреждения',
             fieldKey: _keysPatient[EnumPatient.unknownHospital]!,
             value: _unknownHospital,
             maxLength: 300,
-            required: (_hospitalName == 'Другое') ? true : false,
+            required: (_hospitalId == '2a1101a8-0df3-4ac1-9c9e-4e5c15e9b422')
+                ? true
+                : false,
             listRoles: Roles.all,
             onChanged: (value) {
               setState(() {
@@ -652,36 +651,27 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
               });
             },
           ),
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Врач',
           fieldKey: _keysPatient[EnumPatient.doctorFio]!,
-          value: _doctorFio,
+          allValues: _listSprDoctors,
+          selectedValue: _doctorId,
+          isSort: false,
           required: true,
-          listValues: _listSprDoctors,
           listRoles: Roles.all,
           onChanged: (value) {
             setState(() {
-              _doctorFio = value;
-              if (_doctorFio == 'Другой') {
-                _doctorId = '1';
-              } else if (_doctorFio == 'Отсутствует') {
-                _doctorId = '2';
-              }
-              else {
-                _doctorId = _dataSprDoctors
-                    .firstWhereOrNull((e) => e.name == _doctorFio)
-                    ?.id ?? '';
-              }
+              _doctorId = value;
             });
           },
         ),
-        if (_doctorFio == 'Другой')
+        if (_doctorId == '1')
           InputText(
             labelText: 'ФИО врача',
             fieldKey: _keysPatient[EnumPatient.unknownDoctor]!,
             value: _unknownDoctor,
             maxLength: 200,
-            required: (_doctorFio == 'Другой') ? true : false,
+            required: (_doctorId == '1') ? true : false,
             listRoles: Roles.all,
             onChanged: (value) {
               setState(() {
@@ -689,11 +679,13 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
               });
             },
           ),
-        if (_doctorFio == 'Другой') Text('Указанный Вами врач в системе не зарегистрирован. Вы будете пользоваться приложением в режиме самоконтроля', style: textStyleGreen,),
-        if (_doctorFio == 'Другой') SizedBox(height: 5),
+        if (_doctorId == '1')
+          Text(
+            'Указанный Вами врач в системе не зарегистрирован. Вы будете пользоваться приложением в режиме самоконтроля',
+            style: textStyleGreen,
+          ),
+        if (_doctorId == '1') SizedBox(height: 5),
       ],
     );
   }
-
 }
-

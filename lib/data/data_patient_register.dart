@@ -27,7 +27,7 @@ enum EnumParent {
   patronymic,
   email,
   phone,
-  whoYouAreToThePatient,
+  relationshipDegreeId,
 }
 
 DataPatientRegister dataPatientRegisterFromJson(String str) => DataPatientRegister.fromJson(json.decode(str));

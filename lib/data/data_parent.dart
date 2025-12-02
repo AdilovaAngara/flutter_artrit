@@ -9,7 +9,7 @@ enum EnumParent {
   patronymic,
   email,
   phone,
-  whoYouAreToThePatient,
+  relationshipDegreeId,
 }
 
 DataParent dataParentFromJson(String str) => DataParent.fromJson(json.decode(str));

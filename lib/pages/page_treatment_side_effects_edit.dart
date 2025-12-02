@@ -2,6 +2,7 @@ import 'package:artrit/api/api_treatment_side_effects.dart';
 import 'package:artrit/data/data_treatment_side_effects.dart';
 import 'package:flutter/material.dart';
 import '../api/api_spr.dart';
+import '../data/data_spr_item.dart';
 import '../data/data_spr_side_effects.dart';
 import '../data/data_spr_treatment_results.dart';
 import '../my_functions.dart';
@@ -12,7 +13,7 @@ import '../widgets/app_bar_widget.dart';
 import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/input_checkbox.dart';
-import '../widgets/input_select.dart';
+import '../widgets/widget_input_select.dart';
 import '../widgets/widget_input_select_date_time.dart';
 import '../widgets/input_text.dart';
 
@@ -41,9 +42,6 @@ class _PageTreatmentSideEffectsEditState extends State<PageTreatmentSideEffectsE
   /// Справочники
   late List<DataSprSideEffects> _thisSprDataSideEffects;
   late List<DataSprTreatmentResults> _thisSprDataTreatmentResults;
-  List<String> _listSprSideEffects = [];
-  List<String> _listSprTreatmentResults = [];
-
 
   /// Параметры
   bool _isLoading = false;
@@ -77,16 +75,6 @@ class _PageTreatmentSideEffectsEditState extends State<PageTreatmentSideEffectsE
     _patientsId = await readSecureData(SecureKey.patientsId);
     _thisSprDataSideEffects = await _apiSpr.getSideEffects();
     _thisSprDataTreatmentResults = await _apiSpr.getTreatmentResults();
-
-    _listSprSideEffects = _thisSprDataSideEffects
-        .map((e) => e.name)
-        .toList()
-      ..sort();
-
-    _listSprTreatmentResults = _thisSprDataTreatmentResults
-        .map((e) => e.name ?? '')
-        .toList()
-      ..sort();
 
     if (widget.isEditForm) {
       _recordId = widget.thisData!.id!;
@@ -236,14 +224,14 @@ class _PageTreatmentSideEffectsEditState extends State<PageTreatmentSideEffectsE
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Нежелательное явление',
           fieldKey: _keys[Enum.ny]!,
-          value: _ny,
+          allValues: _thisSprDataSideEffects.map((e) => SprItem(id: e.name, name: e.name)).toList(),
+          selectedValue: _ny,
           required: true,
-          listValues: _listSprSideEffects,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
               _ny = value;
@@ -308,14 +296,14 @@ class _PageTreatmentSideEffectsEditState extends State<PageTreatmentSideEffectsE
             });
           },
         ),
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Исход лечения',
           fieldKey: _keys[Enum.treatOut]!,
-          value: _treatOut,
+          allValues: _thisSprDataTreatmentResults.map((e) => SprItem(id: e.name ?? '', name: e.name ?? '')).toList(),
+          selectedValue: _treatOut,
           required: true,
-          listValues: _listSprTreatmentResults,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
               _treatOut = value;

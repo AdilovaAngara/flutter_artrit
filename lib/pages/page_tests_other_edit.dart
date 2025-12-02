@@ -1,4 +1,5 @@
 import 'package:artrit/api/api_tests_other.dart';
+import 'package:artrit/data/data_spr_item.dart';
 import 'package:artrit/data/data_tests_other.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,7 @@ import '../widget_another/form_header_widget.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
-import '../widgets/input_select.dart';
+import '../widgets/widget_input_select.dart';
 import '../widgets/input_text_with_select.dart';
 import '../widgets/widget_input_select_date_time.dart';
 
@@ -57,7 +58,6 @@ class _PageTestsOtherEditState extends State<PageTestsOtherEdit> {
   String? _znachSel = '';
   String? _unitId;
   String? _parametersId;
-  late List<String> _listNames;
   List<String> _listUnits = [];
 
   /// Ключи
@@ -75,9 +75,9 @@ class _PageTestsOtherEditState extends State<PageTestsOtherEdit> {
   Future<void> _loadData() async {
     _role = await getUserRole();
     _patientsId = await readSecureData(SecureKey.patientsId);
-    _listNames = await _getNamesList();
     _fullAge = int.parse(await readSecureData(SecureKey.fullAge));
     _dataSprTestsOptions = await _apiSpr.getTestsOptions(_fullAge);
+    _dataSprNamesForOtherTest = await _apiSpr.getNamesForOtherTest();
 
     if (widget.isEditForm) {
       _recordId = widget.thisData!.id!;
@@ -116,7 +116,7 @@ class _PageTestsOtherEditState extends State<PageTestsOtherEdit> {
   Future<void> _request() async {
     DataTestsOther thisData = DataTestsOther(
       date: convertToTimestamp(_date),
-      analys: _analys!,
+      analys: _analys,
       znach: Znach(num: _znachNum, sel: _znachSel!),
       unitsId: _unitId!,
       parametersId: _parametersId!,
@@ -129,17 +129,11 @@ class _PageTestsOtherEditState extends State<PageTestsOtherEdit> {
   }
 
 
-  Future<List<String>> _getNamesList() async {
-    _dataSprNamesForOtherTest = await _apiSpr.getNamesForOtherTest();
-    final listNames = _dataSprNamesForOtherTest.map((e) => e.name).toList()..sort();
-    return listNames.isNotEmpty ? listNames : ['Нет данных'];
-  }
 
-
-  String? _getParametersId(String? testName) {
-    if (testName == null || testName.isEmpty) return null;
+  String? _getAnalysisName(String? parametersId) {
+    if (parametersId == null || parametersId.isEmpty) return null;
     try {
-      return _dataSprNamesForOtherTest.firstWhereOrNull((e) => e.name == testName)?.id;
+      return _dataSprNamesForOtherTest.firstWhereOrNull((e) => e.id == parametersId)?.name;
     } catch (e) {
       return null;
     }
@@ -299,19 +293,19 @@ class _PageTestsOtherEditState extends State<PageTestsOtherEdit> {
             });
           },
         ),
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Название анализа',
           fieldKey: _keys[Enum.analys]!,
-          value: _analys,
+          allValues: _dataSprNamesForOtherTest.map((e) => SprItem(id: e.id, name: e.name)).toList(),
+          selectedValue: _parametersId,
           required: true,
-          listValues: _listNames,
           cleanAvailable: false,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
-              _analys = value;
-              _parametersId = _getParametersId(_analys);
+              _parametersId = value;
+              _analys = _getAnalysisName(_parametersId);
               _getUnitList(_parametersId);
               _unitId = null; // Сбрасываем ID единицы
             });

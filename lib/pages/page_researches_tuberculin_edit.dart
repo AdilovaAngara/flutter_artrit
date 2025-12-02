@@ -1,7 +1,7 @@
 import 'package:artrit/api/api_researches_tuberculin.dart';
 import 'package:artrit/api/api_spr.dart';
 import 'package:artrit/data/data_researches_tuberculin.dart';
-import 'package:collection/collection.dart';
+import 'package:artrit/data/data_spr_item.dart';
 import 'package:flutter/material.dart';
 import '../data/data_spr_research_tuberculin_result.dart';
 import '../data/data_spr_research_tuberculin_type.dart';
@@ -11,7 +11,7 @@ import '../secure_storage.dart';
 import '../widget_another/form_header_widget.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/banners.dart';
-import '../widgets/input_select.dart';
+import '../widgets/widget_input_select.dart';
 import '../widgets/widget_input_select_date_time.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/input_text_with_select.dart';
@@ -42,8 +42,6 @@ class PageResearchesTuberculinEditState extends State<PageResearchesTuberculinEd
   // Справочники
   late List<DataSprResearchTuberculinType> _dataSprResearchTuberculinType;
   late List<DataSprResearchTuberculinResult> _dataSprResearchTuberculinResult;
-  List<String> _listSprResearchTuberculinType = [];
-  List<String> _listSprResearchTuberculinResult = [];
 
   /// Параметры
   bool _isLoading = false;
@@ -53,8 +51,8 @@ class PageResearchesTuberculinEditState extends State<PageResearchesTuberculinEd
   String? _date;
   int? _createDate =
   convertToTimestamp(dateTimeFormat(getMoscowDateTime()));
-  String? _researchName;
-  String? _resultName;
+  String? _researchItemId;
+  String? _resultId;
   double? _value;
 
   /// Ключи
@@ -81,22 +79,12 @@ class PageResearchesTuberculinEditState extends State<PageResearchesTuberculinEd
           ? dateFormat(widget.thisData!.date!)
           : null;
       _value = widget.thisData!.value;
-      _researchName = widget.thisData!.researchItem != null ? widget.thisData!.researchItem!.name : '';
-      _resultName = widget.thisData!.result != null ? widget.thisData!.result!.name : '';
+      _researchItemId = widget.thisData!.researchItem != null ? widget.thisData!.researchItem!.id : '';
+      _resultId = widget.thisData!.result != null ? widget.thisData!.result!.id : '';
     }
 
     _dataSprResearchTuberculinType = await _apiSpr.getResearchTuberculosisType();
     _dataSprResearchTuberculinResult = await _apiSpr.getResearchTuberculosisResult();
-
-    _listSprResearchTuberculinType = _dataSprResearchTuberculinType
-        .map((e) => e.name ?? '')
-        .toList()
-      ..sort();
-
-    _listSprResearchTuberculinResult = _dataSprResearchTuberculinResult
-        .map((e) => e.name ?? '')
-        .toList()
-      ..sort();
     setState(() {});
   }
 
@@ -121,14 +109,14 @@ class PageResearchesTuberculinEditState extends State<PageResearchesTuberculinEd
 
 
   Future<void> _request() async {
-    if (_resultName == 'Отрицательный') _value = 0;
+    if (_resultId == '45ecc39c-eab0-4565-9437-adb1c6706069') _value = 0; // Отрицательный
     DataResearchesTuberculin thisData = DataResearchesTuberculin(
         patientId: _patientsId,
         date: convertStrToDate(_date!),
         createDate: _createDate,
         value: _value,
-        researchItemId: _dataSprResearchTuberculinType.firstWhereOrNull((e) => e.name == _researchName)?.id,
-        resultId: _dataSprResearchTuberculinResult.firstWhereOrNull((e) => e.name == _resultName)?.id);
+        researchItemId: _researchItemId,
+        resultId: _resultId);
 
     widget.isEditForm
         ? await _api.put(recordId: _recordId, thisData: thisData)
@@ -140,15 +128,15 @@ class PageResearchesTuberculinEditState extends State<PageResearchesTuberculinEd
       if (!widget.isEditForm || widget.thisData == null) {
         // Если это форма добавления или данных нет, считаем, что есть изменения, если что-то заполнено
         return _date != null
-            || _researchName != null
-            || _resultName != null
+            || _researchItemId != null
+            || _resultId != null
             || _value != null;
       }
       // Иначе Сравниваем поля
       final w = widget.thisData!;
       return w.date != convertStrToDate(_date ?? '')
-      || w.researchItem!.name != _researchName
-      || w.result!.name != _resultName
+      || w.researchItem!.id != _researchItemId
+      || w.result!.id != _resultId
       || w.value != _value;
     }
 
@@ -233,37 +221,37 @@ class PageResearchesTuberculinEditState extends State<PageResearchesTuberculinEd
             });
           },
         ),
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Исследование',
           fieldKey: _keys[Enum.researchName]!,
-          value: _researchName,
+          allValues: _dataSprResearchTuberculinType.map((e) => SprItem(id: e.id, name: e.name ?? '')).toList(),
+          selectedValue: _researchItemId,
           required: false,
-          listValues: _listSprResearchTuberculinType,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
-              _researchName = value;
+              _researchItemId = value;
             });
           },
         ),
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Результат',
           fieldKey: _keys[Enum.resultName]!,
-          value: _resultName,
+          allValues: _dataSprResearchTuberculinResult.map((e) => SprItem(id: e.id, name: e.name ?? '')).toList(),
+          selectedValue: _resultId,
           required: false,
-          listValues: _listSprResearchTuberculinResult,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
-              _resultName = value;
+              _resultId = value;
             });
           },
         ),
-        if (_resultName != null && _resultName!.isNotEmpty && _resultName != 'Отрицательный')
+        if (_resultId != null && _resultId!.isNotEmpty && _resultId != '45ecc39c-eab0-4565-9437-adb1c6706069')
         InputTextWithSelect(
-          labelText: _resultName == 'Положительный' ? 'Папула' : _resultName ?? 'Значение',
+          labelText: _resultId == 'e5579cf3-c9d8-4062-ac2f-6e32e3a7aeb4' ? 'Гиперемия' : 'Папула',
           fieldKey: _keys[Enum.value]!,
           initialValue: _value,
           unitOptions: ['мм'],

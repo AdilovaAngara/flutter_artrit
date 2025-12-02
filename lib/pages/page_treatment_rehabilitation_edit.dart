@@ -1,3 +1,4 @@
+import 'package:artrit/data/data_spr_item.dart';
 import 'package:artrit/data/data_treatment_rehabilitations.dart';
 import 'package:flutter/material.dart';
 import '../api/api_spr.dart';
@@ -11,7 +12,7 @@ import '../widgets/app_bar_widget.dart';
 import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/input_checkbox.dart';
-import '../widgets/input_select.dart';
+import '../widgets/widget_input_select.dart';
 import '../widgets/widget_input_select_date_time.dart';
 import '../widgets/input_text.dart';
 
@@ -39,7 +40,6 @@ class _PageTreatmentRehabilitationEditState extends State<PageTreatmentRehabilit
 
   // Справочники
   late List<DataSprTreatmentRehabilitationsTypes> _thisSprDataRehabilitationsTypes;
-  List<String> _listSprRehabilitationsTypes= [];
 
   /// Параметры
   bool _isLoading = false;
@@ -70,10 +70,6 @@ class _PageTreatmentRehabilitationEditState extends State<PageTreatmentRehabilit
     _role = await getUserRole();
     _patientsId = await readSecureData(SecureKey.patientsId);
     _thisSprDataRehabilitationsTypes = await _apiSpr.getTreatmentRehabilitationsTypes();
-    _listSprRehabilitationsTypes = _thisSprDataRehabilitationsTypes
-        .map((e) => e.name ?? '')
-        .toList()
-      ..sort();
 
     if (widget.isEditForm) {
       _recordId = widget.thisData!.id!;
@@ -214,14 +210,14 @@ class _PageTreatmentRehabilitationEditState extends State<PageTreatmentRehabilit
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Вид реабилитации',
           fieldKey: _keys[Enum.type]!,
-          value: _type,
+          allValues: _thisSprDataRehabilitationsTypes.map((e) => SprItem(id: e.name ?? '', name: e.name ?? '')).toList(),
+          selectedValue: _type,
           required: true,
-          listValues: _listSprRehabilitationsTypes,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
               _type = value;

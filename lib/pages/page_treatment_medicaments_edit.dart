@@ -1,11 +1,16 @@
+import 'package:artrit/data/data_spr_item.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import '../api/api_spr.dart';
 import '../api/api_treatment_medicaments.dart';
 import '../data/data_result.dart';
 import '../data/data_spr_drugs.dart';
+import '../data/data_spr_treatment_drug_forms.dart';
+import '../data/data_spr_treatment_drug_provision.dart';
+import '../data/data_spr_treatment_drug_using_rate.dart';
 import '../data/data_spr_treatment_drug_using_way.dart';
 import '../data/data_spr_treatment_skipping_reasons.dart';
+import '../data/data_spr_treatment_units.dart';
 import '../data/data_treatment_medicaments.dart';
 import '../my_functions.dart';
 import '../roles.dart';
@@ -16,7 +21,7 @@ import '../widgets/app_bar_widget.dart';
 import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/input_checkbox.dart';
-import '../widgets/input_select.dart';
+import '../widgets/widget_input_select.dart';
 import '../widgets/widget_input_select_date_time.dart';
 import '../widgets/input_text.dart';
 import '../widgets/show_dialog_delete.dart';
@@ -49,13 +54,10 @@ class _PageTreatmentMedicamentsEditState extends State<PageTreatmentMedicamentsE
   late List<DataSprDrugs> _thisSprDataDrugs;
   late List<DataSprTreatmentDrugUsingWay> _thisSprDataTreatmentDrugUsingWay;
   late List<DataSprTreatmentSkippingReasons> _listSprDataTreatmentSkippingReasons;
-  late List<String> _listSprDrugs;
-  late List<String> _listSprTreatmentDrugForms;
-  late List<String> _listSprTreatmentDrugProvision;
-  late List<String> _listSprTreatmentDrugUsingRate;
-  late List<String> _listSprTreatmentDrugUsingWay;
-  late List<String> _listSprTreatmentSkippingReasons;
-  List<String> _listUnits = [];
+  late List<DataSprTreatmentDrugForms> _listSprDataTreatmentDrugForms;
+  late List<DataSprTreatmentDrugProvision> _listSprDataTreatmentDrugProvision;
+  late List<DataSprTreatmentDrugUsingRate> _listSprDataTreatmentDrugUsingRate;
+  late List<DataSprTreatmentUnits> _listSprDataSprTreatmentUnits = [];
 
     /// Параметры
   bool _isLoading = false;
@@ -99,24 +101,11 @@ class _PageTreatmentMedicamentsEditState extends State<PageTreatmentMedicamentsE
     _role = await getUserRole();
     _patientsId = await readSecureData(SecureKey.patientsId);
     _thisSprDataDrugs = await _apiSpr.getDrugs();
-    _listSprDrugs = _thisSprDataDrugs
-        .map((e) => e.name ?? '')
-        .toList()
-      ..sort();
     _thisSprDataTreatmentDrugUsingWay = await _apiSpr.getTreatmentDrugUsingWay();
-    _listSprTreatmentDrugForms = await _apiSpr.getTreatmentDrugForms ();
-    _listSprTreatmentDrugProvision = await _apiSpr.getTreatmentDrugProvision();
-    _listSprTreatmentDrugUsingRate = await _apiSpr.getTreatmentDrugUsingRate ();
-
-    _listSprTreatmentDrugUsingWay = _thisSprDataTreatmentDrugUsingWay
-        .map((e) => e.name ?? '')
-        .toList()
-      ..sort();
+    _listSprDataTreatmentDrugForms = await _apiSpr.getTreatmentDrugForms ();
+    _listSprDataTreatmentDrugProvision = await _apiSpr.getTreatmentDrugProvision();
+    _listSprDataTreatmentDrugUsingRate = await _apiSpr.getTreatmentDrugUsingRate ();
     _listSprDataTreatmentSkippingReasons = await _apiSpr.getTreatmentSkippingReasons();
-    _listSprTreatmentSkippingReasons = _listSprDataTreatmentSkippingReasons
-        .map((e) => e.name ?? '')
-        .toList()
-      ..sort();
 
     if (widget.isEditForm) {
       _recordId = widget.thisData!.id!;
@@ -270,11 +259,10 @@ class _PageTreatmentMedicamentsEditState extends State<PageTreatmentMedicamentsE
 
   Future<void> _getUnitList(String? pvId) async {
     if (pvId != null && pvId.isNotEmpty) {
-      _listUnits= await _apiSpr.getTreatmentUnits(recordId: pvId);
-      //_ei = _listUnits.isNotEmpty ? _listUnits[0] : null;
+      _listSprDataSprTreatmentUnits= await _apiSpr.getTreatmentUnits(recordId: pvId);
     } else {
       _ei = null;
-      _listUnits = [];
+      _listSprDataSprTreatmentUnits = [];
     }
     setState(() {
     });
@@ -384,14 +372,14 @@ class _PageTreatmentMedicamentsEditState extends State<PageTreatmentMedicamentsE
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Название лекарства',
           fieldKey: _keys[Enum.tnp]!,
-          value: _tnp,
+          allValues: _thisSprDataDrugs.map((e) => SprItem(id: e.name ?? '', name: e.name ?? '')).toList(),
+          selectedValue: _tnp,
           required: true,
-          listValues: _listSprDrugs,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
               _tnp = value;
@@ -412,46 +400,46 @@ class _PageTreatmentMedicamentsEditState extends State<PageTreatmentMedicamentsE
             });
           },
         ),
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Форма выпуска',
           fieldKey: _keys[Enum.tlf]!,
-          value: _tlf,
+          allValues: _listSprDataTreatmentDrugForms.map((e) => SprItem(id: e.name ?? '', name: e.name ?? '')).toList(),
+          selectedValue: _tlf,
           required: true,
-          listValues: _listSprTreatmentDrugForms,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
               _tlf = value;
             });
           },
         ),
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Путь введения',
           fieldKey: _keys[Enum.pv]!,
-          value: _pv,
+          allValues: _thisSprDataTreatmentDrugUsingWay.map((e) => SprItem(id: e.name ?? '', name: e.name ?? '')).toList(),
+          selectedValue: _pv,
           required: true,
-          listValues: _listSprTreatmentDrugUsingWay,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) async {
             setState(() {
               _pv = value;
               _ei = null;
-              _listUnits = [];
+              _listSprDataSprTreatmentUnits = [];
             });
             String? pvId = _getParametersId(_pv);
             await _getUnitList(pvId);
           },
         ),
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Единицы измерения',
           fieldKey: _keys[Enum.ei]!,
-          value: _ei,
+          allValues: _listSprDataSprTreatmentUnits.map((e) => SprItem(id: e.name ?? '', name: e.name ?? '')).toList(),
+          selectedValue: _ei,
           required: true,
-          listValues: _listUnits,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
               _ei = value;
@@ -474,14 +462,14 @@ class _PageTreatmentMedicamentsEditState extends State<PageTreatmentMedicamentsE
             });
           },
         ),
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Кратность',
           fieldKey: _keys[Enum.krat]!,
-          value: _krat,
+          allValues: _listSprDataTreatmentDrugUsingRate.map((e) => SprItem(id: e.name ?? '', name: e.name ?? '')).toList(),
+          selectedValue: _krat,
           required: true,
-          listValues: _listSprTreatmentDrugUsingRate,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
               _krat = value;
@@ -549,14 +537,14 @@ class _PageTreatmentMedicamentsEditState extends State<PageTreatmentMedicamentsE
             });
           },
         ),
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Обеспечение лекарствами',
           fieldKey: _keys[Enum.obesplek]!,
-          value: _obesplek,
+          allValues: _listSprDataTreatmentDrugProvision.map((e) => SprItem(id: e.name ?? '', name: e.name ?? '')).toList(),
+          selectedValue: _obesplek,
           required: true,
-          listValues: _listSprTreatmentDrugProvision,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
               _obesplek = value;
@@ -674,12 +662,12 @@ class _PageTreatmentMedicamentsEditState extends State<PageTreatmentMedicamentsE
   void _showEditRecDialog(bool isEditForm, {int? index}) {
     DateTime? beginDate;
     DateTime? endDate;
-    String reasonName = '';
+    String? reasonId = '';
 
     if (isEditForm) {
       beginDate = _skippings[index!].beginDate != null ? _skippings[index].beginDate! : null;
       endDate = _skippings[index].endDate;
-      reasonName = _skippings[index].reasonName ?? '';
+      reasonId = _skippings[index].reasonId ?? '';
     }
     showDialog(
         context: context,
@@ -732,17 +720,17 @@ class _PageTreatmentMedicamentsEditState extends State<PageTreatmentMedicamentsE
                               });
                             },
                           ),
-                          InputSelect(
+                          WidgetInputSelect(
                             labelText: 'Причина пропуска',
                             fieldKey: _keysSkippings[EnumSkippings.reasonName]!,
-                            value: reasonName,
+                            allValues: _listSprDataTreatmentSkippingReasons.map((e) => SprItem(id: e.id, name: e.name ?? '')).toList(),
+                            selectedValue: reasonId,
                             required: true,
-                            listValues: _listSprTreatmentSkippingReasons,
                             listRoles: Roles.asPatient,
-                            role: _role,
+                            roleId: _role,
                             onChanged: (value) {
                               dialogSetState(() {
-                                reasonName = value;
+                                reasonId = value;
                               });
                             },
                           ),
@@ -776,15 +764,15 @@ class _PageTreatmentMedicamentsEditState extends State<PageTreatmentMedicamentsE
                             {
                               _skippings[index!].beginDate = beginDate;
                               _skippings[index].endDate = endDate;
-                              _skippings[index].reasonName = reasonName;
-                              _skippings[index].reasonId = _listSprDataTreatmentSkippingReasons.firstWhereOrNull((e) => e.name == reasonName)?.id;
+                              _skippings[index].reasonId = reasonId;
+                              _skippings[index].reasonName = _listSprDataTreatmentSkippingReasons.firstWhereOrNull((e) => e.id == reasonId)?.name;
                             }
                             else {
                               Skipping newSkipping = Skipping(
                                 beginDate: beginDate,
                                 endDate: endDate,
-                                reasonName: reasonName,
-                                reasonId: _listSprDataTreatmentSkippingReasons.firstWhereOrNull((e) => e.name == reasonName)?.id,
+                                reasonName: _listSprDataTreatmentSkippingReasons.firstWhereOrNull((e) => e.id == reasonId)?.name,
+                                reasonId: reasonId,
                                 menuBeginDate: false,
                                 menuEndDate: false,
                               );

@@ -313,6 +313,9 @@ class WidgetInputSelectDateTimeState extends State<WidgetInputSelectDateTime> {
     DateTime? last = widget.lastDateTime;
 
     if (first != null && last != null) {
+      first = DateTime(first.year, first.month, first.day);
+      last = DateTime(last.year, last.month, last.day);
+
       if (!(dateTime.isAfter(first) && dateTime.isBefore(last) ||
           dateTime.isAtSameMomentAs(first) ||
           dateTime.isAtSameMomentAs(last))) {

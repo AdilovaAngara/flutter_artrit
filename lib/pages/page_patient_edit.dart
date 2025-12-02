@@ -2,6 +2,7 @@ import 'package:artrit/api/api_parent.dart';
 import 'package:artrit/api/api_patient.dart';
 import 'package:artrit/api/api_patient_diagnoses.dart';
 import 'package:artrit/api/api_spr.dart';
+import 'package:artrit/data/data_spr_item.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import '../data/data_patient_diagnoses.dart';
@@ -17,7 +18,7 @@ import '../widgets/app_bar_widget.dart';
 import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/widget_input_select_date_time.dart';
-import '../widgets/input_select.dart';
+import '../widgets/widget_input_select.dart';
 import '../widgets/input_switch.dart';
 import '../widgets/input_text.dart';
 import '../theme.dart';
@@ -50,10 +51,8 @@ class PagePatientEditState extends State<PagePatientEdit> {
   late List<DataSprRegion> _dataSprRegion;
   late List<DataSprRelationship> _dataSprRelationship;
   late List<DataSprDiagnoses> _dataSprDiagnoses;
-  // Справочники
-  final List<String> _listGender = ['Мужской', 'Женский'];
-  List<String> _listSprRegion = [];
-  List<String> _listSprRelationship = [];
+  /// Справочники
+
   /// Параметры
   bool _isLoading = false;
   late int _role;
@@ -64,10 +63,10 @@ class PagePatientEditState extends State<PagePatientEdit> {
   String? _patronymicPatient;
   String? _birthDate;
   String? _gender;
-  String? _regionName;
+  String? _regionId;
   String? _address;
   bool _invalid = false;
-  String? _whoYouAreToThePatient;
+  String? _relationshipDegreeId;
   String? _lastNameParent;
   String? _firstNameParent;
   String? _patronymicParent;
@@ -117,11 +116,11 @@ class PagePatientEditState extends State<PagePatientEdit> {
       _patronymicPatient = _dataPatient.patronymic;
       _birthDate = convertTimestampToDate(_dataPatient.birthDate);
       _gender = _dataPatient.gender;
-      _regionName = _dataPatient.regionName;
+      _regionId = _dataPatient.regionId;
       _address = _dataPatient.address;
       _invalid = _getBootInvalid();
 
-      _whoYouAreToThePatient = _dataParent.whoYouAreToThePatient;
+      _relationshipDegreeId = _dataParent.relationshipDegreeId;
       _lastNameParent = _dataParent.lastName;
       _firstNameParent = _dataParent.firstName;
       _patronymicParent = _dataParent.patronymic;
@@ -142,8 +141,6 @@ class PagePatientEditState extends State<PagePatientEdit> {
       _hospitalName = _dataPatient.hospitalName == 'Другое' ? _dataPatient.unknownHospital : _dataPatient.hospitalName;
       _doctor = _dataPatient.doctor;
       _doctorFio = _doctor == '1' ? _dataPatient.unknownDoctor : _dataPatient.doctorFio;
-      _listSprRegion = _dataSprRegion.map((e) => e.name).toList()..sort();
-      _listSprRelationship = _dataSprRelationship.map((e) => e.name ?? '').toList()..sort();
     }
 
     setState(() {});
@@ -173,7 +170,7 @@ class PagePatientEditState extends State<PagePatientEdit> {
 
   Future<void> _putPatientData() async {
     DataPatient thisData = DataPatient(
-      regionName: _regionName ?? '',
+      regionName: _dataSprRegion.firstWhereOrNull((region) => region.id == _regionId)?.name ?? '',
       hospitalName: _dataPatient.hospitalName,
       roleName: null,
       id: _dataPatient.id,
@@ -189,7 +186,7 @@ class PagePatientEditState extends State<PagePatientEdit> {
       uveit: _dataPatient.uveit,
       notificationReceiveType: _dataPatient.notificationReceiveType,
       defaultLabProfileId: _dataPatient.defaultLabProfileId,
-      regionId: _dataSprRegion.firstWhereOrNull((region) => region.name == _regionName)?.id,
+      regionId: _regionId,
       unknownDoctor: _dataPatient.unknownDoctor,
       hospitalId: _dataPatient.hospitalId,
       unknownHospital: _dataPatient.unknownHospital,
@@ -203,7 +200,7 @@ class PagePatientEditState extends State<PagePatientEdit> {
 
   Future<void> _putParentData() async {
     DataParent thisData = DataParent(
-      whoYouAreToThePatient: _whoYouAreToThePatient,
+      whoYouAreToThePatient: _dataSprRelationship.firstWhereOrNull((relationship) => relationship.id == _relationshipDegreeId)?.name,
       id: _dataParent.id,
       lastName: _lastNameParent,
       firstName: _firstNameParent,
@@ -211,7 +208,7 @@ class PagePatientEditState extends State<PagePatientEdit> {
       email: _email,
       phone: _phone,
       patientsId: _dataParent.patientsId,
-      relationshipDegreeId: _dataSprRelationship.firstWhereOrNull((relationship) => relationship.name == _whoYouAreToThePatient)?.id,
+      relationshipDegreeId: _relationshipDegreeId,
     );
     _apiParent.put(patientsId: _patientsId, thisData: thisData);
   }
@@ -228,10 +225,10 @@ class PagePatientEditState extends State<PagePatientEdit> {
           _patronymicPatient != null ||
           _birthDate != null ||
           _gender != null ||
-          _regionName != null ||
+          _regionId != null ||
           _address != null ||
           _invalid == true ||
-          _whoYouAreToThePatient != null ||
+          _relationshipDegreeId != null ||
           _lastNameParent != null ||
           _firstNameParent != null ||
           _patronymicParent != null ||
@@ -247,10 +244,10 @@ class PagePatientEditState extends State<PagePatientEdit> {
         _patronymicPatient != w.patronymic ||
         _birthDate != convertTimestampToDate(w.birthDate) ||
         _gender != w.gender ||
-        _regionName != w.regionName ||
+        _regionId != w.regionId ||
         _address != w.address ||
         _invalid != _getBootInvalid() ||
-        _whoYouAreToThePatient != p.whoYouAreToThePatient ||
+        _relationshipDegreeId != p.relationshipDegreeId ||
         _lastNameParent != p.lastName ||
         _firstNameParent != p.firstName ||
         _patronymicParent != p.patronymic ||
@@ -402,31 +399,31 @@ bool _getBootInvalid()
             });
           },
         ),
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Пол',
           fieldKey: _keysPatient[EnumPatient.gender]!,
-          value: (_gender == 'Мужчина') ? 'Мужской' : (_gender == 'Женщина') ? 'Женский' : _gender,
+          allValues: listGender,
+          selectedValue: (_gender == 'Мужчина') ? 'Мужской' : (_gender == 'Женщина') ? 'Женский' : _gender,
           required: true,
-          listValues: _listGender,
           listRoles: Roles.all,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
               _gender = value;
             });
           },
         ),
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Регион',
           fieldKey: _keysPatient[EnumPatient.regionName]!,
-          value: _regionName,
+          allValues: _dataSprRegion.map((e) => SprItem(id: e.id, name: e.name)).toList(),
+          selectedValue: _regionId,
           required: true,
-          listValues: _listSprRegion,
           listRoles: Roles.all,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
-              _regionName = value;
+              _regionId = value;
             });
           },
         ),
@@ -471,17 +468,17 @@ bool _getBootInvalid()
       children: [
         Text('Информация об опекуне', style: captionTextStyle, textAlign: TextAlign.start,),
         SizedBox(height: 10),
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Степень родства',
-          fieldKey: _keysParent[EnumParent.whoYouAreToThePatient]!,
-          value: _whoYouAreToThePatient,
+          fieldKey: _keysParent[EnumParent.relationshipDegreeId]!,
+          allValues: _dataSprRelationship.map((e) => SprItem(id: e.id, name: e.name ?? '')).toList(),
+          selectedValue: _relationshipDegreeId,
           required: true,
-          listValues: _listSprRelationship,
           listRoles: Roles.all,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
-              _whoYouAreToThePatient = value;
+              _relationshipDegreeId = value;
             });
           },
         ),

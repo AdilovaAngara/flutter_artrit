@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:artrit/api/api_vaccination.dart';
+import 'package:artrit/data/data_spr_item.dart';
 import 'package:artrit/data/data_vaccination.dart';
 import 'package:flutter/material.dart';
-import 'package:collection/collection.dart';
 import '../api/api_spr.dart';
 import '../data/data_spr_vaccination.dart';
 import '../my_functions.dart';
@@ -13,7 +13,7 @@ import '../widgets/app_bar_widget.dart';
 import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/input_file.dart';
-import '../widgets/input_select.dart';
+import '../widgets/widget_input_select.dart';
 import '../widgets/widget_input_select_date_time.dart';
 import '../widgets/input_text.dart';
 
@@ -42,14 +42,13 @@ class _PageVaccinationEditState extends State<PageVaccinationEdit> {
 
   // Справочники
   late List<DataSprVaccination> _thisSprDataVaccination;
-  List<String> _listSprVaccination = [];
 
   /// Параметры
   bool _isLoading = false;
   late int _role;
   late String _patientsId;
   late String _recordId;
-  String? _name;
+  String? _vaccinationId;
   String? _executeDate;
   String? _comment;
   String? _fileId;
@@ -76,17 +75,13 @@ class _PageVaccinationEditState extends State<PageVaccinationEdit> {
       _executeDate = widget.thisData!.executeDate != null
           ? dateFormat(widget.thisData!.executeDate!)
           : null;
-      _name = widget.thisData!.name;
+      _vaccinationId = widget.thisData!.vaccinationId;
       _comment = widget.thisData!.comment;
       _fileId = widget.thisData!.fileId;
       _fileName = widget.thisData!.fileName ?? '';
     }
 
     _thisSprDataVaccination = await _apiSpr.getVaccination();
-    _listSprVaccination = _thisSprDataVaccination
-        .map((e) => e.name ?? '')
-        .toList()
-      ..sort();
   }
 
   void _changeData() async {
@@ -111,7 +106,7 @@ class _PageVaccinationEditState extends State<PageVaccinationEdit> {
 
   Future<void> _request() async {
     DataVaccination thisData = DataVaccination(
-        vaccinationId: _thisSprDataVaccination.firstWhereOrNull((e) => e.name == _name)?.id,
+        vaccinationId: _vaccinationId,
         executeDate: convertStrToDate(_executeDate!),
         comment: _comment);
 
@@ -123,7 +118,7 @@ class _PageVaccinationEditState extends State<PageVaccinationEdit> {
         patientsId: _patientsId,
         filePath: _file.path,
         fileName: _fileName,
-        vaccinationId: _thisSprDataVaccination.firstWhereOrNull((e) => e.name == _name)?.id ?? '',
+        vaccinationId: _vaccinationId ?? '',
         comment: _comment ?? '',
         executeDate: convertStrToDate(_executeDate!).toString());
   }
@@ -132,7 +127,7 @@ class _PageVaccinationEditState extends State<PageVaccinationEdit> {
   bool _areDifferent() {
     if (!widget.isEditForm || widget.thisData == null) {
       // Если это форма добавления или данных нет, считаем, что есть изменения, если что-то заполнено
-      return _name != null ||
+      return _vaccinationId != null ||
           _comment != null ||
           _fileId != null ||
           _fileName.isNotEmpty;
@@ -140,7 +135,7 @@ class _PageVaccinationEditState extends State<PageVaccinationEdit> {
 
     // Иначе Сравниваем поля
     final w = widget.thisData!;
-    return _name != w.name ||
+    return _vaccinationId != w.vaccinationId ||
         _executeDate != dateFormat(w.executeDate) ||
         _comment != w.comment ||
         _fileId != w.fileId ||
@@ -227,17 +222,17 @@ class _PageVaccinationEditState extends State<PageVaccinationEdit> {
             });
           },
         ),
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Вакцинация',
           fieldKey: _keys[Enum.name]!,
-          value: _name,
+          allValues: _thisSprDataVaccination.map((e) => SprItem(id: e.id ?? '', name: e.name ?? '')).toList(),
+          selectedValue: _vaccinationId,
           required: true,
-          listValues: _listSprVaccination,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
-              _name = value;
+              _vaccinationId = value;
             });
           },
         ),

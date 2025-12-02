@@ -19,6 +19,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'data/data_anamnesis_disease_anamnesis.dart';
 import 'data/data_dynamic.dart';
 import 'data/data_inspections.dart';
+import 'data/data_spr_item.dart';
 import 'data/data_treatment_medicaments.dart';
 
 
@@ -45,6 +46,13 @@ Future<int> getUserRole() async {
   String roleStr = await readSecureData(SecureKey.role);
   return (roleStr.isEmpty) ? -1 : int.parse(roleStr);
 }
+
+
+
+final List<SprItem> listGender = [
+  SprItem(id: 'Мужской', name: 'Мужской'),
+  SprItem(id: 'Женский', name: 'Женский')];
+
 
 
 /// Настройки получения уведомлений

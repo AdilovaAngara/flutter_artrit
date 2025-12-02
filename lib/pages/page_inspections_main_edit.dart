@@ -1,10 +1,12 @@
 import 'package:artrit/api/api_spr.dart';
+import 'package:artrit/data/data_spr_item.dart';
 import 'package:artrit/pages/page_inspections_pain.dart';
 import 'package:artrit/pages/page_inspections_uveit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../api/api_inspections.dart';
 import '../data/data_inspections.dart';
+import '../data/data_spr_temperature.dart';
 import '../my_functions.dart';
 import '../roles.dart';
 import '../secure_storage.dart';
@@ -12,7 +14,7 @@ import '../widget_another/form_header_widget.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/banners.dart';
 import '../widgets/list_tile_color_widget.dart';
-import '../widgets/input_select.dart';
+import '../widgets/widget_input_select.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/input_text.dart';
 import '../widgets/widget_input_select_date_time.dart';
@@ -46,7 +48,7 @@ class PageInspectionsMainEditState extends State<PageInspectionsMainEdit> {
   final ApiSpr _apiSpr = ApiSpr();
 
   // Справочники
-  List<double> _listSprTemperature = [];
+  List<DataSprTemperature> _listDataSprTemperature = [];
 
   /// Параметры
   bool _isLoading = false; // Флаг загрузки
@@ -126,7 +128,7 @@ class PageInspectionsMainEditState extends State<PageInspectionsMainEdit> {
       _uveit = widget.thisData!.uveit;
     }
 
-    _listSprTemperature = await _apiSpr.getTemperature();
+    _listDataSprTemperature = await _apiSpr.getTemperature();
     setState(() {});
   }
 
@@ -303,17 +305,21 @@ class PageInspectionsMainEditState extends State<PageInspectionsMainEdit> {
             });
           },
         ),
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Температура',
           fieldKey: _keys[Enum.tem]!,
-          value: _tem,
+          allValues: _listDataSprTemperature.map((e) => SprItem(id: e.name.toString() ?? '', name: e.name.toString())).toList(),
+          selectedValue: _tem.toString(),
           required: false,
-          listValues: _listSprTemperature,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
-              _tem = double.tryParse(value);
+              if (value != null) {
+                _tem = double.tryParse(value);
+              } else {
+                _tem = null;
+              }
             });
           },
         ),

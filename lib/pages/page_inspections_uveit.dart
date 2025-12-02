@@ -1,3 +1,4 @@
+import 'package:artrit/data/data_spr_item.dart';
 import 'package:flutter/material.dart';
 import '../data/data_inspections.dart';
 import '../my_functions.dart';
@@ -5,7 +6,7 @@ import '../roles.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
-import '../widgets/input_select.dart';
+import '../widgets/widget_input_select.dart';
 import '../widgets/widget_input_select_date_time.dart';
 import '../widgets/input_switch.dart';
 import '../widgets/input_text.dart';
@@ -40,8 +41,13 @@ class _PageInspectionsUveitState extends State<PageInspectionsUveit> {
   bool _uveitExists = false;
 
   // Справочники
-  final List<String> _listSprDiseaseCourse = ['Обострение', 'Вялотекущий', 'Ремиссия'];
-  final List<String> _listSprUveitExists = ['Отсутствует', 'Присутствует'];
+  final List<SprItem> _listSprDiseaseCourse = [
+    SprItem(id: '1', name: 'Обострение'),
+    SprItem(id: '2', name: 'Вялотекущий'),
+    SprItem(id: '3', name: 'Ремиссия')];
+  final List<SprItem> _listSprUveitExists = [
+    SprItem(id: '1', name: 'Отсутствует'),
+    SprItem(id: '2', name: 'Присутствует')];
 
   /// Ключи
   final _formKey = GlobalKey<FormState>();
@@ -136,22 +142,19 @@ class _PageInspectionsUveitState extends State<PageInspectionsUveit> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-
-
-
-                    InputSelect(
+                      WidgetInputSelect(
                       labelText: 'Увеит',
                       fieldKey: _keys[EnumUveit.uveitExists]!,
-                      value: _uveitExists ? _listSprUveitExists[1] : _listSprUveitExists[0],
+                        allValues: _listSprUveitExists,
+                      selectedValue: _uveitExists ? _listSprUveitExists[1].id : _listSprUveitExists[0].id,
                       required: true,
                       readOnly: widget.viewRegime,
                       cleanAvailable: false,
-                      listValues: _listSprUveitExists,
                       listRoles: Roles.asPatient,
-                      role: widget.role,
+                      roleId: widget.role,
                       onChanged: (value) {
                         setState(() {
-                          _uveitExists = (value == _listSprUveitExists[0]) ? false : true;
+                          _uveitExists = (value == _listSprUveitExists[0].id) ? false : true;
                         });
                       },
                     ),
@@ -232,19 +235,19 @@ class _PageInspectionsUveitState extends State<PageInspectionsUveit> {
             Spacer(),
           ],
         ),
-        InputSelect(
+        WidgetInputSelect(
           labelText: 'Течение',
           fieldKey: _keys[EnumUveit.diseaseCourse]!,
-          value: (_diseaseCourse != null) ? _listSprDiseaseCourse[_diseaseCourse!-1] : null,
+          allValues: _listSprDiseaseCourse,
+          selectedValue: _diseaseCourse?.toString(),
           required: _uveitExists,
           readOnly: widget.viewRegime,
-          listValues: _listSprDiseaseCourse,
           listRoles: Roles.asPatient,
-          role: widget.role,
+          roleId: widget.role,
           onChanged: (value) {
             setState(() {
-              if (value.isNotEmpty) {
-                _diseaseCourse = _listSprDiseaseCourse.indexOf(value) + 1;
+              if (value != null && value.isNotEmpty) {
+                _diseaseCourse = int.parse(value);
               } else {
                 _diseaseCourse = null;
               }
