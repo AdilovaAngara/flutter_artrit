@@ -17,7 +17,7 @@ import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/input_checkbox.dart';
 import '../widgets/input_select.dart';
-import '../widgets/input_select_date.dart';
+import '../widgets/widget_input_select_date_time.dart';
 import '../widgets/input_text.dart';
 import '../widgets/show_dialog_delete.dart';
 import '../widgets/show_message.dart';
@@ -488,16 +488,16 @@ class _PageTreatmentMedicamentsEditState extends State<PageTreatmentMedicamentsE
             });
           },
         ),
-        InputSelectDate(
+        WidgetInputSelectDateTime(
           labelText: 'Дата начала приёма',
           fieldKey: _keys[Enum.dnp]!,
           value: _dnp,
-          lastDate: _getMinBeginDate(_skippings) ?? (_dop != null
+          lastDateTime: _getMinBeginDate(_skippings) ?? (_dop != null
               ? convertStrToDate(_dop!)
               : null),
           required: true,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
               _dnp = value;
@@ -505,17 +505,17 @@ class _PageTreatmentMedicamentsEditState extends State<PageTreatmentMedicamentsE
           },
         ),
         if (_toThisTime == null || !_toThisTime!)
-        InputSelectDate(
+          WidgetInputSelectDateTime(
           labelText: 'Дата окончания приёма',
           fieldKey: _keys[Enum.dop]!,
           value: _dop,
-          firstDate: _getMaxEndDate(_skippings) ?? (_dnp != null
+          firstDateTime: _getMaxEndDate(_skippings) ?? (_dnp != null
               ? convertStrToDate(_dnp!)
               : null),
-          lastDate: getMoscowDateTime().add(Duration(days: 365 * 18)),
+          lastDateTime: getMoscowDateTime().add(Duration(days: 365 * 18)),
           required: true,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
               _dop = value;
@@ -701,31 +701,31 @@ class _PageTreatmentMedicamentsEditState extends State<PageTreatmentMedicamentsE
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          InputSelectDate(
+                          WidgetInputSelectDateTime(
                             labelText: 'Дата начала пропуска',
                             fieldKey: _keysSkippings[EnumSkippings.beginDate]!,
                             value: beginDate != null ? dateFormat(beginDate!) : null,
                             //initialDate: beginDate ?? endDate,
-                            firstDate: convertStrToDate(_dnp),
-                            lastDate: endDate ?? convertStrToDate(_dop),
+                            firstDateTime: convertStrToDate(_dnp),
+                            lastDateTime: endDate ?? convertStrToDate(_dop),
                             required: true,
                             listRoles: Roles.asPatient,
-                            role: _role,
+                            roleId: _role,
                             onChanged: (value) {
                               dialogSetState(() {
                                 beginDate = convertStrToDate(value);
                               });
                             },
                           ),
-                          InputSelectDate(
+                          WidgetInputSelectDateTime(
                             labelText: 'Дата окончания пропуска',
                             fieldKey: _keysSkippings[EnumSkippings.endDate]!,
                             value: endDate != null ? dateFormat(endDate!) : null,
-                            firstDate: beginDate ?? convertStrToDate(_dnp),
-                            lastDate: convertStrToDate(_dop) ?? getMoscowDateTime().add(Duration(days: 365 * 18)),
+                            firstDateTime: beginDate ?? convertStrToDate(_dnp),
+                            lastDateTime: convertStrToDate(_dop) ?? getMoscowDateTime().add(Duration(days: 365 * 18)),
                             required: true,
                             listRoles: Roles.asPatient,
-                            role: _role,
+                            roleId: _role,
                             onChanged: (value) {
                               dialogSetState(() {
                                 endDate = convertStrToDate(value);

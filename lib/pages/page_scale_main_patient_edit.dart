@@ -1,6 +1,5 @@
 import 'package:artrit/api/api_scale_main_patient.dart';
 import 'package:artrit/data/data_scale_main_patient.dart';
-import 'package:artrit/widgets/input_select_date_time.dart';
 import 'package:flutter/material.dart';
 import '../my_functions.dart';
 import '../roles.dart';
@@ -11,6 +10,7 @@ import '../widget_another/form_header_widget.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
+import '../widgets/widget_input_select_date_time.dart';
 
 
 class PageScaleMainPatientEdit extends StatefulWidget {
@@ -148,14 +148,16 @@ class _PageScaleMainPatientEditState extends State<PageScaleMainPatientEdit> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          InputSelectDateTime(
+                          WidgetInputSelectDateTime(
                             labelText: 'Дата',
                             fieldKey: _keys[Enum.creationDate]!,
                             value: convertTimestampToDateTime(_creationDate),
+                            lastDateTime: getMoscowDateTime(),
+                            showTime: true,
                             required: false,
                             readOnly: true,
                             listRoles: Roles.asPatient,
-                            role: _role,
+                            roleId: _role,
                             onChanged: (value) {},
                           ),
                           SizedBox(height: 50),

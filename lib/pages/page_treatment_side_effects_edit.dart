@@ -13,7 +13,7 @@ import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/input_checkbox.dart';
 import '../widgets/input_select.dart';
-import '../widgets/input_select_date.dart';
+import '../widgets/widget_input_select_date_time.dart';
 import '../widgets/input_text.dart';
 
 class PageTreatmentSideEffectsEdit extends StatefulWidget {
@@ -38,7 +38,7 @@ class _PageTreatmentSideEffectsEditState extends State<PageTreatmentSideEffectsE
   final ApiTreatmentSideEffects _api = ApiTreatmentSideEffects();
   final ApiSpr _apiSpr = ApiSpr();
 
-  // Справочники
+  /// Справочники
   late List<DataSprSideEffects> _thisSprDataSideEffects;
   late List<DataSprTreatmentResults> _thisSprDataTreatmentResults;
   List<String> _listSprSideEffects = [];
@@ -250,21 +250,15 @@ class _PageTreatmentSideEffectsEditState extends State<PageTreatmentSideEffectsE
             });
           },
         ),
-        InputSelectDate(
+        WidgetInputSelectDateTime(
           labelText: 'Дата начала нежелательного явления',
           fieldKey: _keys[Enum.date]!,
           value: _date,
-          initialDate: _date != null
-              ? convertStrToDate(_date!)
-              : _dateEnd != null
-              ? convertStrToDate(_dateEnd!)
-              : null,
-          lastDate: _dateEnd != null
-              ? convertStrToDate(_dateEnd!)
-              : null,
+          initialDate: convertStrToDate(_date) ?? convertStrToDate(_dateEnd),
+          lastDateTime: convertStrToDate(_dateEnd) ?? getMoscowDateTime(),
           required: true,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
               _date = value;
@@ -272,16 +266,15 @@ class _PageTreatmentSideEffectsEditState extends State<PageTreatmentSideEffectsE
           },
         ),
         if (_toThisTime == null || !_toThisTime!)
-          InputSelectDate(
+          WidgetInputSelectDateTime(
             labelText: 'Дата окончания нежелательного явления',
             fieldKey: _keys[Enum.dateEnd]!,
             value: _dateEnd,
-            firstDate: _date != null
-                ? convertStrToDate(_date!)
-                : null,
+            firstDateTime: convertStrToDate(_date),
+            lastDateTime: getMoscowDateTime(),
             required: true,
             listRoles: Roles.asPatient,
-            role: _role,
+            roleId: _role,
             onChanged: (value) {
               setState(() {
                 _dateEnd = value;

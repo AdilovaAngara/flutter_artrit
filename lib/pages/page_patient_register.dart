@@ -18,7 +18,7 @@ import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/checkbox_group_widget.dart';
 import '../widgets/input_checkbox.dart';
-import '../widgets/input_select_date.dart';
+import '../widgets/widget_input_select_date_time.dart';
 import '../widgets/input_select.dart';
 import '../widgets/input_text.dart';
 import '../theme.dart';
@@ -397,10 +397,11 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
             });
           },
         ),
-        InputSelectDate(
+        WidgetInputSelectDateTime(
           labelText: 'Дата рождения',
           fieldKey: _keysPatient[EnumPatient.birthDate]!,
           value: _birthDate,
+          lastDateTime: getMoscowDateTime(),
           required: true,
           listRoles: Roles.all,
           onChanged: (value) {

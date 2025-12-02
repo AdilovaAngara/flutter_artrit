@@ -12,7 +12,7 @@ import '../secure_storage.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
-import '../widgets/input_multi_select.dart';
+import '../widgets/widget_input_multi_select.dart';
 import '../widgets/input_switch.dart';
 
 class PageAnamnesisFamilyHistoryEdit extends StatefulWidget {
@@ -322,7 +322,7 @@ class _PageAnamnesisFamilyHistoryEditState extends State<PageAnamnesisFamilyHist
             onChanged: onSwitchChanged,
           ),
           if (switchValue)
-            InputMultiSelect(
+            WidgetInputMultiSelect(
               labelText: 'Родственники',
               fieldKey: _keys[multiSelectKey]!,
               allValues: _thisSprDataRelatives.map((e) => SprItem(id: e.name ?? '', name: e.name ?? ''))

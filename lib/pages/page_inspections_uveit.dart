@@ -6,7 +6,7 @@ import '../widgets/app_bar_widget.dart';
 import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/input_select.dart';
-import '../widgets/input_select_date.dart';
+import '../widgets/widget_input_select_date_time.dart';
 import '../widgets/input_switch.dart';
 import '../widgets/input_text.dart';
 import '../widgets/switch_widget.dart';
@@ -199,14 +199,15 @@ class _PageInspectionsUveitState extends State<PageInspectionsUveit> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        InputSelectDate(
+        WidgetInputSelectDateTime(
           labelText: 'Дата консультации',
           fieldKey: _keys[EnumUveit.consultationDate]!,
           value: _consultationDate,
+          lastDateTime: getMoscowDateTime(),
           required: _uveitExists,
           readOnly: widget.viewRegime,
           listRoles: Roles.asPatient,
-          role: widget.role,
+          roleId: widget.role,
           onChanged: (value) {
             setState(() {
               _consultationDate = value;

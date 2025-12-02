@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:artrit/api/api_researches.dart';
 import 'package:artrit/data/data_researches.dart';
-import 'package:artrit/widgets/input_select_date_time.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../api/api_send_file.dart';
@@ -15,6 +14,7 @@ import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/input_text.dart';
 import '../widgets/input_file.dart';
+import '../widgets/widget_input_select_date_time.dart';
 
 class PageResearchesEdit extends StatefulWidget {
   final String title;
@@ -213,13 +213,15 @@ class PageResearchesEditState extends State<PageResearchesEdit> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        InputSelectDateTime(
+        WidgetInputSelectDateTime(
           labelText: 'Дата',
           fieldKey: _keys[Enum.date]!,
           value: _date,
+          lastDateTime: getMoscowDateTime(),
+          showTime: true,
           required: true,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
               _date = value;

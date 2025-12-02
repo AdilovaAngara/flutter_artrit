@@ -7,7 +7,7 @@ import '../secure_storage.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
-import '../widgets/input_select_date.dart';
+import '../widgets/widget_input_select_date_time.dart';
 
 class PageAnamnesisDiseaseAnamnesisEdit extends StatefulWidget {
   final String title;
@@ -165,35 +165,30 @@ class _PageAnamnesisDiseaseAnamnesisEditState
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        InputSelectDate(
+        WidgetInputSelectDateTime(
           labelText: 'Дата появления первых симптомов, жалоб',
           fieldKey: _keys[Enum.dateDisease]!,
           value: _dateDisease,
-          initialDate: _dateDisease != null
-              ? convertStrToDate(_dateDisease!)
-              : _dateDiagnosis != null
-                  ? convertStrToDate(_dateDiagnosis!)
-                  : null,
-          lastDate:
-              _dateDiagnosis != null ? convertStrToDate(_dateDiagnosis!) : null,
+          initialDate: convertStrToDate(_dateDisease) ?? convertStrToDate(_dateDiagnosis),
+          lastDateTime: convertStrToDate(_dateDiagnosis) ?? getMoscowDateTime(),
           required: true,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
               _dateDisease = value;
             });
           },
         ),
-        InputSelectDate(
+        WidgetInputSelectDateTime(
           labelText: 'Дата постановки диагноза',
           fieldKey: _keys[Enum.dateDiagnosis]!,
           value: _dateDiagnosis,
-          firstDate:
-              _dateDisease != null ? convertStrToDate(_dateDisease!) : null,
+          firstDateTime: convertStrToDate(_dateDisease!),
+          lastDateTime: getMoscowDateTime(),
           required: true,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
               _dateDiagnosis = value;

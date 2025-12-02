@@ -12,7 +12,7 @@ import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/input_checkbox.dart';
 import '../widgets/input_select.dart';
-import '../widgets/input_select_date.dart';
+import '../widgets/widget_input_select_date_time.dart';
 import '../widgets/input_text.dart';
 
 class PageTreatmentRehabilitationEdit extends StatefulWidget {
@@ -228,7 +228,7 @@ class _PageTreatmentRehabilitationEditState extends State<PageTreatmentRehabilit
             });
           },
         ),
-        InputSelectDate(
+        WidgetInputSelectDateTime(
           labelText: 'Дата начала',
           fieldKey: _keys[Enum.dateStart]!,
           value: _dateStart,
@@ -237,12 +237,12 @@ class _PageTreatmentRehabilitationEditState extends State<PageTreatmentRehabilit
               : _dateEnd != null
               ? convertStrToDate(_dateEnd!)
               : null,
-          lastDate: _dateEnd != null
+          lastDateTime: _dateEnd != null
               ? convertStrToDate(_dateEnd!)
               : null,
           required: true,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
               _dateStart = value;
@@ -250,16 +250,16 @@ class _PageTreatmentRehabilitationEditState extends State<PageTreatmentRehabilit
           },
         ),
         if (_toThisTime == null || !_toThisTime!)
-          InputSelectDate(
+          WidgetInputSelectDateTime(
             labelText: 'Дата окончания',
             fieldKey: _keys[Enum.dateEnd]!,
             value: _dateEnd,
-            firstDate: _dateStart != null
+            firstDateTime: _dateStart != null
                 ? convertStrToDate(_dateStart!)
                 : null,
             required: true,
             listRoles: Roles.asPatient,
-            role: _role,
+            roleId: _role,
             onChanged: (value) {
               setState(() {
                 _dateEnd = value;

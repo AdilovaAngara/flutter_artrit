@@ -12,7 +12,7 @@ import '../widget_another/form_header_widget.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
-import '../widgets/input_select_date.dart';
+import '../widgets/widget_input_select_date_time.dart';
 import '../widgets/input_text.dart';
 import '../widgets/input_file.dart';
 
@@ -207,13 +207,14 @@ class PageResearchesEpicrisisEditState extends State<PageResearchesEpicrisisEdit
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        InputSelectDate(
+        WidgetInputSelectDateTime(
           labelText: 'Дата',
           fieldKey: _keys[Enum.date]!,
           value: _date,
+          lastDateTime: getMoscowDateTime(),
           required: true,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
               _date = value;

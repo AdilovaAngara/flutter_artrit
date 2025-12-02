@@ -9,7 +9,7 @@ import '../widgets/app_bar_widget.dart';
 import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/input_checkbox.dart';
-import '../widgets/input_select_date.dart';
+import '../widgets/widget_input_select_date_time.dart';
 import '../widgets/input_text.dart';
 
 class PageAnamnesisConcomitantsEdit extends StatefulWidget {
@@ -223,19 +223,15 @@ class _PageAnamnesisConcomitantsEditState
             });
           },
         ),
-        InputSelectDate(
+        WidgetInputSelectDateTime(
           labelText: 'Дата начала',
           fieldKey: _keys[Enum.dateStart]!,
           value: _dateStart,
-          initialDate: _dateStart != null
-              ? convertStrToDate(_dateStart!)
-              : _dateEnd != null
-                  ? convertStrToDate(_dateEnd!)
-                  : null,
-          lastDate: _dateEnd != null ? convertStrToDate(_dateEnd!) : null,
+          initialDate: convertStrToDate(_dateStart) ?? convertStrToDate(_dateEnd),
+          lastDateTime: convertStrToDate(_dateEnd) ?? getMoscowDateTime(),
           required: true,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
               _dateStart = value;
@@ -243,14 +239,15 @@ class _PageAnamnesisConcomitantsEditState
           },
         ),
         if (_toThisTime == null || !_toThisTime!)
-          InputSelectDate(
+          WidgetInputSelectDateTime(
             labelText: 'Дата окончания',
             fieldKey: _keys[Enum.endDate]!,
             value: _dateEnd,
-            firstDate: _dateStart != null ? convertStrToDate(_dateStart!) : null,
+            firstDateTime: convertStrToDate(_dateStart),
+            lastDateTime: getMoscowDateTime(),
             required: true,
             listRoles: Roles.asPatient,
-            role: _role,
+            roleId: _role,
             onChanged: (value) {
               setState(() {
                 _dateEnd = value;

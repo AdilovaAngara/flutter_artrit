@@ -11,7 +11,7 @@ import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/file_utils.dart';
 import '../widgets/input_checkbox.dart';
-import '../widgets/input_select_date.dart';
+import '../widgets/widget_input_select_date_time.dart';
 import '../widgets/show_message.dart';
 import 'menu.dart';
 
@@ -217,7 +217,7 @@ class _PageReportState extends State<PageReport> {
         ),
         if (!_allTime)
           ...[
-            InputSelectDate(
+            WidgetInputSelectDateTime(
               labelText: 'Начало периода',
               fieldKey: _keys[Enum.startDate]!,
               value: _startDate,
@@ -226,8 +226,7 @@ class _PageReportState extends State<PageReport> {
                   : _endDate != null
                   ? convertStrToDate(_endDate!)
                   : null,
-              lastDate:
-              _endDate != null ? convertStrToDate(_endDate!) : null,
+              lastDateTime: convertStrToDate(_endDate) ?? getMoscowDateTime(),
               required: true,
               listRoles: Roles.all,
               onChanged: (value) {
@@ -236,12 +235,12 @@ class _PageReportState extends State<PageReport> {
                 });
               },
             ),
-            InputSelectDate(
+            WidgetInputSelectDateTime(
               labelText: 'Конец периода',
               fieldKey: _keys[Enum.endDate]!,
               value: _endDate,
-              firstDate:
-              _startDate != null ? convertStrToDate(_startDate!) : null,
+              firstDateTime: convertStrToDate(_startDate),
+              lastDateTime: getMoscowDateTime(),
               required: true,
               listRoles: Roles.all,
               onChanged: (value) {

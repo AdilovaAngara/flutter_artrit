@@ -15,9 +15,9 @@ import '../widget_another/form_header_widget.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
-import '../widgets/input_multi_select.dart';
+import '../widgets/widget_input_multi_select.dart';
 import '../widgets/input_select.dart';
-import '../widgets/input_select_date.dart';
+import '../widgets/widget_input_select_date_time.dart';
 import '../widgets/input_switch.dart';
 import '../widgets/input_text.dart';
 
@@ -261,33 +261,31 @@ class _PageNotificationsSettingsEditState
             });
           },
         ),
-        InputSelectDate(
+        WidgetInputSelectDateTime(
           labelText: 'Дата начала срока действия',
           fieldKey: _keys[Enum.beginDate]!,
           value: _beginDate,
           initialDate: convertStrToDate(_beginDate),
-          firstDate: getMoscowDateTime(),
-          lastDate: _endDate != null
-              ? convertStrToDate(_endDate)
-              : getMoscowDateTime().add(Duration(days: 6000)),
+          firstDateTime: getMoscowDateTime(),
+          lastDateTime: convertStrToDate(_endDate) ?? getMoscowDateTime().add(Duration(days: 6000)),
           required: true,
           listRoles: Roles.asDoctor,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
               _beginDate = value;
             });
           },
         ),
-        InputSelectDate(
+        WidgetInputSelectDateTime(
           labelText: 'Дата окончания срока действия',
           fieldKey: _keys[Enum.endDate]!,
           value: _endDate,
-          firstDate: convertStrToDate(_beginDate),
-          lastDate: getMoscowDateTime().add(Duration(days: 6000)),
+          firstDateTime: convertStrToDate(_beginDate),
+          lastDateTime: getMoscowDateTime().add(Duration(days: 6000)),
           required: true,
           listRoles: Roles.asDoctor,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
               _endDate = value;
@@ -308,7 +306,7 @@ class _PageNotificationsSettingsEditState
             });
           },
         ),
-        InputMultiSelect(
+        WidgetInputMultiSelect(
           labelText: 'Список разделов',
           fieldKey: _keys[Enum.sectionIds]!,
           allValues: _thisSprDataSections
@@ -328,7 +326,7 @@ class _PageNotificationsSettingsEditState
             });
           },
         ),
-        InputMultiSelect(
+        WidgetInputMultiSelect(
           labelText: 'Список пациентов',
           fieldKey: _keys[Enum.patientIds]!,
           allValues: _thisDataPatients

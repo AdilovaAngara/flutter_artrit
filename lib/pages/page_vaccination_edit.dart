@@ -14,7 +14,7 @@ import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/input_file.dart';
 import '../widgets/input_select.dart';
-import '../widgets/input_select_date.dart';
+import '../widgets/widget_input_select_date_time.dart';
 import '../widgets/input_text.dart';
 
 class PageVaccinationEdit extends StatefulWidget {
@@ -213,13 +213,14 @@ class _PageVaccinationEditState extends State<PageVaccinationEdit> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        InputSelectDate(
+        WidgetInputSelectDateTime(
           labelText: 'Дата',
           fieldKey: _keys[Enum.createdOn]!,
           value: _executeDate,
+          lastDateTime: getMoscowDateTime(),
           required: true,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
               _executeDate = value;

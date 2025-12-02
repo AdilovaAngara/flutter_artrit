@@ -16,7 +16,7 @@ import '../secure_storage.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
-import '../widgets/input_select_date.dart';
+import '../widgets/widget_input_select_date_time.dart';
 import '../widgets/input_select.dart';
 import '../widgets/input_switch.dart';
 import '../widgets/input_text.dart';
@@ -388,13 +388,14 @@ bool _getBootInvalid()
             });
           },
         ),
-        InputSelectDate(
+        WidgetInputSelectDateTime(
           labelText: 'Дата рождения',
           fieldKey: _keysPatient[EnumPatient.birthDate]!,
           value: _birthDate,
+          lastDateTime: getMoscowDateTime(),
           required: true,
           listRoles: Roles.all,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
               _birthDate = value;

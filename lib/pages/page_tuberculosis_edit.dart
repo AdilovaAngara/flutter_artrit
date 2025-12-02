@@ -1,5 +1,5 @@
 import 'package:artrit/api/api_spr.dart';
-import 'package:artrit/widgets/input_multi_select.dart';
+import 'package:artrit/widgets/widget_input_multi_select.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../api/api_tuberculosis.dart';
@@ -13,7 +13,7 @@ import '../secure_storage.dart';
 import '../widget_another/form_header_widget.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/banners.dart';
-import '../widgets/input_select_date.dart';
+import '../widgets/widget_input_select_date_time.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/input_text.dart';
 
@@ -209,39 +209,39 @@ class PageTuberculosisEditState extends State<PageTuberculosisEdit> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        InputSelectDate(
+        WidgetInputSelectDateTime(
           labelText: 'Дата начала лечения',
           fieldKey: _keys[Enum.treatmentBeginDate]!,
           value: _treatmentBeginDate,
           initialDate: _treatmentBeginDate != null
               ? convertStrToDate(_treatmentBeginDate)
               : convertStrToDate(_treatmentEndDate),
-          lastDate: convertStrToDate(_treatmentEndDate),
+          lastDateTime: convertStrToDate(_treatmentEndDate),
           required: true,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
               _treatmentBeginDate = value;
             });
           },
         ),
-        InputSelectDate(
+        WidgetInputSelectDateTime(
           labelText: 'Дата завершения лечения',
           fieldKey: _keys[Enum.treatmentEndDate]!,
           value: _treatmentEndDate,
-          firstDate: convertStrToDate(_treatmentBeginDate),
-          lastDate: getMoscowDateTime().add(Duration(days: 365 * 18)),
+          firstDateTime: convertStrToDate(_treatmentBeginDate),
+          lastDateTime: getMoscowDateTime().add(Duration(days: 365 * 18)),
           required: true,
           listRoles: Roles.asPatient,
-          role: _role,
+          roleId: _role,
           onChanged: (value) {
             setState(() {
               _treatmentEndDate = value;
             });
           },
         ),
-        InputMultiSelect(
+        WidgetInputMultiSelect(
           labelText: 'Лекарственные препараты',
           fieldKey: _keys[Enum.drugs]!,
           allValues: _thisSprDataDrugs.map((e) => SprItem(id: e.id.toString(), name: e.name ?? ''))
@@ -256,7 +256,7 @@ class PageTuberculosisEditState extends State<PageTuberculosisEdit> {
             });
           },
         ),
-        InputMultiSelect(
+        WidgetInputMultiSelect(
           labelText: 'Нежелательные явления',
           fieldKey: _keys[Enum.sideEffects]!,
           allValues: _thisSprDataSideEffects.map((e) => SprItem(id: e.id.toString(), name: e.name))
