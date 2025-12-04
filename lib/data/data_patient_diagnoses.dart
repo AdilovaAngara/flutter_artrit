@@ -2,11 +2,11 @@
 
 import 'dart:convert';
 
-List<DataPatientDiagnoses> dataPatientDiagnosesFromJson(String str) => List<DataPatientDiagnoses>.from(json.decode(str).map((x) => DataPatientDiagnoses.fromJson(x)));
+List<DataDiagnoses> dataDiagnosesFromJson(String str) => List<DataDiagnoses>.from(json.decode(str).map((x) => DataDiagnoses.fromJson(x)));
 
-String dataPatientDiagnosesToJson(List<DataPatientDiagnoses> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String dataDiagnosesToJson(List<DataDiagnoses> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-class DataPatientDiagnoses {
+class DataDiagnoses {
   String id;
   String patientsId;
   String? diagnosisId;
@@ -15,17 +15,17 @@ class DataPatientDiagnoses {
   dynamic kritisc;
   int? dateCreated;
 
-  DataPatientDiagnoses({
+  DataDiagnoses({
     required this.id,
     required this.patientsId,
-    this.diagnosisId,
+    required this.diagnosisId,
     this.comment,
     this.kritpost,
     this.kritisc,
     this.dateCreated,
   });
 
-  factory DataPatientDiagnoses.fromJson(Map<String, dynamic> json) => DataPatientDiagnoses(
+  factory DataDiagnoses.fromJson(Map<String, dynamic> json) => DataDiagnoses(
     id: json["id"],
     patientsId: json["patients_id"],
     diagnosisId: json["diagnosis_id"],

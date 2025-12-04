@@ -1,6 +1,6 @@
 import 'package:artrit/api/api_parent.dart';
 import 'package:artrit/api/api_patient.dart';
-import 'package:artrit/api/api_patient_diagnoses.dart';
+import 'package:artrit/api/api_diagnoses.dart';
 import 'package:artrit/api/api_spr.dart';
 import 'package:artrit/data/data_spr_item.dart';
 import 'package:collection/collection.dart';
@@ -17,6 +17,7 @@ import '../secure_storage.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
+import '../widgets/radio_group_widget.dart';
 import '../widgets/widget_input_select_date_time.dart';
 import '../widgets/widget_input_select.dart';
 import '../widgets/input_switch.dart';
@@ -39,18 +40,21 @@ class PagePatientEdit extends StatefulWidget {
 
 class PagePatientEditState extends State<PagePatientEdit> {
   late Future<void> _future;
+
   /// API
   final ApiPatient _apiPatient = ApiPatient();
   final ApiParent _apiParent = ApiParent();
-  final ApiPatientDiagnoses _apiPatientDiagnoses = ApiPatientDiagnoses();
+  final ApiDiagnoses _apiDiagnoses = ApiDiagnoses();
   final ApiSpr _apiSpr = ApiSpr();
+
   /// Данные
   late DataPatient _dataPatient;
   late DataParent _dataParent;
-  late List<DataPatientDiagnoses> _dataPatientDiagnoses;
+  late List<DataDiagnoses> _dataDiagnoses;
   late List<DataSprRegion> _dataSprRegion;
   late List<DataSprRelationship> _dataSprRelationship;
   late List<DataSprDiagnoses> _dataSprDiagnoses;
+
   /// Справочники
 
   /// Параметры
@@ -65,17 +69,16 @@ class PagePatientEditState extends State<PagePatientEdit> {
   String? _gender;
   String? _regionId;
   String? _address;
-  bool _invalid = false;
+  int _invalid = 2;
+  int? _notInvalidReason;
   String? _relationshipDegreeId;
   String? _lastNameParent;
   String? _firstNameParent;
   String? _patronymicParent;
   String? _email;
   String? _phone;
-  String? _diagnosesId;
+  String? _diagnosisId;
   String? _diagnosisComment;
-  String? _mkbName;
-  String? _mkbCode;
   String? _hospitalName;
   String? _doctor;
   String? _doctorFio;
@@ -100,16 +103,19 @@ class PagePatientEditState extends State<PagePatientEdit> {
 
   Future<void> _loadData() async {
     _role = await getUserRole();
+    // Подгружаем справочники
+    _dataSprRegion = await _apiSpr.getRegions();
+    _dataSprRelationship = await _apiSpr.getRelationship();
+    _dataSprDiagnoses = await _apiSpr.getDiagnoses();
+
     _appBarTitle = (_role == 1) ? widget.title : 'Данные пациента';
 
     if (widget.isEditForm) {
       _patientsId = await readSecureData(SecureKey.patientsId);
       _dataPatient = await _apiPatient.get(patientsId: _patientsId);
       _dataParent = await _apiParent.get(patientsId: _patientsId);
-      _dataPatientDiagnoses = await _apiPatientDiagnoses.get(patientsId: _patientsId);
-      _dataSprRegion = await _apiSpr.getRegions();
-      _dataSprRelationship = await _apiSpr.getRelationship();
-      _dataSprDiagnoses = await _apiSpr.getDiagnoses();
+      _dataDiagnoses = await _apiDiagnoses.get(patientsId: _patientsId);
+
 
       _lastNamePatient = _dataPatient.lastName;
       _firstNamePatient = _dataPatient.firstName;
@@ -118,7 +124,8 @@ class PagePatientEditState extends State<PagePatientEdit> {
       _gender = _dataPatient.gender;
       _regionId = _dataPatient.regionId;
       _address = _dataPatient.address;
-      _invalid = _getBootInvalid();
+      _invalid = _dataPatient.invalid;
+      _notInvalidReason = _dataPatient.notInvalidReason;
 
       _relationshipDegreeId = _dataParent.relationshipDegreeId;
       _lastNameParent = _dataParent.lastName;
@@ -127,25 +134,20 @@ class PagePatientEditState extends State<PagePatientEdit> {
       _email = _dataParent.email;
       _phone = _dataParent.phone;
 
-      _diagnosesId = _dataPatientDiagnoses.isNotEmpty ? _dataPatientDiagnoses.first.diagnosisId : null;
-      _diagnosisComment = _dataPatientDiagnoses.isNotEmpty ? _dataPatientDiagnoses.first.comment ?? '' : '';
-      if (_diagnosesId != null)
-      {
-        _mkbName = _dataSprDiagnoses.firstWhereOrNull((diagnoses) => diagnoses.id == _diagnosesId)?.mkbName;
-        _mkbCode = _dataSprDiagnoses.firstWhereOrNull((diagnoses) => diagnoses.id == _diagnosesId)?.mkbCode;
-      }
-      else {
-        _mkbName = '';
-        _mkbCode = '';
-      }
-      _hospitalName = _dataPatient.hospitalName == 'Другое' ? _dataPatient.unknownHospital : _dataPatient.hospitalName;
+      _diagnosisId =
+          _dataDiagnoses.isNotEmpty ? _dataDiagnoses.first.diagnosisId : null;
+      _diagnosisComment =
+          _dataDiagnoses.isNotEmpty ? _dataDiagnoses.first.comment ?? '' : '';
+      _hospitalName = _dataPatient.hospitalName == 'Другое'
+          ? _dataPatient.unknownHospital
+          : _dataPatient.hospitalName;
       _doctor = _dataPatient.doctor;
-      _doctorFio = _doctor == '1' ? _dataPatient.unknownDoctor : _dataPatient.doctorFio;
+      _doctorFio =
+          _doctor == '1' ? _dataPatient.unknownDoctor : _dataPatient.doctorFio;
     }
 
     setState(() {});
   }
-
 
   void _changeData() async {
     if (!_formKey.currentState!.validate()) {
@@ -157,7 +159,8 @@ class PagePatientEditState extends State<PagePatientEdit> {
       _isLoading = true;
     });
 
-    await Future.wait([_putPatientData(), _putParentData()]);
+    await Future.wait(
+        [_putPatientData(), _putParentData(), _putDiagnosisData()]);
 
     setState(() {
       _isLoading = false;
@@ -170,7 +173,10 @@ class PagePatientEditState extends State<PagePatientEdit> {
 
   Future<void> _putPatientData() async {
     DataPatient thisData = DataPatient(
-      regionName: _dataSprRegion.firstWhereOrNull((region) => region.id == _regionId)?.name ?? '',
+      regionName: _dataSprRegion
+              .firstWhereOrNull((region) => region.id == _regionId)
+              ?.name ??
+          '',
       hospitalName: _dataPatient.hospitalName,
       roleName: null,
       id: _dataPatient.id,
@@ -181,7 +187,7 @@ class PagePatientEditState extends State<PagePatientEdit> {
       gender: _gender,
       address: _address,
       invalid: _invalid,
-      notInvalidReason: _dataPatient.notInvalidReason,
+      notInvalidReason: _notInvalidReason,
       birthDate: convertToTimestamp(_birthDate),
       uveit: _dataPatient.uveit,
       notificationReceiveType: _dataPatient.notificationReceiveType,
@@ -200,7 +206,10 @@ class PagePatientEditState extends State<PagePatientEdit> {
 
   Future<void> _putParentData() async {
     DataParent thisData = DataParent(
-      whoYouAreToThePatient: _dataSprRelationship.firstWhereOrNull((relationship) => relationship.id == _relationshipDegreeId)?.name,
+      whoYouAreToThePatient: _dataSprRelationship
+          .firstWhereOrNull(
+              (relationship) => relationship.id == _relationshipDegreeId)
+          ?.name,
       id: _dataParent.id,
       lastName: _lastNameParent,
       firstName: _firstNameParent,
@@ -213,8 +222,17 @@ class PagePatientEditState extends State<PagePatientEdit> {
     _apiParent.put(patientsId: _patientsId, thisData: thisData);
   }
 
-
-
+  Future<void> _putDiagnosisData() async {
+    String recordId = _dataDiagnoses.first.id;
+    DataDiagnoses thisData = DataDiagnoses(
+        id: recordId,
+        patientsId: _patientsId,
+        diagnosisId: _diagnosisId,
+        comment: _diagnosisComment,
+        dateCreated: _dataDiagnoses.first.dateCreated);
+    _apiDiagnoses.put(
+        patientsId: _patientsId, recordId: recordId, thisData: thisData);
+  }
 
   bool _areDifferent() {
     if (!widget.isEditForm) {
@@ -227,7 +245,8 @@ class PagePatientEditState extends State<PagePatientEdit> {
           _gender != null ||
           _regionId != null ||
           _address != null ||
-          _invalid == true ||
+          _invalid == 1 ||
+          _notInvalidReason != null ||
           _relationshipDegreeId != null ||
           _lastNameParent != null ||
           _firstNameParent != null ||
@@ -246,7 +265,8 @@ class PagePatientEditState extends State<PagePatientEdit> {
         _gender != w.gender ||
         _regionId != w.regionId ||
         _address != w.address ||
-        _invalid != _getBootInvalid() ||
+        _invalid != w.invalid ||
+        _notInvalidReason != w.notInvalidReason ||
         _relationshipDegreeId != p.relationshipDegreeId ||
         _lastNameParent != p.lastName ||
         _firstNameParent != p.firstName ||
@@ -254,14 +274,6 @@ class PagePatientEditState extends State<PagePatientEdit> {
         _email != p.email ||
         _phone != p.phone;
   }
-
-
-
-bool _getBootInvalid()
-{
-  return (_dataPatient.invalid is int) ? _dataPatient.invalid != 0 : false;
-}
-
 
 
   @override
@@ -300,6 +312,8 @@ bool _getBootInvalid()
                           SizedBox(height: 10),
                           _buildPatientForm(),
                           SizedBox(height: 30),
+                          _buildInvalidForm(),
+                          SizedBox(height: 30),
                           _buildParentForm(),
                           SizedBox(height: 30),
                           _buildDiagnosesForm(),
@@ -333,15 +347,16 @@ bool _getBootInvalid()
     );
   }
 
-
-
-
   Widget _buildPatientForm() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Информация о пациенте', style: captionTextStyle, textAlign: TextAlign.start,),
+        Text(
+          'Информация о пациенте',
+          style: captionTextStyle,
+          textAlign: TextAlign.start,
+        ),
         SizedBox(height: 10),
         InputText(
           labelText: 'Фамилия',
@@ -403,7 +418,11 @@ bool _getBootInvalid()
           labelText: 'Пол',
           fieldKey: _keysPatient[EnumPatient.gender]!,
           allValues: listGender,
-          selectedValue: (_gender == 'Мужчина') ? 'Мужской' : (_gender == 'Женщина') ? 'Женский' : _gender,
+          selectedValue: (_gender == 'Мужчина')
+              ? 'Мужской'
+              : (_gender == 'Женщина')
+                  ? 'Женский'
+                  : _gender,
           required: true,
           listRoles: Roles.all,
           roleId: _role,
@@ -416,7 +435,9 @@ bool _getBootInvalid()
         WidgetInputSelect(
           labelText: 'Регион',
           fieldKey: _keysPatient[EnumPatient.regionName]!,
-          allValues: _dataSprRegion.map((e) => SprItem(id: e.id, name: e.name)).toList(),
+          allValues: _dataSprRegion
+              .map((e) => SprItem(id: e.id, name: e.name))
+              .toList(),
           selectedValue: _regionId,
           required: true,
           listRoles: Roles.all,
@@ -440,22 +461,55 @@ bool _getBootInvalid()
             });
           },
         ),
-        InputSwitch(
-          labelText: 'Инвалидность',
-          fieldKey: _keysPatient[EnumPatient.invalid]!,
-          value: _invalid,
-          listRoles: Roles.all,
-          role: _role,
-          onChanged: (value) {
-            setState(() {
-              _invalid = value;
-            });
-          },
-        ),
       ],
     );
   }
 
+
+
+
+
+
+
+  Widget _buildInvalidForm() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Инвалидность',
+          style: captionTextStyle,
+          textAlign: TextAlign.start,
+        ),
+        SizedBox(height: 10),
+        InputSwitch(
+          labelText: 'Инвалидность',
+          fieldKey: _keysPatient[EnumPatient.invalid]!,
+          value: _invalid == 1 ? true : false,
+          listRoles: Roles.all,
+          role: _role,
+          onChanged: (value) {
+            setState(() {
+              _invalid = value ? 1 : 2;
+            });
+          },
+        ),
+        if (_invalid == 2)
+          RadioGroupWidget(
+            labelText: 'Укажите причину',
+            listAnswers: ['Сняли', 'Отказали', 'Не подавали документы'],
+            selectedIndex: _notInvalidReason != null ? _notInvalidReason! - 1 : null,
+            dividerHeight: 0,
+            listRoles: Roles.all,
+            onChanged: (value) {
+              setState(() {
+                _notInvalidReason = value != null ? value + 1 : null;
+              });
+            },
+          ),
+      ],
+    );
+  }
 
 
 
@@ -466,12 +520,18 @@ bool _getBootInvalid()
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Информация об опекуне', style: captionTextStyle, textAlign: TextAlign.start,),
+        Text(
+          'Информация об опекуне',
+          style: captionTextStyle,
+          textAlign: TextAlign.start,
+        ),
         SizedBox(height: 10),
         WidgetInputSelect(
           labelText: 'Степень родства',
           fieldKey: _keysParent[EnumParent.relationshipDegreeId]!,
-          allValues: _dataSprRelationship.map((e) => SprItem(id: e.id, name: e.name ?? '')).toList(),
+          allValues: _dataSprRelationship
+              .map((e) => SprItem(id: e.id, name: e.name ?? ''))
+              .toList(),
           selectedValue: _relationshipDegreeId,
           required: true,
           listRoles: Roles.all,
@@ -556,75 +616,66 @@ bool _getBootInvalid()
     );
   }
 
-
-
-
-
-  Widget _buildDiagnosesForm()
-  {
+  Widget _buildDiagnosesForm() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Диагноз', style: captionTextStyle, textAlign: TextAlign.start,),
+        Text(
+          'Диагноз',
+          style: captionTextStyle,
+          textAlign: TextAlign.start,
+        ),
         SizedBox(height: 10),
-        InputText(
+        WidgetInputSelect(
           labelText: 'Название',
-          fieldKey: _keysDiagnoses[EnumDiagnoses.mkbName]!,
-          value: _mkbName,
+          fieldKey: _keysDiagnoses[EnumDiagnoses.diagnosisId]!,
+          allValues: _dataSprDiagnoses
+              .map((e) => SprItem(
+                  id: e.id,
+                  name:
+                      '${e.mkbCode.trim()} ${e.synonym.trim().replaceAll('\n', '')}'))
+              .toList(),
+          selectedValue: _diagnosisId,
           required: true,
-          readOnly: true,
           listRoles: Roles.all,
-          role: _role,
           onChanged: (value) {
-            setState(() {
-              _mkbName = value;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                setState(() {
+                  _diagnosisId = value;
+                });
+              }
             });
           },
         ),
         InputText(
-          labelText: 'Код МКБ-10',
-          fieldKey: _keysDiagnoses[EnumDiagnoses.mkbCode]!,
-          value: _mkbCode,
+          labelText: 'Комментарий к диагнозу',
+          fieldKey: _keysDiagnoses[EnumDiagnoses.diagnosisComment]!,
+          value: _diagnosisComment,
+          maxLength: 300,
           required: true,
-          readOnly: true,
           listRoles: Roles.all,
-          role: _role,
           onChanged: (value) {
             setState(() {
-              _mkbCode = value;
+              _diagnosisComment = value;
             });
           },
         ),
-        if (_mkbCode == 'M31.8' || _mkbCode == 'M32.8')
-          InputText(
-            labelText: 'Комментарий к диагнозу',
-            fieldKey: _keysDiagnoses[EnumDiagnoses.diagnosisComment]!,
-            value: _diagnosisComment,
-            readOnly: true,
-            required: false,
-            listRoles: Roles.all,
-            role: _role,
-            onChanged: (value) {
-              setState(() {
-                _diagnosisComment = value;
-              });
-            },
-          ),
       ],
     );
   }
 
-
-
-
-  Widget _buildDoctorForm()
-  {
+  Widget _buildDoctorForm() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Данные о враче', style: captionTextStyle, textAlign: TextAlign.start,),
+        Text(
+          'Данные о враче',
+          style: captionTextStyle,
+          textAlign: TextAlign.start,
+        ),
         SizedBox(height: 10),
         InputText(
           labelText: 'Название учреждения',
@@ -647,6 +698,4 @@ bool _getBootInvalid()
       ],
     );
   }
-
 }
-

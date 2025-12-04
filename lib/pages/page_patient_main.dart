@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import '../api/api_inspections.dart';
 import '../api/api_inspections_photo.dart';
 import '../api/api_patient.dart';
-import '../api/api_patient_diagnoses.dart';
+import '../api/api_diagnoses.dart';
 import '../api/api_questionnaire.dart';
 import '../api/api_spr.dart';
 import '../data/data_inspections_photo.dart';
@@ -37,7 +37,7 @@ class PagePatientMainState extends State<PagePatientMain> {
 
   /// API
   final ApiPatient _apiPatient = ApiPatient();
-  final ApiPatientDiagnoses _apiPatientDiagnoses = ApiPatientDiagnoses();
+  final ApiDiagnoses _apiPatientDiagnoses = ApiDiagnoses();
   final ApiInspections _apiInspections = ApiInspections();
   final ApiQuestionnaire _apiQuestionnaire = ApiQuestionnaire();
   final ApiSpr _apiSpr = ApiSpr();
@@ -45,7 +45,7 @@ class PagePatientMainState extends State<PagePatientMain> {
 
   /// Данные
   late DataPatient _dataPatient;
-  late List<DataPatientDiagnoses> _dataPatientDiagnoses;
+  late List<DataDiagnoses> _dataDiagnoses;
   late List<DataInspections> _dataInspections;
   late List<DataQuestionnaire> _dataQuestionnaire;
   late List<DataSprDiagnoses> _dataSprDiagnoses;
@@ -55,8 +55,8 @@ class PagePatientMainState extends State<PagePatientMain> {
   late int _role;
   late String _patientsId;
   late String? _diagnosesId;
-  late String? _mkbName;
-  late String? _mkbCode;
+  String? _mkbName = 'Не указан';
+  String? _mkbCode = '';
   int lastInspectionsIndex = 0;
   late RichText patientsInfoText;
   late bool _automaticallyImplyLeading = false;
@@ -78,7 +78,7 @@ class PagePatientMainState extends State<PagePatientMain> {
     _role = await getUserRole();
     _patientsId = await readSecureData(SecureKey.patientsId);
     _dataPatient = await _apiPatient.get(patientsId: _patientsId);
-    _dataPatientDiagnoses = await _apiPatientDiagnoses.get(patientsId: _patientsId);
+    _dataDiagnoses = await _apiPatientDiagnoses.get(patientsId: _patientsId);
     _dataInspections = await _apiInspections.get(patientsId: _patientsId);
     _dataQuestionnaire = await _apiQuestionnaire.get(patientsId: _patientsId);
     _dataSprDiagnoses = await _apiSpr.getDiagnoses();
@@ -94,21 +94,19 @@ class PagePatientMainState extends State<PagePatientMain> {
           getDoubleAge: true));
       saveSecureData(SecureKey.doubleAge, _doubleAge.toString());
       _automaticallyImplyLeading = (_role == 1) ? false : true;
-      _appBarTitle =
-          (_role == 1) ? EnumMenu.homePatient.displayName : 'Карта пациента';
-      _diagnosesId = _dataPatientDiagnoses.isNotEmpty
-          ? _dataPatientDiagnoses.first.diagnosisId
+      _appBarTitle = (_role == 1)
+          ? EnumMenu.homePatient.displayName
+          : 'Карта пациента';
+      _diagnosesId = _dataDiagnoses.isNotEmpty
+          ? _dataDiagnoses.first.diagnosisId
           : null;
       if (_diagnosesId != null) {
-        _mkbName = _dataSprDiagnoses
-            .firstWhereOrNull((diagnoses) => diagnoses.id == _diagnosesId)
-            ?.mkbName;
-        _mkbCode = _dataSprDiagnoses
-            .firstWhereOrNull((diagnoses) => diagnoses.id == _diagnosesId)
-            ?.mkbCode;
-      } else {
-        _mkbName = 'Не указан';
-        _mkbCode = '';
+        final diagnosis = _dataSprDiagnoses
+            .firstWhereOrNull((diagnoses) => diagnoses.id == _diagnosesId);
+        if (diagnosis != null) {
+          _mkbName = diagnosis.mkbName;
+          _mkbCode = diagnosis.mkbCode;
+        }
       }
     });
   }

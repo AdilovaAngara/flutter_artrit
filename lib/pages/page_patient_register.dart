@@ -1,5 +1,5 @@
 import 'package:artrit/api/api_patient.dart';
-import 'package:artrit/api/api_patient_diagnoses.dart';
+import 'package:artrit/api/api_diagnoses.dart';
 import 'package:artrit/api/api_spr.dart';
 import 'package:artrit/data/data_patient_register.dart';
 import 'package:artrit/data/data_spr_doctors.dart';
@@ -549,7 +549,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
         SizedBox(height: 10),
         WidgetInputSelect(
           labelText: 'Название',
-          fieldKey: _keysDiagnoses[EnumDiagnoses.mkbName]!,
+          fieldKey: _keysDiagnoses[EnumDiagnoses.diagnosisId]!,
           allValues: _dataSprDiagnoses
               .map((e) => SprItem(
                   id: e.id,

@@ -33,7 +33,7 @@ class PatientsCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool invalidValue = (invalid is int) ? invalid != 0 : false;
+    bool invalidValue = invalid == 1 ? true : false;
     String uveitValue = uveit == null ? 'Не указан\n' : uveit! ? 'Да\n' : 'Нет\n';
     String lastInspectionUveitValue = lastInspectionUveit == null ? uveitValue : lastInspectionUveit == 1 ? 'Да\n' : 'Нет\n';
 
