@@ -1,12 +1,9 @@
 import 'dart:convert';
-import 'package:artrit/data/data_patient_diagnoses.dart';
+import 'package:artrit/data/data_diagnoses.dart';
 import 'package:flutter/cupertino.dart';
 import 'base_client.dart';
 
-enum EnumDiagnoses {
-  diagnosisId,
-  diagnosisComment
-}
+
 
 var baseClient = BaseClient();
 

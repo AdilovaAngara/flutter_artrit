@@ -5,9 +5,13 @@ import 'package:artrit/api/api_spr.dart';
 import 'package:artrit/data/data_spr_item.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import '../data/data_patient_diagnoses.dart';
+import '../data/data_diagnoses.dart';
+import '../data/data_patient_register.dart';
+import '../data/data_result.dart';
 import '../data/data_spr_diagnoses.dart';
 import '../data/data_parent.dart';
+import '../data/data_spr_doctors.dart';
+import '../data/data_spr_hospitals.dart';
 import '../data/data_spr_region.dart';
 import '../data/data_spr_relationship.dart';
 import '../data/data_patient.dart';
@@ -18,6 +22,7 @@ import '../widgets/app_bar_widget.dart';
 import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/radio_group_widget.dart';
+import '../widgets/show_message.dart';
 import '../widgets/widget_input_select_date_time.dart';
 import '../widgets/widget_input_select.dart';
 import '../widgets/input_switch.dart';
@@ -52,15 +57,19 @@ class PagePatientEditState extends State<PagePatientEdit> {
   late DataParent _dataParent;
   late List<DataDiagnoses> _dataDiagnoses;
   late List<DataSprRegion> _dataSprRegion;
+  late List<DataSprHospitals> _dataSprHospitals;
   late List<DataSprRelationship> _dataSprRelationship;
   late List<DataSprDiagnoses> _dataSprDiagnoses;
+  late List<DataSprDoctors> _dataSprDoctors;
 
   /// Справочники
+  List<SprItem> _listSprDoctors = [];
 
   /// Параметры
   bool _isLoading = false;
   late int _role;
   String _appBarTitle = '';
+  late String _doctorsId;
   late String _patientsId;
   String? _lastNamePatient;
   String? _firstNamePatient;
@@ -79,9 +88,9 @@ class PagePatientEditState extends State<PagePatientEdit> {
   String? _phone;
   String? _diagnosisId;
   String? _diagnosisComment;
-  String? _hospitalName;
+  String? _hospitalId;
+  String? _unknownHospital;
   String? _doctor;
-  String? _doctorFio;
 
   /// Ключи
   final _formKey = GlobalKey<FormState>();
@@ -105,8 +114,17 @@ class PagePatientEditState extends State<PagePatientEdit> {
     _role = await getUserRole();
     // Подгружаем справочники
     _dataSprRegion = await _apiSpr.getRegions();
+    _dataSprHospitals = await _apiSpr.getHospitals();
     _dataSprRelationship = await _apiSpr.getRelationship();
     _dataSprDiagnoses = await _apiSpr.getDiagnoses();
+    _dataSprDoctors = await _apiSpr.getDoctors();
+    _listSprDoctors = _dataSprDoctors
+        .map((e) => SprItem(id: e.id, name: e.name ?? ''))
+        .toList();
+    _listSprDoctors.addAll([
+      SprItem(id: '1', name: 'Другой'),
+      SprItem(id: '2', name: 'Отсутствует'),
+    ]);
 
     _appBarTitle = (_role == 1) ? widget.title : 'Данные пациента';
 
@@ -138,12 +156,12 @@ class PagePatientEditState extends State<PagePatientEdit> {
           _dataDiagnoses.isNotEmpty ? _dataDiagnoses.first.diagnosisId : null;
       _diagnosisComment =
           _dataDiagnoses.isNotEmpty ? _dataDiagnoses.first.comment ?? '' : '';
-      _hospitalName = _dataPatient.hospitalName == 'Другое'
-          ? _dataPatient.unknownHospital
-          : _dataPatient.hospitalName;
+      _hospitalId = _dataPatient.hospitalId;
+      _unknownHospital = _dataPatient.unknownHospital;
       _doctor = _dataPatient.doctor;
-      _doctorFio =
-          _doctor == '1' ? _dataPatient.unknownDoctor : _dataPatient.doctorFio;
+    } else {
+      _doctorsId = await readSecureData(SecureKey.doctorsId);
+      _doctor = _doctorsId;
     }
 
     setState(() {});
@@ -159,8 +177,23 @@ class PagePatientEditState extends State<PagePatientEdit> {
       _isLoading = true;
     });
 
-    await Future.wait(
+    if (widget.isEditForm) {
+      await Future.wait(
         [_putPatientData(), _putParentData(), _putDiagnosisData()]);
+    } else {
+      DataResult1 result = await _postRequest();
+      if (result.message != null) {
+        ShowMessage.show(context: context, message: result.message!);
+      } else {
+        if (mounted) {
+          Navigator.pop(context);
+          ShowMessage.show(
+              context: context,
+              message:
+              'Пациент успешно зарегистрирован в системе');
+        }
+      }
+    }
 
     setState(() {
       _isLoading = false;
@@ -170,6 +203,8 @@ class PagePatientEditState extends State<PagePatientEdit> {
       Navigator.pop(context);
     }
   }
+
+
 
   Future<void> _putPatientData() async {
     DataPatient thisData = DataPatient(
@@ -233,6 +268,45 @@ class PagePatientEditState extends State<PagePatientEdit> {
     _apiDiagnoses.put(
         patientsId: _patientsId, recordId: recordId, thisData: thisData);
   }
+
+
+
+
+
+  /// Запрос на добавление нового пациента
+  Future<DataResult1> _postRequest() async {
+    DataPatientRegister thisData = DataPatientRegister(
+        firstName: _firstNamePatient,
+        lastName: _lastNamePatient,
+        patrynomic: _patronymicPatient ?? '',
+        birthDate: convertStrToDate(_birthDate) ?? getMoscowDateTime(),
+        regionId: _regionId,
+        isMale: _gender == listGender[0].name ? 'true' : 'false',
+        isFemale: _gender == listGender[1].name ? 'true' : 'false',
+        diagnosisId: _diagnosisId,
+        diagnosisComment: _diagnosisComment,
+        uveit: false,
+        doctorId: _doctor,
+        unknownDoctor: null,
+        hospitalId: _hospitalId,
+        unknownHospital: _unknownHospital,
+        canContainCookies: false,
+        relationshipDegreeId: _relationshipDegreeId ?? 'd3cb858f-8b75-4f36-8b1f-350c33a17c38', // Отсутствует
+        applicantFirstName: _firstNameParent ?? '',
+        applicantLastName: _lastNameParent ?? '',
+        applicantPatrynomic: _patronymicParent ?? '',
+        applicantEmail: _email,
+        applicantPhone: _phone,
+        notificationReceiveType: getNotificationReceiveType(
+            agreeEmail: true, agreeLk: true));
+    return await _apiPatient.postRegister(thisData: thisData);
+  }
+
+
+
+
+
+
 
   bool _areDifferent() {
     if (!widget.isEditForm) {
@@ -312,8 +386,10 @@ class PagePatientEditState extends State<PagePatientEdit> {
                           SizedBox(height: 10),
                           _buildPatientForm(),
                           SizedBox(height: 30),
-                          _buildInvalidForm(),
-                          SizedBox(height: 30),
+                          if (widget.isEditForm) ...[
+                            _buildInvalidForm(),
+                            SizedBox(height: 30),
+                          ],
                           _buildParentForm(),
                           SizedBox(height: 30),
                           _buildDiagnosesForm(),
@@ -533,7 +609,7 @@ class PagePatientEditState extends State<PagePatientEdit> {
               .map((e) => SprItem(id: e.id, name: e.name ?? ''))
               .toList(),
           selectedValue: _relationshipDegreeId,
-          required: true,
+          required: Roles.asPatient.contains(_role) ? true : false,
           listRoles: Roles.all,
           roleId: _role,
           onChanged: (value) {
@@ -546,7 +622,7 @@ class PagePatientEditState extends State<PagePatientEdit> {
           labelText: 'Фамилия',
           fieldKey: _keysParent[EnumParent.lastName]!,
           value: _lastNameParent,
-          required: true,
+          required: Roles.asPatient.contains(_role) ? true : false,
           keyboardType: TextInputType.name,
           listRoles: Roles.all,
           role: _role,
@@ -560,7 +636,7 @@ class PagePatientEditState extends State<PagePatientEdit> {
           labelText: 'Имя',
           fieldKey: _keysParent[EnumParent.firstName]!,
           value: _firstNameParent,
-          required: true,
+          required: Roles.asPatient.contains(_role) ? true : false,
           keyboardType: TextInputType.name,
           listRoles: Roles.all,
           role: _role,
@@ -654,7 +730,10 @@ class PagePatientEditState extends State<PagePatientEdit> {
           fieldKey: _keysDiagnoses[EnumDiagnoses.diagnosisComment]!,
           value: _diagnosisComment,
           maxLength: 300,
-          required: true,
+          required: Roles.asPatient.contains(_role)
+              ? (_diagnosisId == '18ff07ab-5fb5-49b1-8fe4-b301968df8af' ||
+              _diagnosisId == '13019398-b69c-4d4b-a58b-d3ed4f485ed0'
+              ? true : false) : false,
           listRoles: Roles.all,
           onChanged: (value) {
             setState(() {
@@ -677,23 +756,46 @@ class PagePatientEditState extends State<PagePatientEdit> {
           textAlign: TextAlign.start,
         ),
         SizedBox(height: 10),
-        InputText(
+        WidgetInputSelect(
           labelText: 'Название учреждения',
           fieldKey: _keysPatient[EnumPatient.hospitalName]!,
-          value: _hospitalName,
+          allValues: _dataSprHospitals
+              .map((e) => SprItem(id: e.id, name: e.name ?? ''))
+              .toList(),
+          selectedValue: _hospitalId,
           required: true,
-          readOnly: true,
-          listRoles: Roles.asPatient,
-          role: _role,
+          listRoles: Roles.all,
+          onChanged: (value) {
+            setState(() {
+              _hospitalId = value;
+            });
+          },
         ),
-        InputText(
+        if (_hospitalId == '2a1101a8-0df3-4ac1-9c9e-4e5c15e9b422' && widget.isEditForm) // Другое
+          InputText(
+            labelText: 'Название учреждения',
+            fieldKey: _keysPatient[EnumPatient.unknownHospital]!,
+            value: _unknownHospital,
+            maxLength: 300,
+            required: (_hospitalId == '2a1101a8-0df3-4ac1-9c9e-4e5c15e9b422' && Roles.asPatient.contains(_role))
+                ? true
+                : false,
+            listRoles: Roles.all,
+            onChanged: (value) {
+              setState(() {
+                _unknownHospital = value;
+              });
+            },
+          ),
+        WidgetInputSelect(
           labelText: 'Врач',
           fieldKey: _keysPatient[EnumPatient.doctorFio]!,
-          value: _doctorFio,
+          allValues: _listSprDoctors,
+          selectedValue: _doctor,
+          isSort: false,
           required: true,
           readOnly: true,
-          listRoles: Roles.asPatient,
-          role: _role,
+          listRoles: Roles.all,
         ),
       ],
     );

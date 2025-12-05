@@ -2,6 +2,12 @@
 
 import 'dart:convert';
 
+enum EnumDiagnoses {
+  diagnosisId,
+  diagnosisComment
+}
+
+
 List<DataDiagnoses> dataDiagnosesFromJson(String str) => List<DataDiagnoses>.from(json.decode(str).map((x) => DataDiagnoses.fromJson(x)));
 
 String dataDiagnosesToJson(List<DataDiagnoses> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));

@@ -3,7 +3,7 @@
 import 'dart:convert';
 
 
-enum EnumPatient {
+enum EnumRegPatient {
   firstName,
   lastName,
   patronymic,
@@ -21,7 +21,7 @@ enum EnumPatient {
   diagnosisComment,
 }
 
-enum EnumParent {
+enum EnumRegParent {
   firstName,
   lastName,
   patronymic,

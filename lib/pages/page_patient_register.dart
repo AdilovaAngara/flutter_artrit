@@ -1,11 +1,11 @@
 import 'package:artrit/api/api_patient.dart';
-import 'package:artrit/api/api_diagnoses.dart';
 import 'package:artrit/api/api_spr.dart';
 import 'package:artrit/data/data_patient_register.dart';
 import 'package:artrit/data/data_spr_doctors.dart';
 import 'package:artrit/data/data_spr_hospitals.dart';
 import 'package:flutter/gestures.dart' show TapGestureRecognizer;
 import 'package:flutter/material.dart';
+import '../data/data_diagnoses.dart';
 import '../data/data_result.dart';
 import '../data/data_spr_diagnoses.dart';
 import '../data/data_spr_item.dart';
@@ -84,11 +84,11 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
 
   /// Ключи
   final _formKey = GlobalKey<FormState>();
-  final Map<EnumPatient, GlobalKey<FormFieldState>> _keysPatient = {
-    for (var e in EnumPatient.values) e: GlobalKey<FormFieldState>(),
+  final Map<EnumRegPatient, GlobalKey<FormFieldState>> _keysPatient = {
+    for (var e in EnumRegPatient.values) e: GlobalKey<FormFieldState>(),
   };
-  final Map<EnumParent, GlobalKey<FormFieldState>> _keysParent = {
-    for (var e in EnumParent.values) e: GlobalKey<FormFieldState>(),
+  final Map<EnumRegParent, GlobalKey<FormFieldState>> _keysParent = {
+    for (var e in EnumRegParent.values) e: GlobalKey<FormFieldState>(),
   };
   final Map<EnumDiagnoses, GlobalKey<FormFieldState>> _keysDiagnoses = {
     for (var e in EnumDiagnoses.values) e: GlobalKey<FormFieldState>(),
@@ -260,7 +260,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
                           ),
                           SizedBox(height: 20),
                           // InputCheckbox(
-                          //   fieldKey: _keysPatient[EnumPatient.canContainCookies]!,
+                          //   fieldKey: _keysPatient[EnumRegPatient.canContainCookies]!,
                           //   labelText: 'Согласие на обработку персональных данных',
                           //   requiredTrue: true,
                           //   value: _canContainCookies,
@@ -277,7 +277,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
                                 width: 50,
                                 child: InputCheckbox(
                                   fieldKey: _keysPatient[
-                                      EnumPatient.canContainCookies]!,
+                                      EnumRegPatient.canContainCookies]!,
                                   labelText: '',
                                   requiredTrue: true,
                                   value: _canContainCookies,
@@ -355,7 +355,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
         SizedBox(height: 10),
         InputText(
           labelText: 'Фамилия',
-          fieldKey: _keysPatient[EnumPatient.lastName]!,
+          fieldKey: _keysPatient[EnumRegPatient.lastName]!,
           value: _lastNamePatient,
           required: true,
           keyboardType: TextInputType.name,
@@ -368,7 +368,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
         ),
         InputText(
           labelText: 'Имя',
-          fieldKey: _keysPatient[EnumPatient.firstName]!,
+          fieldKey: _keysPatient[EnumRegPatient.firstName]!,
           value: _firstNamePatient,
           required: true,
           keyboardType: TextInputType.name,
@@ -381,7 +381,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
         ),
         InputText(
           labelText: 'Отчество',
-          fieldKey: _keysPatient[EnumPatient.patronymic]!,
+          fieldKey: _keysPatient[EnumRegPatient.patronymic]!,
           value: _patronymicPatient,
           required: false,
           keyboardType: TextInputType.name,
@@ -394,7 +394,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
         ),
         WidgetInputSelectDateTime(
           labelText: 'Дата рождения',
-          fieldKey: _keysPatient[EnumPatient.birthDate]!,
+          fieldKey: _keysPatient[EnumRegPatient.birthDate]!,
           value: _birthDate,
           lastDateTime: getMoscowDateTime(),
           required: true,
@@ -407,7 +407,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
         ),
         WidgetInputSelect(
           labelText: 'Пол',
-          fieldKey: _keysPatient[EnumPatient.gender]!,
+          fieldKey: _keysPatient[EnumRegPatient.gender]!,
           allValues: listGender,
           selectedValue: (_gender == 'Мужчина')
               ? 'Мужской'
@@ -424,7 +424,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
         ),
         WidgetInputSelect(
           labelText: 'Регион',
-          fieldKey: _keysPatient[EnumPatient.regionName]!,
+          fieldKey: _keysPatient[EnumRegPatient.regionName]!,
           allValues: _dataSprRegion
               .map((e) => SprItem(id: e.id, name: e.name))
               .toList(),
@@ -454,7 +454,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
         SizedBox(height: 10),
         WidgetInputSelect(
           labelText: 'Степень родства',
-          fieldKey: _keysParent[EnumParent.relationshipDegreeId]!,
+          fieldKey: _keysParent[EnumRegParent.relationshipDegreeId]!,
           allValues: _dataSprRelationship
               .map((e) => SprItem(id: e.id, name: e.name ?? ''))
               .toList(),
@@ -469,7 +469,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
         ),
         InputText(
           labelText: 'Фамилия',
-          fieldKey: _keysParent[EnumParent.lastName]!,
+          fieldKey: _keysParent[EnumRegParent.lastName]!,
           value: _lastNameParent,
           required: true,
           keyboardType: TextInputType.name,
@@ -482,7 +482,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
         ),
         InputText(
           labelText: 'Имя',
-          fieldKey: _keysParent[EnumParent.firstName]!,
+          fieldKey: _keysParent[EnumRegParent.firstName]!,
           value: _firstNameParent,
           required: true,
           keyboardType: TextInputType.name,
@@ -495,7 +495,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
         ),
         InputText(
           labelText: 'Отчество',
-          fieldKey: _keysParent[EnumParent.patronymic]!,
+          fieldKey: _keysParent[EnumRegParent.patronymic]!,
           value: _patronymicParent,
           required: false,
           keyboardType: TextInputType.name,
@@ -508,7 +508,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
         ),
         InputText(
           labelText: 'E-mail',
-          fieldKey: _keysParent[EnumParent.email]!,
+          fieldKey: _keysParent[EnumRegParent.email]!,
           value: _email,
           required: true,
           keyboardType: TextInputType.emailAddress,
@@ -521,7 +521,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
         ),
         InputText(
           labelText: 'Телефон',
-          fieldKey: _keysParent[EnumParent.phone]!,
+          fieldKey: _keysParent[EnumRegParent.phone]!,
           value: _phone,
           required: true,
           keyboardType: TextInputType.phone,
@@ -586,7 +586,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
           ),
         WidgetInputSelect(
           labelText: 'Увеит',
-          fieldKey: _keysPatient[EnumPatient.uveit]!,
+          fieldKey: _keysPatient[EnumRegPatient.uveit]!,
           allValues: _listSprUveitExists,
           selectedValue: _uveit == null || _uveit.toString().isEmpty
               ? ''
@@ -622,7 +622,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
         SizedBox(height: 10),
         WidgetInputSelect(
           labelText: 'Название учреждения',
-          fieldKey: _keysPatient[EnumPatient.hospitalName]!,
+          fieldKey: _keysPatient[EnumRegPatient.hospitalName]!,
           allValues: _dataSprHospitals
               .map((e) => SprItem(id: e.id, name: e.name ?? ''))
               .toList(),
@@ -638,7 +638,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
         if (_hospitalId == '2a1101a8-0df3-4ac1-9c9e-4e5c15e9b422') // Другое
           InputText(
             labelText: 'Название учреждения',
-            fieldKey: _keysPatient[EnumPatient.unknownHospital]!,
+            fieldKey: _keysPatient[EnumRegPatient.unknownHospital]!,
             value: _unknownHospital,
             maxLength: 300,
             required: (_hospitalId == '2a1101a8-0df3-4ac1-9c9e-4e5c15e9b422')
@@ -653,7 +653,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
           ),
         WidgetInputSelect(
           labelText: 'Врач',
-          fieldKey: _keysPatient[EnumPatient.doctorFio]!,
+          fieldKey: _keysPatient[EnumRegPatient.doctorFio]!,
           allValues: _listSprDoctors,
           selectedValue: _doctorId,
           isSort: false,
@@ -668,7 +668,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
         if (_doctorId == '1')
           InputText(
             labelText: 'ФИО врача',
-            fieldKey: _keysPatient[EnumPatient.unknownDoctor]!,
+            fieldKey: _keysPatient[EnumRegPatient.unknownDoctor]!,
             value: _unknownDoctor,
             maxLength: 200,
             required: (_doctorId == '1') ? true : false,

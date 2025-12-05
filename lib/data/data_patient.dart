@@ -13,6 +13,7 @@ enum EnumPatient {
   address,
   invalid,
   hospitalName,
+  unknownHospital,
   doctorFio,
 }
 

@@ -10,7 +10,7 @@ import '../api/api_diagnoses.dart';
 import '../api/api_questionnaire.dart';
 import '../api/api_spr.dart';
 import '../data/data_inspections_photo.dart';
-import '../data/data_patient_diagnoses.dart';
+import '../data/data_diagnoses.dart';
 import '../data/data_inspections.dart';
 import '../data/data_questionnaire.dart';
 import '../data/data_patient.dart';
