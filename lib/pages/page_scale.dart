@@ -63,13 +63,12 @@ class _PageScaleState extends State<PageScale> {
     _thisDataMainPatient = await _apiMainPatient.get(patientsId: _patientsId);
     _thisDataJadas71 = await _apiJadas71.get(patientsId: _patientsId);
     _thisDataDas28 = await _apiDas28.get(patientsId: _patientsId);
+    setState(() {
+    });
   }
 
   Future<void> _refreshData() async {
     await _loadData();
-    if (mounted) {
-      setState(() {});
-    }
   }
 
 

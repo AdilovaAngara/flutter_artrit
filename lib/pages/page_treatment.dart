@@ -55,14 +55,12 @@ class _PageTreatmentState extends State<PageTreatment> {
     _thisDataMedicaments = await _apiMedicaments.get(patientsId: _patientsId);
     _thisDataSideEffects = await _apiSideEffects.get(patientsId: _patientsId);
     _thisDataRehabilitations = await _apiRehabilitations.get(patientsId: _patientsId);
+    setState(() {});
   }
 
 
   Future<void> _refreshData() async {
     await _loadData();
-    if (mounted) {
-      setState(() {});
-    }
   }
 
 

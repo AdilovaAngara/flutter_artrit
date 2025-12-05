@@ -67,9 +67,6 @@ class _PageResearchesEpicrisisState extends State<PageResearchesEpicrisis> {
 
   Future<void> _refreshData() async {
     await _loadData();
-    if (mounted) {
-      setState(() {});
-    }
   }
 
 

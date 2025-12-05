@@ -108,7 +108,7 @@ class PageInspectionsAnglesPhotoState
       return false;
     }
     await _put(index, comments, angle1, angle2);
-    _refreshData();
+    await _refreshData();
     return true;
   }
 
@@ -252,8 +252,8 @@ class PageInspectionsAnglesPhotoState
                                             isDeleteEnabled:
                                             _delBtnShow(_thisData!, index),
                                             viewRegime: false,
-                                            onDataUpdated: () {
-                                              _refreshData();
+                                            onDataUpdated: () async {
+                                              await _refreshData();
                                             },
                                           ),
                                         ),

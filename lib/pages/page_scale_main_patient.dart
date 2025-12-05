@@ -47,13 +47,11 @@ class _PageScaleMainPatientState extends State<PageScaleMainPatient> {
     _role = await getUserRole();
     _patientsId = await readSecureData(SecureKey.patientsId);
     _thisData = await _api.get(patientsId: _patientsId);
+    setState(() {});
   }
 
   Future<void> _refreshData() async {
     await _loadData();
-    if (mounted) {
-      setState(() {});
-    }
   }
 
 

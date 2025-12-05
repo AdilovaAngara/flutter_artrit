@@ -70,9 +70,6 @@ class _PageTestsBiochemicalState extends State<PageTestsBiochemical> {
 
   Future<void> _refreshData() async {
     await _loadData();
-    if (mounted) {
-      setState(() {});
-    }
   }
 
   void _navigateAndRefresh(BuildContext context, bool isEditForm,

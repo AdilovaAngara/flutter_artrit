@@ -46,15 +46,11 @@ class PageInspectionsAnglesPhotoViewState
   Future<void> _loadData() async {
     _thisData = widget.thisData;
     setState(() {
-
     });
   }
 
   Future<void> _refreshData() async {
     await _loadData();
-    if (mounted) {
-      setState(() {});
-    }
   }
 
   @override
@@ -119,8 +115,8 @@ class PageInspectionsAnglesPhotoViewState
                                           isAddEnabled: false,
                                           isDeleteEnabled: false,
                                           viewRegime: true,
-                                          onDataUpdated: () {
-                                            _refreshData();
+                                          onDataUpdated: () async {
+                                            await _refreshData();
                                           },
                                         ),
                                       ),

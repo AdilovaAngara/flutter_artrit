@@ -107,9 +107,9 @@ class _MenuDrawerState extends State<MenuDrawer> {
   static const List<EnumMenu> _menuItemsDoctor = [
     EnumMenu.homeDoctor,
     EnumMenu.profileDoctor,
-    EnumMenu.notificationsSettings,
     EnumMenu.chat,
     EnumMenu.patients,
+    EnumMenu.notificationsSettings,
     EnumMenu.library,
     EnumMenu.settings,
     EnumMenu.help,
@@ -175,7 +175,6 @@ class _MenuDrawerState extends State<MenuDrawer> {
                             // Очищаем SecureStorage
                             await deleteAllSecureData();
                           }
-
                         );
                       } else {
                         navigateToPageMenu(context, menu);

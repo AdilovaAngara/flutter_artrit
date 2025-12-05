@@ -60,14 +60,6 @@ class _PageNotificationsForPatientState
     _thisDataRead = _thisDataFiltered.where((n) => n.seen ?? false).toList();
   }
 
-  // Future<void> _setNotificationsAsRead(String recordId, int index) async {
-  //   await _api.setAsRead(recordId: recordId);
-  //   _thisDataFiltered = await _api.getNotificationsForDoctor(); // Предполагаемый метод API
-  //   _updateNotificationLists();
-  // widget.onDataUpdated?.call(); // ✅ Вызываем колбэк
-  //   setState(() {});
-  // }
-
   Future<void> _setNotificationsAsRead(String recordId, int index) async {
     await _api.setAsRead(recordId: recordId);
 

@@ -50,8 +50,6 @@ class ImageGalleryState extends State<ImageGallery> {
   late List<String> _listImages;
   late final PageController _pageController;
   late final ValueNotifier<int> _selectedIndex;
-
-  //File? _pickedImage;
   late String? _comments;
 
   @override
@@ -65,20 +63,17 @@ class ImageGalleryState extends State<ImageGallery> {
   Future<void> _loadData() async {
     _role = await getUserRole();
     _patientsId = await readSecureData(SecureKey.patientsId);
-    if (widget.thisData != null && widget.thisData!.isNotEmpty) {
-      _listImages = widget.thisData!.map((e) => e.id).toList();
-      _recordId = widget.thisData![_selectedIndex.value].id;
-      _comments = widget.thisData![_selectedIndex.value].comments;
-    }
+    setState(() {
+      if (widget.thisData != null && widget.thisData!.isNotEmpty) {
+        _listImages = widget.thisData!.map((e) => e.id).toList();
+        _recordId = widget.thisData![_selectedIndex.value].id;
+        _comments = widget.thisData![_selectedIndex.value].comments;
+      }
+    });
   }
 
   Future<void> _refreshData() async {
-    await _loadData();
-    if (mounted) {
-      setState(() {
-        _future = _loadData();
-      });
-    }
+    _future = _loadData();
   }
 
   @override
@@ -88,15 +83,6 @@ class ImageGalleryState extends State<ImageGallery> {
     super.dispose();
   }
 
-  // Future<void> _pickImage(ImageSource source) async {
-  //   final pickedFile = await pickImage(source);
-  //   if (pickedFile != null) {
-  //     setState(() {
-  //       _pickedImage = pickedFile;
-  //       _listImages.add(_pickedImage!.path);
-  //     });
-  //   }
-  // }
 
   void _showDeleteDialog(int index) {
     showDialog(
@@ -227,10 +213,10 @@ class ImageGalleryState extends State<ImageGallery> {
               listRoles: Roles.all,
               onPressed: () {
                 downloadFile(
-                    fileName: '${_getFileName(index)}, ${widget.thisData![index].filename ?? ''}',
-                    fileId: _listImages[index],
-                    context: context,
-                    isChatFiles: false,);
+                  fileName: '${_getFileName(index)}, ${widget.thisData![index].filename ?? ''}',
+                  fileId: _listImages[index],
+                  context: context,
+                  isChatFiles: false,);
               },
             ),
           ],
@@ -256,10 +242,10 @@ class ImageGalleryState extends State<ImageGallery> {
             _buildCloseAndDeleteButton(index),
             Expanded(
                 child: FutureBuilderImage(
-              imageId: _listImages[index],
-              isFullSize: true,
-              isChatFiles: false,
-            )),
+                  imageId: _listImages[index],
+                  isFullSize: true,
+                  isChatFiles: false,
+                )),
             _buildComment(index),
           ],
         );
@@ -326,7 +312,7 @@ class ImageGalleryState extends State<ImageGallery> {
         decoration: BoxDecoration(
           border: Border.all(
             color:
-                selectedIndex == index ? Colors.blueAccent : Colors.transparent,
+            selectedIndex == index ? Colors.blueAccent : Colors.transparent,
             width: 3,
           ),
           borderRadius: BorderRadius.circular(11),
@@ -339,24 +325,6 @@ class ImageGalleryState extends State<ImageGallery> {
       ),
     );
   }
-
-  // // Кнопка камеры в ленте миниатюр, первая в списке миниатюр
-  // Widget _buildCameraButton() {
-  //   return GestureDetector(
-  //     onTap: _showImagePickerDialog,
-  //     child: Container(
-  //       width: 80,
-  //       height: 80,
-  //       margin: const EdgeInsets.symmetric(horizontal: 8),
-  //       decoration: BoxDecoration(
-  //         color: Colors.grey[300],
-  //         borderRadius: BorderRadius.circular(10),
-  //         border: Border.all(color: Colors.black38, width: 2),
-  //       ),
-  //       child: const Icon(Icons.camera_alt, size: 40, color: Colors.black54),
-  //     ),
-  //   );
-  // }
 
   void viewComment({required int index}) {
     GlobalKey<FormFieldState> key = GlobalKey<FormFieldState>();
@@ -379,20 +347,20 @@ class ImageGalleryState extends State<ImageGallery> {
                 children: [
                   (!widget.viewRegime)
                       ? InputText(
-                          labelText: '',
-                          fieldKey: key,
-                          value: widget.thisData![index].comments,
-                          required: false,
-                          maxLength: 200,
-                          listRoles: Roles.asPatient,
-                          role: _role,
-                          onChanged: (value) {
-                            _comments = value;
-                          },
-                        )
+                    labelText: '',
+                    fieldKey: key,
+                    value: widget.thisData![index].comments,
+                    required: false,
+                    maxLength: 200,
+                    listRoles: Roles.asPatient,
+                    role: _role,
+                    onChanged: (value) {
+                      _comments = value;
+                    },
+                  )
                       : TextScrollViewWidget(
-                          text: widget.thisData![index].comments,
-                        ),
+                    text: widget.thisData![index].comments,
+                  ),
                 ],
               ),
             ),

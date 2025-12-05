@@ -309,7 +309,7 @@ class PageInspectionsMainEditState extends State<PageInspectionsMainEdit> {
           labelText: 'Температура',
           fieldKey: _keys[Enum.tem]!,
           allValues: _listDataSprTemperature.map((e) => SprItem(id: e.name.toString() ?? '', name: e.name.toString())).toList(),
-          selectedValue: _tem.toString(),
+          selectedValue: _tem?.toString(),
           required: false,
           listRoles: Roles.asPatient,
           roleId: _role,

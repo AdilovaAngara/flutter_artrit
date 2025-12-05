@@ -66,9 +66,6 @@ class PageTreatmentSideEffectsState extends State<PageTreatmentSideEffects> {
 
   Future<void> _refreshData() async {
     await _loadData();
-    if (mounted) {
-      setState(() {});
-    }
   }
 
 

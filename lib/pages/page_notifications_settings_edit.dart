@@ -25,12 +25,14 @@ class PageNotificationsSettingsEdit extends StatefulWidget {
   final String title;
   final DataNotificationsSettings? thisData;
   final bool isEditForm;
+  final bool forPatient;
 
   const PageNotificationsSettingsEdit(
       {super.key,
       required this.title,
       required this.thisData,
-      required this.isEditForm});
+      required this.isEditForm,
+      required this.forPatient });
 
   @override
   State<PageNotificationsSettingsEdit> createState() =>
@@ -57,8 +59,8 @@ class _PageNotificationsSettingsEditState
   String? _beginDate;
   String? _endDate;
   bool _isDisabled = false;
-  List<int> _listSectionIds = [];
-  List<String> _listPatientIds = [];
+  List<int>? _listSectionIds;
+  List<String>? _listPatientIds;
 
   /// Справочники
   late List<DataPatients> _thisDataPatients = [];
@@ -95,8 +97,12 @@ class _PageNotificationsSettingsEditState
       _isDisabled = widget.thisData!.isDisabled;
       _listSectionIds = widget.thisData!.sectionIds ?? [];
       _listPatientIds = widget.thisData!.patientIds ?? [];
-      setState(() {});
+    } else {
+      if (_patientsId.isNotEmpty && widget.forPatient) {
+        _listPatientIds = [_patientsId];
+      }
     }
+    setState(() {});
   }
 
   void _changeData() async {
@@ -143,8 +149,8 @@ class _PageNotificationsSettingsEditState
           _beginDate != null ||
           _endDate != null ||
           _isDisabled == true ||
-          _listSectionIds.isNotEmpty ||
-          _listPatientIds.isNotEmpty;
+          _listSectionIds != null ||
+          _listPatientIds != null;
     }
     // Иначе Сравниваем поля
     final w = widget.thisData!;
@@ -157,9 +163,9 @@ class _PageNotificationsSettingsEditState
         convertStrToDate(_endDate) != w.endDate ||
         _isDisabled != w.isDisabled ||
         !listEquals((w.sectionIds?.map((e) => e).toList() ?? [])..sort(),
-            _listSectionIds..sort()) ||
+            _listSectionIds?..sort()) ||
         !listEquals((w.patientIds?.map((e) => e).toList() ?? [])..sort(),
-            _listPatientIds..sort());
+            _listPatientIds?..sort());
   }
 
   @override
@@ -264,7 +270,7 @@ class _PageNotificationsSettingsEditState
           labelText: 'Дата начала срока действия',
           fieldKey: _keys[Enum.beginDate]!,
           value: _beginDate,
-          firstDateTime: getMoscowDateTime(),
+          firstDateTime: convertStrToDate(_beginDate) ?? getMoscowDateTime(),
           lastDateTime: convertStrToDate(_endDate) ?? getMoscowDateTime().add(Duration(days: 6000)),
           required: true,
           listRoles: Roles.asDoctor,
@@ -310,7 +316,7 @@ class _PageNotificationsSettingsEditState
           allValues: _thisSprDataSections
               .map((e) => SprItem(id: e.id.toString(), name: e.name))
               .toList(),
-          selectedValues: _listSectionIds.map((e) => e.toString()).toList(),
+          selectedValues: _listSectionIds?.map((e) => e.toString()).toList(),
           required: true,
           listRoles: Roles.asDoctor,
           roleId: _role,

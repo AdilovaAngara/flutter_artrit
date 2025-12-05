@@ -184,7 +184,7 @@ class _PageAnamnesisDiseaseAnamnesisEditState
           labelText: 'Дата постановки диагноза',
           fieldKey: _keys[Enum.dateDiagnosis]!,
           value: _dateDiagnosis,
-          firstDateTime: convertStrToDate(_dateDisease!),
+          firstDateTime: convertStrToDate(_dateDisease),
           lastDateTime: getMoscowDateTime(),
           required: true,
           listRoles: Roles.asPatient,

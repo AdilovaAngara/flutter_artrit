@@ -40,11 +40,6 @@ class _PageDoctorMainState extends State<PageDoctorMain> {
 
   Future<void> _refreshData() async {
     await _loadData();
-    if (mounted) {
-      setState(() {
-        _future = _loadData();
-      });
-    }
   }
 
 
@@ -100,10 +95,13 @@ class _PageDoctorMainState extends State<PageDoctorMain> {
                       title: EnumMenu.notificationsSettings.displayName,
                       iconTrailing: EnumMenu.notificationsSettings.icon,
                       colorIconTrailing: EnumMenu.notificationsSettings.iconColor,
-                      onTap: () => navigateToPageMenu(
-                        context,
-                        EnumMenu.notificationsSettings,
-                      ),
+                      onTap: () async {
+                        await deleteSecureData(SecureKey.patientsId);
+                        navigateToPageMenu(
+                          context,
+                          EnumMenu.notificationsSettings,
+                        );
+                      }
                     ),
                   ],
                 ),

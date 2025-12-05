@@ -66,9 +66,6 @@ class PageAnamnesisConcomitantsState extends State<PageAnamnesisConcomitants> {
 
   Future<void> _refreshData() async {
     await _loadData();
-    if (mounted) {
-      setState(() {});
-    }
   }
 
 

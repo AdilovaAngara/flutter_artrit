@@ -1,6 +1,8 @@
 import 'package:artrit/pages/page_inspections_main.dart';
+import 'package:artrit/pages/page_notifications_settings.dart';
 import 'package:artrit/pages/page_patient_edit.dart';
 import 'package:artrit/pages/page_questionnaire.dart';
+import 'package:artrit/roles.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import '../api/api_inspections.dart';
@@ -77,13 +79,19 @@ class PagePatientMainState extends State<PagePatientMain> {
   Future<void> _loadData() async {
     _role = await getUserRole();
     _patientsId = await readSecureData(SecureKey.patientsId);
+    _dataSprDiagnoses = await _apiSpr.getDiagnoses();
+    await _loadDynamicData();
+  }
+
+
+  /// Загружаем данные, требующие постоянного обновления
+  Future<void> _loadDynamicData() async {
     _dataPatient = await _apiPatient.get(patientsId: _patientsId);
     _dataDiagnoses = await _apiPatientDiagnoses.get(patientsId: _patientsId);
     _dataInspections = await _apiInspections.get(patientsId: _patientsId);
     _dataQuestionnaire = await _apiQuestionnaire.get(patientsId: _patientsId);
-    _dataSprDiagnoses = await _apiSpr.getDiagnoses();
     _allDataPhoto =
-        await _apiPhoto.getAll(patientsId: _patientsId, bodyType: _bodyType);
+    await _apiPhoto.getAll(patientsId: _patientsId, bodyType: _bodyType);
     setState(() {
       _fullAge = calculateAge(convertTimestampToDate(_dataPatient.birthDate),
           getFullAge: true, getDoubleAge: false);
@@ -111,13 +119,10 @@ class PagePatientMainState extends State<PagePatientMain> {
     });
   }
 
+
+
   Future<void> _refreshData() async {
-    await _loadData();
-    if (mounted) {
-      setState(() {
-        _future = _loadData();
-      });
-    }
+    await _loadDynamicData();
   }
 
 
@@ -292,6 +297,23 @@ class PagePatientMainState extends State<PagePatientMain> {
                       context,
                       EnumMenu.report,
                     ),
+                  ),
+                  if (Roles.asDoctor.contains(_role))
+                  ListTileWidget(
+                    title: EnumMenu.notificationsSettings.displayName,
+                    iconTrailing: EnumMenu.notificationsSettings.icon,
+                    colorIconTrailing: EnumMenu.notificationsSettings.iconColor,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>
+                            PageNotificationsSettings(
+                              title: EnumMenu.notificationsSettings.displayName,
+                              forPatient: true,
+                            ),
+                        ),
+                      );
+                    }
                   ),
                   ListTileWidget(
                     title: 'Последний осмотр',

@@ -70,9 +70,6 @@ class _PageTestsImmunologyState extends State<PageTestsImmunology> {
 
   Future<void> _refreshData() async {
     await _loadData();
-    if (mounted) {
-      setState(() {});
-    }
   }
 
   Future<void> _navigateAndRefresh(BuildContext context, bool isEditForm,

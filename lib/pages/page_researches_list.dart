@@ -70,9 +70,6 @@ class _PageResearchesListState extends State<PageResearchesList> {
 
   Future<void> _refreshData() async {
     await _loadData();
-    if (mounted) {
-      setState(() {});
-    }
   }
 
 

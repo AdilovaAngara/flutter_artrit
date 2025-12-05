@@ -66,9 +66,6 @@ class PageTuberculosisState extends State<PageTuberculosis> {
 
   Future<void> _refreshData() async {
     await _loadData();
-    if (mounted) {
-      setState(() {});
-    }
   }
 
 

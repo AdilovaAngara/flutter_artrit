@@ -66,9 +66,6 @@ class PageTreatmentRehabilitationState extends State<PageTreatmentRehabilitation
 
   Future<void> _refreshData() async {
     await _loadData();
-    if (mounted) {
-      setState(() {});
-    }
   }
 
   void _navigateAndRefresh(BuildContext context, bool isEditForm,

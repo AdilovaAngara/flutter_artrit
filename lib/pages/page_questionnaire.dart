@@ -54,9 +54,6 @@ class PageQuestionnaireState extends State<PageQuestionnaire> {
 
   Future<void> _refreshData() async {
     await _loadData();
-    if (mounted) {
-      setState(() {});
-    }
   }
 
   Future<void> _navigateAndRefresh(BuildContext context, bool isEditForm,

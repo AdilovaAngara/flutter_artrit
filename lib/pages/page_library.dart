@@ -48,7 +48,6 @@ class _PageLibraryState extends State<PageLibrary> {
     return Scaffold(
       appBar: AppBarWidget(
         title: widget.title,
-        automaticallyImplyLeading: false,
       ),
       endDrawer: const MenuDrawer(),
       body: Stack(

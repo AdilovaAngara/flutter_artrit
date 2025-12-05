@@ -66,9 +66,6 @@ class PageTreatmentMedicamentsState extends State<PageTreatmentMedicaments> {
 
   Future<void> _refreshData() async {
     await _loadData();
-    if (mounted) {
-      setState(() {});
-    }
   }
 
 

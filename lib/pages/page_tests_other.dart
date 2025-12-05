@@ -67,9 +67,6 @@ class _PageTestsOtherState extends State<PageTestsOther> {
 
   Future<void> _refreshData() async {
     await _loadData();
-    if (mounted) {
-      setState(() {});
-    }
   }
 
  void _navigateAndRefresh(BuildContext context, bool isEditForm,

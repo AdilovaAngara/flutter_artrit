@@ -46,6 +46,7 @@ class ApiPatient {
     required String patientsId,
     required DataPatient thisData,
   }) async {
+    debugPrint(jsonEncode(thisData.toJson()));
     var response = await baseClient.put(
         '/api/patients/$patientsId',
         thisData.toJson());

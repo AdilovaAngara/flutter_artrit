@@ -226,7 +226,7 @@ class PageResearchesTuberculinEditState extends State<PageResearchesTuberculinEd
           fieldKey: _keys[Enum.researchName]!,
           allValues: _dataSprResearchTuberculinType.map((e) => SprItem(id: e.id, name: e.name ?? '')).toList(),
           selectedValue: _researchItemId,
-          required: false,
+          required: true,
           listRoles: Roles.asPatient,
           roleId: _role,
           onChanged: (value) {
@@ -240,7 +240,7 @@ class PageResearchesTuberculinEditState extends State<PageResearchesTuberculinEd
           fieldKey: _keys[Enum.resultName]!,
           allValues: _dataSprResearchTuberculinResult.map((e) => SprItem(id: e.id, name: e.name ?? '')).toList(),
           selectedValue: _resultId,
-          required: false,
+          required: true,
           listRoles: Roles.asPatient,
           roleId: _role,
           onChanged: (value) {

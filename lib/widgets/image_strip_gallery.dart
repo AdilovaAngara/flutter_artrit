@@ -279,77 +279,77 @@ class _ImageStripGalleryState extends State<ImageStripGallery> {
       builder: (BuildContext context) {
         return StatefulBuilder(
             builder: (BuildContext dialogContext, StateSetter setState) {
-            return AlertDialog(
-              title: Text('Сохранить изображение', style: formHeaderStyle,),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (_pickedImage != null)
-                      Image.file(_pickedImage!, height: 350, width: 350, fit: BoxFit.fitHeight),
-                    SizedBox(height: 10),
-                    InputText(
-                      labelText: 'Комментарий',
-                      fieldKey: _keys[
-                      Enum.comments]!,
-                      value: '',
-                      required: false,
-                      maxLength: 200,
-                      listRoles: Roles.asPatient,
-                      role: _role,
-                      onChanged: (value) {
-                        _comments = value;
-                      },
-                    ),
-                  ],
+              return AlertDialog(
+                title: Text('Сохранить изображение', style: formHeaderStyle,),
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (_pickedImage != null)
+                        Image.file(_pickedImage!, height: 350, width: 350, fit: BoxFit.fitHeight),
+                      SizedBox(height: 10),
+                      InputText(
+                        labelText: 'Комментарий',
+                        fieldKey: _keys[
+                        Enum.comments]!,
+                        value: '',
+                        required: false,
+                        maxLength: 200,
+                        listRoles: Roles.asPatient,
+                        role: _role,
+                        onChanged: (value) {
+                          _comments = value;
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              actions: [
-                ButtonWidget(
-                  labelText: 'Отмена',
-                  onlyText: true,
-                  dialogForm: true,
-                  listRoles: Roles.asPatient,
-                  role: _role,
-                  onPressed: () {
-                    setState(() {
-                      _isLoading = false;
-                    });
-                    Navigator.of(dialogContext).pop();
-                  },
-                ),
-                SizedBox(width:  10.0),
-                ButtonWidget(
-                  labelText: 'Сохранить',
-                  onlyText: true,
-                  dialogForm: true,
-                  showProgressIndicator: _isLoading,
-                  listRoles: Roles.asPatient,
-                  role: _role,
-                  onPressed: () async {
-                    setState(() {
-                      _isLoading = true;
-                    });
-
-                    // Ждем перерисовки UI перед началом длительной операции
-                    await Future.delayed(Duration.zero);
-
-                    // Выполняем сохранение
-                    final success = await _saveData();
-
-                    if (dialogContext.mounted) {
+                actions: [
+                  ButtonWidget(
+                    labelText: 'Отмена',
+                    onlyText: true,
+                    dialogForm: true,
+                    listRoles: Roles.asPatient,
+                    role: _role,
+                    onPressed: () {
                       setState(() {
                         _isLoading = false;
                       });
-                      if (success) {
-                        Navigator.of(dialogContext).pop();
+                      Navigator.of(dialogContext).pop();
+                    },
+                  ),
+                  SizedBox(width:  10.0),
+                  ButtonWidget(
+                    labelText: 'Сохранить',
+                    onlyText: true,
+                    dialogForm: true,
+                    showProgressIndicator: _isLoading,
+                    listRoles: Roles.asPatient,
+                    role: _role,
+                    onPressed: () async {
+                      setState(() {
+                        _isLoading = true;
+                      });
+
+                      // Ждем перерисовки UI перед началом длительной операции
+                      await Future.delayed(Duration.zero);
+
+                      // Выполняем сохранение
+                      final success = await _saveData();
+
+                      if (dialogContext.mounted) {
+                        setState(() {
+                          _isLoading = false;
+                        });
+                        if (success) {
+                          Navigator.of(dialogContext).pop();
+                        }
                       }
-                    }
-                  },
-                ),
-              ],
-            );
-          }
+                    },
+                  ),
+                ],
+              );
+            }
         );
       },
     );
@@ -366,12 +366,12 @@ class _ImageStripGalleryState extends State<ImageStripGallery> {
           const Padding(padding: EdgeInsets.all(5.0)),
           if (!widget.addPhotoEnabled)
             ListTile(
-            leading: const Icon(Icons.info),
-            title: Text(widget.addPhotoEnabledText),
-            onTap: () async {
-              Navigator.pop(context);
-            },
-          ),
+              leading: const Icon(Icons.info),
+              title: Text(widget.addPhotoEnabledText),
+              onTap: () async {
+                Navigator.pop(context);
+              },
+            ),
           if (widget.addPhotoEnabled && _listImages.length == 3)
             ListTile(
               leading: const Icon(Icons.info),

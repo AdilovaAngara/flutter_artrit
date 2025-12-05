@@ -71,9 +71,6 @@ class _PageTestsState extends State<PageTests> {
 
   Future<void> _refreshData() async {
     await _loadData();
-    if (mounted) {
-      setState(() {});
-    }
   }
 
 

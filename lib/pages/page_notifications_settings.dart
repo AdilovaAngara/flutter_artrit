@@ -20,10 +20,12 @@ import 'menu.dart';
 
 class PageNotificationsSettings extends StatefulWidget {
   final String title;
+  final bool forPatient;
 
   const PageNotificationsSettings({
     super.key,
-    required this.title
+    required this.title,
+    this.forPatient = false
   });
 
   @override
@@ -72,7 +74,12 @@ class PageNotificationsSettingsState extends State<PageNotificationsSettings> {
     _role = await getUserRole();
     _doctorsId = await readSecureData(SecureKey.doctorsId);
     _patientsId = await readSecureData(SecureKey.patientsId);
-    _thisData = await _api.getAll();
+    if (_patientsId.isNotEmpty && widget.forPatient) {
+      _thisData = await _api.getForPatient(patientsId: _patientsId);
+    } else {
+      _thisData = await _api.getAll();
+    }
+
     _thisDataPatients = await _apiPatients.get(doctorsId: _doctorsId);
     _thisSprDataFrequency = await _apiSpr.getFrequency();
     _thisSprDataSections = await _apiSpr.getSections();
@@ -97,6 +104,7 @@ class PageNotificationsSettingsState extends State<PageNotificationsSettings> {
           PageNotificationsSettingsEdit(
               title: widget.title,
               isEditForm: isEditForm,
+              forPatient: widget.forPatient,
               thisData: isEditForm ? _thisData![index!] : null),),
     ).then((_) async {
       await _refreshData();
@@ -113,7 +121,7 @@ class PageNotificationsSettingsState extends State<PageNotificationsSettings> {
       builder: (BuildContext context) {
         return ShowDialogDelete(
           onConfirm: () async {
-            String recordId = _thisData![index].id!;
+            String recordId = _thisData![index].id;
             await _api.delete(recordId: recordId);
             await _refreshData();
           },

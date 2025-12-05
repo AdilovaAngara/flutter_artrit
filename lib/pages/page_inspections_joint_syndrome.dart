@@ -148,149 +148,150 @@ class PageInspectionsJointSyndromeState
             } else if (snapshot.hasError) {
               return errorDataWidget(snapshot.error);
             }
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                width: double.infinity, // Занимает всю ширину контейнера
-                child: Center(
-                  child: AutoSizeText(
-                    (_selectedPart != null && _thisDataJoints != null) ?
-                    _thisDataJoints!.firstWhereOrNull((item) => item.numericId == _selectedPart)?.name ?? ''
-                        : 'Сустав не выбран',
-                    maxLines: 1,
-                    minFontSize: 8, // Минимальный размер шрифта
-                    maxFontSize: 24, // Максимальный размер шрифта
-                    overflow: TextOverflow.ellipsis,
-                    style: subtitleMiniTextStyle,
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                  width: double.infinity, // Занимает всю ширину контейнера
+                  height: 30,
+                  child: Center(
+                    child: AutoSizeText(
+                      (_selectedPart != null && _thisDataJoints != null) ?
+                      _thisDataJoints!.firstWhereOrNull((item) => item.numericId == _selectedPart)?.name ?? ''
+                          : 'Сустав не выбран',
+                      maxLines: 1,
+                      minFontSize: 8, // Минимальный размер шрифта
+                      maxFontSize: 24, // Максимальный размер шрифта
+                      overflow: TextOverflow.ellipsis,
+                      style: subtitleMiniTextStyle,
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: Center(
-                  child: InteractiveViewer(
-                    panEnabled: true,
-                    // Включает возможность перетаскивания
-                    boundaryMargin: EdgeInsets.all(20.0),
-                    minScale: 0.5,
-                    maxScale: 15.0,
-                    child: buildInteractiveBody(),
+                Expanded(
+                  child: Center(
+                    child: InteractiveViewer(
+                      panEnabled: true,
+                      // Включает возможность перетаскивания
+                      boundaryMargin: EdgeInsets.all(20.0),
+                      minScale: 0.5,
+                      maxScale: 15.0,
+                      child: buildInteractiveBody(),
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                padding: EdgeInsets.fromLTRB(0, 2, 0, 10),
-                child: Center(
-                  child: Column(
-                    key: _checkboxColumnKey, // 📌 Добавляем ключ для отслеживания высоты Column
-                    children: [
-                      if (_selectedPart != null)
-                        Column(
-                        children: [
-                          InputCheckbox(
-                            fieldKey: _keys[EnumJoints.isPainful]!,
-                            labelText: 'Болезненный сустав',
-                            value: _isPainful,
-                            readOnly: widget.viewRegime,
-                            textStyle: subtitleMiniTextStyle,
-                            padding: 0,
-                            listRoles: Roles.asPatient,
-                            role: _role,
-                            onChanged: (value) {
-                              setState(() {
-                                if (_allowDelCheck(_isPainful, _isSwollen, _isMovementLimited)) {
-                                  _isPainful = value;
-                                  _joints
-                                      .firstWhere((item) => item.jointId == _selectedPart!)
-                                      .isPainful = value;
-                                }
-                              });
-                            },
+                Container(
+                  padding: EdgeInsets.fromLTRB(0, 2, 0, 10),
+                  child: Center(
+                    child: Column(
+                      key: _checkboxColumnKey, // 📌 Добавляем ключ для отслеживания высоты Column
+                      children: [
+                        if (_selectedPart != null)
+                          Column(
+                            children: [
+                              InputCheckbox(
+                                fieldKey: _keys[EnumJoints.isPainful]!,
+                                labelText: 'Болезненный сустав',
+                                value: _isPainful,
+                                readOnly: widget.viewRegime,
+                                textStyle: subtitleMiniTextStyle,
+                                padding: 0,
+                                listRoles: Roles.asPatient,
+                                role: _role,
+                                onChanged: (value) {
+                                  setState(() {
+                                    if (_allowDelCheck(_isPainful, _isSwollen, _isMovementLimited)) {
+                                      _isPainful = value;
+                                      _joints
+                                          .firstWhere((item) => item.jointId == _selectedPart!)
+                                          .isPainful = value;
+                                    }
+                                  });
+                                },
+                              ),
+                              InputCheckbox(
+                                fieldKey: _keys[EnumJoints.isSwollen]!,
+                                labelText: 'Припухший сустав',
+                                value: _isSwollen,
+                                readOnly: widget.viewRegime,
+                                textStyle: subtitleMiniTextStyle,
+                                padding: 0,
+                                listRoles: Roles.asPatient,
+                                role: _role,
+                                onChanged: (value) {
+                                  setState(() {
+                                    if (_allowDelCheck(_isSwollen, _isPainful, _isMovementLimited)) {
+                                      _isSwollen = value;
+                                      _joints
+                                          .firstWhere((item) => item.jointId == _selectedPart!)
+                                          .isSwollen = value;
+                                    }
+                                  });
+                                },
+                              ),
+                              InputCheckbox(
+                                fieldKey: _keys[EnumJoints.isMovementLimited]!,
+                                labelText: 'Ограниченный в движении сустав',
+                                value: _isMovementLimited,
+                                readOnly: widget.viewRegime,
+                                textStyle: subtitleMiniTextStyle,
+                                padding: 0,
+                                listRoles: Roles.asPatient,
+                                role: _role,
+                                onChanged: (value) {
+                                  setState(() {
+                                    if (_allowDelCheck(_isMovementLimited, _isPainful, _isSwollen)) {
+                                      _isMovementLimited = value;
+                                      _joints
+                                          .firstWhere((item) => item.jointId == _selectedPart!)
+                                          .isMovementLimited = value;
+                                    }
+                                  });
+                                },
+                              ),
+                            ],
                           ),
-                          InputCheckbox(
-                            fieldKey: _keys[EnumJoints.isSwollen]!,
-                            labelText: 'Припухший сустав',
-                            value: _isSwollen,
-                            readOnly: widget.viewRegime,
-                            textStyle: subtitleMiniTextStyle,
-                            padding: 0,
-                            listRoles: Roles.asPatient,
-                            role: _role,
-                            onChanged: (value) {
+                        if (_selectedPart == null) SizedBox(height: _checkboxHeight,),
+                        // Горизонтальная лента миниатюр
+                        SizedBox(
+                          height: 100,
+                          child: ImageStripGallery(
+                            addPhotoEnabled: (_selectedPart != null && (_isPainful || _isSwollen || _isMovementLimited)),
+                            addPhotoEnabledText: 'Сначала нужно отметить патологию',
+                            addPhotoBtnShow: _selectedPart != null && !widget.viewRegime,
+                            inspectionsId: _inspectionsId,
+                            jointsId: (_selectedPart != null) ? _jointsId : null,
+                            bodyType: _bodyType,
+                            viewRegime: widget.viewRegime,
+                            onDataUpdated: () {
                               setState(() {
-                                if (_allowDelCheck(_isSwollen, _isPainful, _isMovementLimited)) {
-                                  _isSwollen = value;
-                                  _joints
-                                      .firstWhere((item) => item.jointId == _selectedPart!)
-                                      .isSwollen = value;
-                                }
+                                _refreshData();
                               });
-                            },
-                          ),
-                          InputCheckbox(
-                            fieldKey: _keys[EnumJoints.isMovementLimited]!,
-                            labelText: 'Ограниченный в движении сустав',
-                            value: _isMovementLimited,
-                            readOnly: widget.viewRegime,
-                            textStyle: subtitleMiniTextStyle,
-                            padding: 0,
-                            listRoles: Roles.asPatient,
-                            role: _role,
-                            onChanged: (value) {
-                              setState(() {
-                                if (_allowDelCheck(_isMovementLimited, _isPainful, _isSwollen)) {
-                                  _isMovementLimited = value;
-                                  _joints
-                                      .firstWhere((item) => item.jointId == _selectedPart!)
-                                      .isMovementLimited = value;
-                                }
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      if (_selectedPart == null) SizedBox(height: _checkboxHeight,),
-                      // Горизонтальная лента миниатюр
-                      SizedBox(
-                        height: 100,
-                        child: ImageStripGallery(
-                          addPhotoEnabled: (_selectedPart != null && (_isPainful || _isSwollen || _isMovementLimited)),
-                          addPhotoEnabledText: 'Сначала нужно отметить патологию',
-                          addPhotoBtnShow: _selectedPart != null && !widget.viewRegime,
-                          inspectionsId: _inspectionsId,
-                          jointsId: (_selectedPart != null) ? _jointsId : null,
-                          bodyType: _bodyType,
-                          viewRegime: widget.viewRegime,
-                          onDataUpdated: () {
-                            setState(() {
-                              _refreshData();
-                            });
-                          },
-                        ),
-                      ),
-                      if (!widget.viewRegime)
-                      Container(
-                        padding: EdgeInsets.all(10.0),
-                        child: Center(
-                          child: ButtonWidget(
-                            labelText: 'Применить',
-                            listRoles: Roles.asPatient,
-                            role: _role,
-                            onPressed: () {
-                              Navigator.pop(context, _joints); // Передача значения назад/ Передача значения назад
                             },
                           ),
                         ),
-                      ),
-                    ],
+                        if (!widget.viewRegime)
+                          Container(
+                            padding: EdgeInsets.all(10.0),
+                            child: Center(
+                              child: ButtonWidget(
+                                labelText: 'Применить',
+                                listRoles: Roles.asPatient,
+                                role: _role,
+                                onPressed: () {
+                                  Navigator.pop(context, _joints); // Передача значения назад/ Передача значения назад
+                                },
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          );
-        }
+              ],
+            );
+          }
       ),
     );
   }
@@ -304,7 +305,7 @@ class PageInspectionsJointSyndromeState
     if (photoCount > 0 && thisCheck && !otherCheck1 && !otherCheck2) {
       ShowMessage.show(context: context, message:
       'Нельзя снять все галочки с сустава, к которому принязана фотография');
-    return false;
+      return false;
     }
     else {
       return true;
@@ -447,7 +448,7 @@ class PageInspectionsJointSyndromeState
           double heightMainJoints = 0.024;
           double heightHandFingersJoints = 0.009;
           double heightLegFingersJoints = 0.006;
-          
+
           // Размер рамки для выбранных суставов
           double borderWidthHandFingersJoints = 0.7;
           double borderWidthLegFingersJoints = 0.45;
@@ -455,6 +456,21 @@ class PageInspectionsJointSyndromeState
           return Stack(
             alignment: Alignment.center,
             children: [
+              // Фоновый слой для сброса _selectedPart
+              Positioned.fill(
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedPart = null;
+                      _jointsId = null;
+                    });
+                  },
+                  child: Container(
+                    color: Colors.transparent, // Невидимый фон
+                  ),
+                ),
+              ),
+
               _bodyPart(0, 'assets/body.svg',
                   top: screenHeight * 0.02,
                   left: screenHeight * 0.16 - leftOffset,

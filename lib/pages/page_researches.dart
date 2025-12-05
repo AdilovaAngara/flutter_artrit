@@ -69,15 +69,15 @@ class PageResearchesState extends State<PageResearches> {
     _thisDataEpicrisis = await _apiEpicrisis.get(patientsId: _patientsId);
     _thisDataOther = await _apiOther.get(patientsId: _patientsId);
     _thisDataTuberculin = await _apiTuberculin.get(patientsId: _patientsId);
+    setState(() {
+
+    });
   }
 
 
 
   Future<void> _refreshData() async {
     await _loadData();
-    if (mounted) {
-      setState(() {});
-    }
   }
 
 

@@ -49,13 +49,11 @@ class _PageScaleDas28State extends State<PageScaleDas28> {
   Future<void> _loadData() async {
     _patientsId = await readSecureData(SecureKey.patientsId);
     _thisData = await _api.get(patientsId: _patientsId);
+    setState(() {});
   }
 
   Future<void> _refreshData() async {
     await _loadData();
-    if (mounted) {
-      setState(() {});
-    }
   }
 
 
