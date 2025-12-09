@@ -2,9 +2,11 @@ import 'package:artrit/api/api_parent.dart';
 import 'package:artrit/api/api_patient.dart';
 import 'package:artrit/api/api_diagnoses.dart';
 import 'package:artrit/api/api_spr.dart';
+import 'package:artrit/data/data_doctor.dart';
 import 'package:artrit/data/data_spr_item.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import '../api/api_doctor.dart';
 import '../data/data_diagnoses.dart';
 import '../data/data_patient_register.dart';
 import '../data/data_result.dart';
@@ -48,6 +50,7 @@ class PagePatientEditState extends State<PagePatientEdit> {
 
   /// API
   final ApiPatient _apiPatient = ApiPatient();
+  final ApiDoctor _apiDoctor = ApiDoctor();
   final ApiParent _apiParent = ApiParent();
   final ApiDiagnoses _apiDiagnoses = ApiDiagnoses();
   final ApiSpr _apiSpr = ApiSpr();
@@ -56,6 +59,7 @@ class PagePatientEditState extends State<PagePatientEdit> {
   late DataPatient _dataPatient;
   late DataParent _dataParent;
   late List<DataDiagnoses> _dataDiagnoses;
+  late DataDoctor _dataDoctor;
   late List<DataSprRegion> _dataSprRegion;
   late List<DataSprHospitals> _dataSprHospitals;
   late List<DataSprRelationship> _dataSprRelationship;
@@ -90,7 +94,7 @@ class PagePatientEditState extends State<PagePatientEdit> {
   String? _diagnosisComment;
   String? _hospitalId;
   String? _unknownHospital;
-  String? _doctor;
+  late String? _doctorFio;
 
   /// Ключи
   final _formKey = GlobalKey<FormState>();
@@ -158,10 +162,12 @@ class PagePatientEditState extends State<PagePatientEdit> {
           _dataDiagnoses.isNotEmpty ? _dataDiagnoses.first.comment ?? '' : '';
       _hospitalId = _dataPatient.hospitalId;
       _unknownHospital = _dataPatient.unknownHospital;
-      _doctor = _dataPatient.doctor;
+      _doctorsId = _dataPatient.doctor;
+      _doctorFio = _dataPatient.doctorFio;
     } else {
       _doctorsId = await readSecureData(SecureKey.doctorsId);
-      _doctor = _doctorsId;
+      _dataDoctor = await _apiDoctor.get(doctorsId: _doctorsId);
+      _doctorFio = '${_dataDoctor.lastName} ${_dataDoctor.firstName} ${_dataDoctor.patronymic}';
     }
 
     setState(() {});
@@ -286,7 +292,7 @@ class PagePatientEditState extends State<PagePatientEdit> {
         diagnosisId: _diagnosisId,
         diagnosisComment: _diagnosisComment,
         uveit: false,
-        doctorId: _doctor,
+        doctorId: _doctorsId,
         unknownDoctor: null,
         hospitalId: _hospitalId,
         unknownHospital: _unknownHospital,
@@ -787,16 +793,25 @@ class PagePatientEditState extends State<PagePatientEdit> {
               });
             },
           ),
-        WidgetInputSelect(
+        InputText(
           labelText: 'Врач',
           fieldKey: _keysPatient[EnumPatient.doctorFio]!,
-          allValues: _listSprDoctors,
-          selectedValue: _doctor,
-          isSort: false,
+          value: _doctorFio,
           required: true,
           readOnly: true,
-          listRoles: Roles.all,
+          listRoles: Roles.asPatient,
+          role: _role,
         ),
+        // WidgetInputSelect(
+        //   labelText: 'Врач',
+        //   fieldKey: _keysPatient[EnumPatient.doctorFio]!,
+        //   allValues: _listSprDoctors,
+        //   selectedValue: _doctor,
+        //   isSort: false,
+        //   required: true,
+        //   readOnly: true,
+        //   listRoles: Roles.all,
+        // ),
       ],
     );
   }
