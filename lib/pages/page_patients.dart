@@ -28,13 +28,16 @@ class PagePatients extends StatefulWidget {
 
 class _PagePatientsListState extends State<PagePatients> {
   late Future<void> _future;
+
   /// API
   final ApiPatients _apiPatients = ApiPatients();
   final ApiSpr _apiSpr = ApiSpr();
+
   /// Данные
   late List<DataPatients> _thisData = [];
   late List<DataPatients> _thisDataFiltered = [];
   late List<DataSprDiagnoses> _dataSprDiagnoses;
+
   /// Параметры
   late int _role;
   late String _doctorsId;
@@ -50,7 +53,7 @@ class _PagePatientsListState extends State<PagePatients> {
     _role = await getUserRole();
     _doctorsId = await readSecureData(SecureKey.doctorsId);
     _thisData = await _apiPatients.get(doctorsId: _doctorsId);
-    _dataSprDiagnoses= await _apiSpr.getDiagnoses();
+    _dataSprDiagnoses = await _apiSpr.getDiagnoses();
     setState(() {
       _thisDataFiltered = _thisData;
     });
@@ -62,7 +65,8 @@ class _PagePatientsListState extends State<PagePatients> {
       _thisDataFiltered = _thisData.where((patient) {
         return patient.lastName.toLowerCase().contains(_searchQuery) ||
             patient.firstName.toLowerCase().contains(_searchQuery) ||
-            (patient.patronymic?.toLowerCase().contains(_searchQuery) ?? false);
+            (patient.patronymic?.toLowerCase().contains(_searchQuery) ?? false) ||
+            patient.email.toLowerCase().contains(_searchQuery);
       }).toList();
     });
   }
@@ -72,25 +76,20 @@ class _PagePatientsListState extends State<PagePatients> {
     _filter(_searchQuery);
   }
 
-
-
   void _navigateAndRefresh(BuildContext context) async {
     await deleteSecureData(SecureKey.patientsId);
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) =>
-          PagePatientEdit(
-              title: widget.title,
-            isEditForm: false,
-          ),),
+      MaterialPageRoute(
+        builder: (context) => PagePatientEdit(
+          title: widget.title,
+          isEditForm: false,
+        ),
+      ),
     ).then((_) async {
       await _refreshData();
     });
   }
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -170,19 +169,29 @@ class _PagePatientsListState extends State<PagePatients> {
                                 invalid: _thisDataFiltered[index].invalid,
                                 mkbCode: _thisDataFiltered[index].diag ?? '',
                                 mkbName: (_thisDataFiltered[index].diag != null)
-                                    ? _dataSprDiagnoses.firstWhere(
-                                        (diagnoses) =>
-                                    diagnoses.mkbCode == _thisDataFiltered[index].diag,
-                                    orElse: () => DataSprDiagnoses(mkbCode: '', mkbName: 'Не указан', id: '', synonym: ''))
-                                    .mkbName
+                                    ? _dataSprDiagnoses
+                                        .firstWhere(
+                                            (diagnoses) =>
+                                                diagnoses.mkbCode ==
+                                                _thisDataFiltered[index].diag,
+                                            orElse: () => DataSprDiagnoses(
+                                                mkbCode: '',
+                                                mkbName: 'Не указан',
+                                                id: '',
+                                                synonym: ''))
+                                        .mkbName
                                     : 'Не указан',
                               ),
                               onTap: () async {
                                 await deleteSecureData(SecureKey.patientsId);
-                                await saveSecureData(SecureKey.patientsId, _thisDataFiltered[index].id);
+                                await saveSecureData(SecureKey.patientsId,
+                                    _thisDataFiltered[index].id);
                                 if (mounted) {
-                                  Navigator.pushNamed(context, AppRoutes.patientMain).then((_) async {
-                                    await deleteSecureData(SecureKey.patientsId);
+                                  Navigator.pushNamed(
+                                          context, AppRoutes.patientMain)
+                                      .then((_) async {
+                                    await deleteSecureData(
+                                        SecureKey.patientsId);
                                   });
                                 }
                               },

@@ -1,4 +1,5 @@
 import 'package:artrit/data/data_inspections_photo.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import '../api/api_inspections_photo.dart';
 import '../data/data_inspections.dart';
@@ -440,7 +441,7 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
       }
       debugPrint(part.toString());
       _selectedPart = part;
-      _jointsId = _listJointId.firstWhere((item) => item.bodyNumber == part).id;
+      _jointsId = _listJointId.firstWhereOrNull((item) => item.bodyNumber == part)?.id;
     });
   }
 
@@ -450,7 +451,10 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
     } else if (part == 103) {
       part = 5;
     }
-    if (_listSiplist.firstWhere((item) => item.numericId == part).bol) {
+    Siplist? sip = _listSiplist.firstWhereOrNull((item) => item.numericId == part);
+    if (sip == null) return;
+
+    if (sip.bol) {
       int photoCount =
           _thisData!.where((e) => e.jointsId == _jointsId).toList().length;
       if (photoCount > 0) {
@@ -458,10 +462,10 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
             message:
             'Нельзя удалить сыпь с участка кожи, где есть фотография');
       } else {
-        _listSiplist.firstWhere((item) => item.numericId == part).bol = false;
+        sip.bol = false;
       }
     } else {
-      _listSiplist.firstWhere((item) => item.numericId == part).bol = true;
+      sip.bol = true;
     }
   }
 
@@ -472,7 +476,12 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
         part == 101) {
       return false;
     }
-    return _listSiplist.firstWhere((item) => item.numericId == part).bol;
+    Siplist? sip = _listSiplist.firstWhereOrNull((item) => item.numericId == part);
+    if (sip == null) {
+      return false;
+    } else {
+      return sip.bol;
+    }
   }
 
   bool partPhotoActive(int part) {
@@ -484,7 +493,12 @@ class PageInspectionsRashState extends State<PageInspectionsRash> {
     } else if (part == 103) {
       part = 5;
     }
-    return _listSiplist.firstWhere((item) => item.numericId == part).bol;
+    Siplist? sip = _listSiplist.firstWhereOrNull((item) => item.numericId == part);
+    if (sip == null) {
+      return false;
+    } else {
+      return sip.bol;
+    }
   }
 }
 

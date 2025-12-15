@@ -51,7 +51,7 @@ class _PageSettingsState extends State<PageSettings> {
   String _cacheSize = '';
   bool _agreeEmail = false;
   bool _agreeLk = false;
-  late int notificationReceiveType;
+  late int? _notificationReceiveType;
 
 
   /// Ключи
@@ -73,9 +73,9 @@ class _PageSettingsState extends State<PageSettings> {
     {
       _patientsId = await readSecureData(SecureKey.patientsId);
       _dataPatient = await _api.get(patientsId: _patientsId);
-      notificationReceiveType = _dataPatient.notificationReceiveType;
-      _agreeEmail = [0, 2].contains(notificationReceiveType);
-      _agreeLk = [0, 1].contains(notificationReceiveType);
+      _notificationReceiveType = _dataPatient.notificationReceiveType;
+      _agreeEmail = [0, 2].contains(_notificationReceiveType);
+      _agreeLk = [0, 1].contains(_notificationReceiveType);
     }
     setState(() {});
   }

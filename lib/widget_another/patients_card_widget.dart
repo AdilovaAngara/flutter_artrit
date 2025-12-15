@@ -107,11 +107,11 @@ class PatientsCardWidget extends StatelessWidget {
                 style: subtitleTextStyle,
               ),
               TextSpan(
-                text: '$mkbCode ',
+                text: mkbCode?.trim().replaceAll('\n', ''),
                 style: listLabelStylePurple,
               ),
               TextSpan(
-                text: '$mkbName',
+                text: ' ${mkbName?.trim().replaceAll('\n', '')}',
                 style: listLabelStyle,
               ),
             ],

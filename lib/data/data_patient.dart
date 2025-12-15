@@ -32,11 +32,11 @@ class DataPatient {
   String lastName;
   String? gender;
   String? address;
-  dynamic invalid;
+  int? invalid;
   int? notInvalidReason;
   int? birthDate;
   bool uveit;
-  int notificationReceiveType;
+  int? notificationReceiveType;
   dynamic defaultLabProfileId;
   String? regionId;
   dynamic unknownDoctor;
@@ -45,7 +45,7 @@ class DataPatient {
   String? roleId;
   String? doctorFio;
   double? questionnaireResult;
-  int lastInspectionUveit;
+  int? lastInspectionUveit;
 
   DataPatient({
     required this.regionName,

@@ -318,17 +318,16 @@ class PageInspectionsJointSyndromeState
       setState(() {
         _selectedPart = (_selectedPart == jointId) ? null : jointId;
         if (_selectedPart != null && _thisDataJoints != null) {
-          _jointsId = _thisDataJoints!.firstWhere((item) => item.numericId == _selectedPart).id;
+          _jointsId = _thisDataJoints!.firstWhereOrNull((item) => item.numericId == _selectedPart)?.id;
           //leftOffset = 10;
-          if (hasJointId(jointId))
-          {
-            Joint selectedJoint =
-            _joints.firstWhere((item) => item.jointId == _selectedPart!);
+          if (hasJointId(jointId)) {
+            Joint? selectedJoint =
+            _joints.firstWhereOrNull((item) => item.jointId == _selectedPart!);
+            if (selectedJoint == null) return;
             _isPainful = selectedJoint.isPainful;
             _isSwollen = selectedJoint.isSwollen;
             _isMovementLimited = selectedJoint.isMovementLimited;
-          }
-          else {
+          } else {
             Joint newJoint = Joint(
                 jointId: jointId,
                 isPainful: false,
@@ -339,8 +338,7 @@ class PageInspectionsJointSyndromeState
             _isSwollen = false;
             _isMovementLimited = false;
           }
-        }
-        else {
+        } else {
           //leftOffset = 50;
         }
       });
@@ -348,13 +346,9 @@ class PageInspectionsJointSyndromeState
   }
 
 
-  bool hasJointId(int jointsNumericid) {
-    try {
-      _joints.firstWhere((item) => item.jointId == jointsNumericid);
-      return true;
-    } catch (e) {
-      return false;
-    }
+  bool hasJointId(int jointsNumericId) {
+    Joint? joint = _joints.firstWhereOrNull((item) => item.jointId == jointsNumericId);
+    return (joint == null) ? false : true;
   }
 
   ColorFilter partColor(int jointId) {
@@ -366,8 +360,7 @@ class PageInspectionsJointSyndromeState
     bool isSwollen = false;
     bool isMovementLimited = false;
 
-    if (hasJointId(jointId))
-    {
+    if (hasJointId(jointId)) {
       isPainful = _joints
           .firstWhere((item) => item.jointId == jointId)
           .isPainful;
@@ -381,18 +374,16 @@ class PageInspectionsJointSyndromeState
 
     if (isSwollen) {
       return ColorFilter.mode(Colors.red.shade300, BlendMode.srcATop);
-    }
-    else if (isPainful && isMovementLimited) {
+    } else if (isPainful && isMovementLimited) {
       return ColorFilter.mode(Colors.red.shade300, BlendMode.srcATop);
-    }
-    else if (isPainful || isMovementLimited) {
+    } else if (isPainful || isMovementLimited) {
       return ColorFilter.mode(Colors.green, BlendMode.srcATop);
     }
     return const ColorFilter.mode(Colors.transparent, BlendMode.multiply);
   }
 
   Widget _bodyPart(
-      int jointsNumericid,
+      int jointsNumericId,
       String imagePath, {
         double? top,
         double? bottom,
@@ -408,18 +399,18 @@ class PageInspectionsJointSyndromeState
       left: left,
       right: right,
       child: GestureDetector(
-        onTap: () => _togglePart(jointsNumericid),
+        onTap: () => _togglePart(jointsNumericId),
         child: Stack(
           children: [
             ColorFiltered(
-              colorFilter: partColor(jointsNumericid),
+              colorFilter: partColor(jointsNumericId),
               child: SvgPicture.asset(
                 imagePath,
                 width: width,
                 height: height,
               ),
             ),
-            if (_selectedPart == jointsNumericid)
+            if (_selectedPart == jointsNumericId)
               Positioned.fill(
                 child: Container(
                   decoration: BoxDecoration(

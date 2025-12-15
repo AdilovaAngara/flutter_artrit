@@ -49,6 +49,36 @@ Future<int> getUserRole() async {
 
 
 
+
+
+
+
+/// Преобразование значения в bool
+bool parseBool(dynamic value) {
+  if (value is bool) {
+    return value;
+  }
+  if (value is int) {
+    return value == 1;
+  }
+  if (value is String) {
+    final lowered = value.trim().toLowerCase();
+    if (lowered == 'true' || lowered == '1') {
+      return true;
+    }
+    if (lowered == 'false' || lowered == '0') {
+      return false;
+    }
+  }
+// На случай null или неожиданных значений — по умолчанию false (или можно бросить ошибку)
+  return false;
+}
+
+
+
+
+
+
 final List<SprItem> listGender = [
   SprItem(id: 'Мужской', name: 'Мужской'),
   SprItem(id: 'Женский', name: 'Женский')];

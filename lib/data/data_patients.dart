@@ -23,7 +23,7 @@ class DataPatients {
   bool? invalid;
   String? notInvalidReason;
   bool uveit;
-  int notificationReceiveType;
+  int? notificationReceiveType;
   String? diag;
   dynamic defaultLabProfileId;
   String lastName;

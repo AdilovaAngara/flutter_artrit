@@ -146,7 +146,7 @@ class PagePatientEditState extends State<PagePatientEdit> {
       _gender = _dataPatient.gender;
       _regionId = _dataPatient.regionId;
       _address = _dataPatient.address;
-      _invalid = _dataPatient.invalid;
+      _invalid = _dataPatient.invalid ?? 2;
       _notInvalidReason = _dataPatient.notInvalidReason;
 
       _relationshipDegreeId = _dataParent.relationshipDegreeId;
@@ -264,15 +264,29 @@ class PagePatientEditState extends State<PagePatientEdit> {
   }
 
   Future<void> _putDiagnosisData() async {
-    String recordId = _dataDiagnoses.first.id;
-    DataDiagnoses thisData = DataDiagnoses(
-        id: recordId,
-        patientsId: _patientsId,
-        diagnosisId: _diagnosisId,
-        comment: _diagnosisComment,
-        dateCreated: _dataDiagnoses.first.dateCreated);
-    _apiDiagnoses.put(
-        patientsId: _patientsId, recordId: recordId, thisData: thisData);
+    // Если диагноз уже существует
+    if (_dataDiagnoses.isNotEmpty) {
+      String recordId = _dataDiagnoses.first.id;
+      DataDiagnoses thisData = DataDiagnoses(
+          id: recordId,
+          patientsId: _patientsId,
+          diagnosisId: _diagnosisId,
+          comment: _diagnosisComment,
+          dateCreated: _dataDiagnoses.first.dateCreated);
+      _apiDiagnoses.put(
+          patientsId: _patientsId, recordId: recordId, thisData: thisData);
+    } else {
+      // Иначе добавляем запись о диагнозе
+      DataDiagnoses thisData = DataDiagnoses(
+          id: '',
+          patientsId: _patientsId,
+          diagnosisId: _diagnosisId,
+          comment: _diagnosisComment,
+          dateCreated: convertToTimestamp(dateTimeFormat(getMoscowDateTime())));
+      _apiDiagnoses.post(
+          patientsId: _patientsId, thisData: thisData);
+    }
+
   }
 
 

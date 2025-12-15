@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../data/data_inspections.dart';
@@ -159,21 +160,27 @@ class PageInspectionsLimphState extends State<PageInspectionsLimph> {
     setState(() {
       if (part != 'body')
         {
-          if (_listSyssind.firstWhere((item) => item.name == part).isActive) {
-            _listSyssind.firstWhere((item) => item.name == part).isActive = false;
+          Syssind? syssind = _listSyssind.firstWhereOrNull((item) => item.name == part);
+          if (syssind == null) return;
+          if (syssind.isActive) {
+            syssind.isActive = false;
           } else {
-            _listSyssind.firstWhere((item) => item.name == part).isActive = true;
+            syssind.isActive = true;
           }
         }
     });
   }
 
-  bool partActive(String part)
-  {
+  bool partActive(String part) {
     if (part == 'body') {
       return false;
     }
-    return _listSyssind.firstWhere((item) => item.name == part).isActive;
+    Syssind? syssind = _listSyssind.firstWhereOrNull((item) => item.name == part);
+    if (syssind == null) {
+      return false;
+    } else {
+      return syssind.isActive;
+    }
   }
 
   Widget _bodyPart(

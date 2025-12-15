@@ -21,6 +21,18 @@ class ApiDiagnoses {
 
 
 
+  Future<void> post({
+    required String patientsId,
+    required DataDiagnoses thisData,
+  }) async {
+    debugPrint(jsonEncode(thisData.toJson()));
+    var response = await baseClient.post(
+        '/api/patients/$patientsId/diagnoses', thisData.toJson());
+    return response;
+  }
+
+
+
   Future<void> put({
     required String patientsId,
     required String recordId,

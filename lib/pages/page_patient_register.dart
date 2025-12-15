@@ -65,7 +65,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
   String? _birthDate;
   String? _gender;
   String? _regionId;
-  bool? _uveit;
+  String? _uveitId;
   String? _relationshipDegreeId;
   String? _lastNameParent;
   String? _firstNameParent;
@@ -158,7 +158,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
         isFemale: _gender == listGender[1].name ? 'true' : 'false',
         diagnosisId: _diagnosisId,
         diagnosisComment: _diagnosisComment,
-        uveit: _uveit ?? false,
+        uveit: _uveitId == _listSprUveitExists[0].id ? false : true,
         doctorId: _doctorId,
         unknownDoctor: _unknownDoctor,
         hospitalId: _hospitalId,
@@ -182,7 +182,7 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
         _birthDate != null ||
         _gender != null ||
         _regionId != null ||
-        _uveit != null ||
+        _uveitId != null ||
         _relationshipDegreeId != null ||
         _lastNameParent != null ||
         _firstNameParent != null ||
@@ -588,20 +588,12 @@ class PagePatientRegisterState extends State<PagePatientRegister> {
           labelText: 'Увеит',
           fieldKey: _keysPatient[EnumRegPatient.uveit]!,
           allValues: _listSprUveitExists,
-          selectedValue: _uveit == null || _uveit.toString().isEmpty
-              ? ''
-              : _uveit!
-                  ? _listSprUveitExists[1].name
-                  : _listSprUveitExists[0].name,
+          selectedValue: _uveitId,
           required: true,
           listRoles: Roles.all,
           onChanged: (value) {
             setState(() {
-              _uveit = (value == _listSprUveitExists[0].name)
-                  ? false
-                  : (value == _listSprUveitExists[1].name)
-                      ? true
-                      : null;
+              _uveitId = value;
             });
           },
         ),

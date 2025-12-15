@@ -3,6 +3,8 @@
 
 import 'dart:convert';
 
+import '../my_functions.dart';
+
 enum Enum {
   date,
   tem,
@@ -195,17 +197,20 @@ class Syssind {
     this.name,
   });
 
-  factory Syssind.fromJson(Map<String, dynamic> json) => Syssind(
-    isActive: json["isActive"],
-    name: json["name"],
-  );
+  factory Syssind.fromJson(Map<String, dynamic> json) {
+    return Syssind(
+      isActive: parseBool(json["isActive"]),
+      name: json["name"] as String?,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
     "isActive": isActive,
     "name": name,
   };
-}
 
+
+}
 
 
 
@@ -225,7 +230,7 @@ class Siplist {
     return Siplist(
       numericId: json['numeric_id'] ?? 0,
       name: json['name'] ?? '',
-      bol: json['bol'] ?? false,
+      bol: parseBool(json["bol"]),
     );
   }
 
