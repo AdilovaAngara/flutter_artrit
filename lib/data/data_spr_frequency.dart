@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final dataSprFrequency = dataSprFrequencyFromJson(jsonString);
-
 import 'dart:convert';
 
 List<DataSprFrequency> dataSprFrequencyFromJson(String str) => List<DataSprFrequency>.from(json.decode(str).map((x) => DataSprFrequency.fromJson(x)));

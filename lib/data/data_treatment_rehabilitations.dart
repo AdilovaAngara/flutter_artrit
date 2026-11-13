@@ -1,5 +1,3 @@
-//     final dataTreatmentRehabilitations = dataTreatmentRehabilitationsFromJson(jsonString);
-
 import 'dart:convert';
 
 enum Enum {
@@ -16,7 +14,7 @@ String dataTreatmentRehabilitationsToJson(List<DataTreatmentRehabilitations> dat
 
 class DataTreatmentRehabilitations {
   String? id;
-  String? patientsId;
+  String patientsId;
   int? dateStart;
   DateEnd? dateEnd;
   TypeRehabil? typeRehabil;
@@ -24,7 +22,7 @@ class DataTreatmentRehabilitations {
 
   DataTreatmentRehabilitations({
     this.id,
-    this.patientsId,
+    required this.patientsId,
     required this.dateStart,
     required this.dateEnd,
     required this.typeRehabil,
@@ -41,7 +39,7 @@ class DataTreatmentRehabilitations {
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
+    if (id != null) "id": id,
     "patients_id": patientsId,
     "date_start": dateStart,
     "date_end": dateEnd?.toJson(),

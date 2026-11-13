@@ -1,6 +1,3 @@
-
-//     final parentData = parentDataFromJson(jsonString);
-
 import 'dart:convert';
 
 enum EnumParent {

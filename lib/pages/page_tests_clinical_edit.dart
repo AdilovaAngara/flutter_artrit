@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import '../api/api_spr.dart';
 import '../api/api_tests_clinical.dart';
+import '../data/blood_test_items.dart';
 import '../data/data_tests_clinical.dart';
 import '../data/data_tests_options.dart';
 import '../my_functions.dart';
@@ -164,7 +165,7 @@ class _PageTestsClinicalEditState extends State<PageTestsClinicalEdit> {
       date: convertToTimestamp(_date),
       patientId: _patientsId,
       items: Items(
-        erythrocytes: ItemsChild(
+        erythrocytes: BloodTestItems(
             analysisPatientId: widget.thisData!.items.erythrocytes.analysisPatientId,
             analysisPatientDate: widget.thisData!.items.erythrocytes.analysisPatientDate,
             analysisPatientValue: _erythrocytes,
@@ -175,7 +176,7 @@ class _PageTestsClinicalEditState extends State<PageTestsClinicalEdit> {
             norma: _getNorma(_erythrocytes, _erythrocytesUnitId),
             minmax: _getMinMax(_erythrocytes, _erythrocytesUnitId),
             creationDate: _creationDate),
-        thrombocytes: ItemsChild(
+        thrombocytes: BloodTestItems(
             analysisPatientId: widget.thisData!.items.thrombocytes.analysisPatientId,
             analysisPatientDate: widget.thisData!.items.thrombocytes.analysisPatientDate,
             analysisPatientValue: _thrombocytes,
@@ -186,7 +187,7 @@ class _PageTestsClinicalEditState extends State<PageTestsClinicalEdit> {
             norma: _getNorma(_thrombocytes, _thrombocytesUnitId),
             minmax: _getMinMax(_thrombocytes, _thrombocytesUnitId),
             creationDate: _creationDate),
-        hemoglobin: ItemsChild(
+        hemoglobin: BloodTestItems(
             analysisPatientId: widget.thisData!.items.hemoglobin.analysisPatientId,
             analysisPatientDate: widget.thisData!.items.hemoglobin.analysisPatientDate,
             analysisPatientValue: _hemoglobin,
@@ -197,7 +198,7 @@ class _PageTestsClinicalEditState extends State<PageTestsClinicalEdit> {
             norma: _getNorma(_hemoglobin, _hemoglobinUnitId),
             minmax: _getMinMax(_hemoglobin, _hemoglobinUnitId),
             creationDate: _creationDate),
-        soe: ItemsChild(
+        soe: BloodTestItems(
             analysisPatientId: widget.thisData!.items.soe.analysisPatientId,
             analysisPatientDate: widget.thisData!.items.soe.analysisPatientDate,
             analysisPatientValue: _soe,
@@ -208,7 +209,7 @@ class _PageTestsClinicalEditState extends State<PageTestsClinicalEdit> {
             norma:_getNorma(_soe, _soeUnitId),
             minmax: _getMinMax(_soe, _soeUnitId),
             creationDate: _creationDate),
-        leukocytes: ItemsChild(
+        leukocytes: BloodTestItems(
             analysisPatientId: widget.thisData!.items.leukocytes.analysisPatientId,
             analysisPatientDate: widget.thisData!.items.leukocytes.analysisPatientDate,
             analysisPatientValue: _leukocytes,
@@ -219,7 +220,7 @@ class _PageTestsClinicalEditState extends State<PageTestsClinicalEdit> {
             norma: _getNorma(_leukocytes, _leukocytesUnitId),
             minmax: _getMinMax(_leukocytes, _leukocytesUnitId),
             creationDate: _creationDate),
-        neutrophils: ItemsChild(
+        neutrophils: BloodTestItems(
             analysisPatientId: widget.thisData!.items.neutrophils.analysisPatientId,
             analysisPatientDate: widget.thisData!.items.neutrophils.analysisPatientDate,
             analysisPatientValue: _neutrophils,
@@ -230,7 +231,7 @@ class _PageTestsClinicalEditState extends State<PageTestsClinicalEdit> {
             norma: _getNorma(_neutrophils, _neutrophilsUnitId),
             minmax: _getMinMax(_neutrophils, _neutrophilsUnitId),
             creationDate: _creationDate),
-        lymphocytes: ItemsChild(
+        lymphocytes: BloodTestItems(
             analysisPatientId: widget.thisData!.items.lymphocytes.analysisPatientId,
             analysisPatientDate: widget.thisData!.items.lymphocytes.analysisPatientDate,
             analysisPatientValue: _lymphocytes,
@@ -241,7 +242,7 @@ class _PageTestsClinicalEditState extends State<PageTestsClinicalEdit> {
             norma: _getNorma(_lymphocytes, _lymphocytesUnitId),
             minmax: _getMinMax(_lymphocytes, _lymphocytesUnitId),
             creationDate: _creationDate),
-        monocytes: ItemsChild(
+        monocytes: BloodTestItems(
             analysisPatientId: widget.thisData!.items.monocytes.analysisPatientId,
             analysisPatientDate: widget.thisData!.items.monocytes.analysisPatientDate,
             analysisPatientValue: _monocytes,
@@ -252,7 +253,7 @@ class _PageTestsClinicalEditState extends State<PageTestsClinicalEdit> {
             norma: _getNorma(_monocytes, _monocytesUnitId),
             minmax: _getMinMax(_monocytes, _monocytesUnitId),
             creationDate: _creationDate),
-        basophils: ItemsChild(
+        basophils: BloodTestItems(
             analysisPatientId: widget.thisData!.items.basophils.analysisPatientId,
             analysisPatientDate: widget.thisData!.items.basophils.analysisPatientDate,
             analysisPatientValue: _basophils,
@@ -263,7 +264,7 @@ class _PageTestsClinicalEditState extends State<PageTestsClinicalEdit> {
             norma: _getNorma(_basophils, _basophilsUnitId),
             minmax: _getMinMax(_basophils, _basophilsUnitId),
             creationDate: _creationDate),
-        eosinophils: ItemsChild(
+        eosinophils: BloodTestItems(
             analysisPatientId: widget.thisData!.items.eosinophils.analysisPatientId,
             analysisPatientDate: widget.thisData!.items.eosinophils.analysisPatientDate,
             analysisPatientValue: _eosinophils,
@@ -369,9 +370,11 @@ class _PageTestsClinicalEditState extends State<PageTestsClinicalEdit> {
   }
 
 
-  Minmax? _getMinMax(dynamic value, String? unitId)
+  DataTestsOptions? _getMinMax(dynamic value, String? unitId)
   {
-    return (unitId != null && value != null) ? Minmax(name: _dataSprTestsOptions.firstWhereOrNull((e) => e.unitId == unitId)?.name,
+    return (unitId != null && value != null)
+        ? DataTestsOptions(
+        name: _dataSprTestsOptions.firstWhereOrNull((e) => e.unitId == unitId)?.name,
         keyName: _dataSprTestsOptions.firstWhereOrNull((e) => e.unitId == unitId)?.keyName,
         id: _dataSprTestsOptions.firstWhereOrNull((e) => e.unitId == unitId)?.id,
         analysisId: _dataSprTestsOptions.firstWhereOrNull((e) => e.unitId == unitId)?.analysisId,
@@ -383,19 +386,20 @@ class _PageTestsClinicalEditState extends State<PageTestsClinicalEdit> {
         refMIn: _dataSprTestsOptions.firstWhereOrNull((e) => e.unitId == unitId)?.refMIn,
         refMax: _dataSprTestsOptions.firstWhereOrNull((e) => e.unitId == unitId)?.refMax,
         gender: _dataSprTestsOptions.firstWhereOrNull((e) => e.unitId == unitId)?.gender,
-        unitName: _dataSprTestsOptions.firstWhereOrNull((e) => e.unitId == unitId)?.unitName) : null;
+        unitName: _dataSprTestsOptions.firstWhereOrNull((e) => e.unitId == unitId)?.unitName)
+        : null;
   }
 
 
   bool _getNorma(dynamic value, String? unitId){
-    Minmax? getMinMax = _getMinMax(value, unitId);
-    if (getMinMax != null) {
+    DataTestsOptions? getMinMax = _getMinMax(value, unitId);
+    if (getMinMax != null && getMinMax.refMIn != null && getMinMax.refMax != null) {
       return (value > getMinMax.refMIn && value < getMinMax.refMax);
-    }
-    else {
+    } else {
       return true;
     }
   }
+
 
   bool _getRequired(){
     return (_thrombocytes == null &&

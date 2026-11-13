@@ -138,7 +138,6 @@ class PagePatientEditState extends State<PagePatientEdit> {
       _dataParent = await _apiParent.get(patientsId: _patientsId);
       _dataDiagnoses = await _apiDiagnoses.get(patientsId: _patientsId);
 
-
       _lastNamePatient = _dataPatient.lastName;
       _firstNamePatient = _dataPatient.firstName;
       _patronymicPatient = _dataPatient.patronymic;
@@ -167,7 +166,8 @@ class PagePatientEditState extends State<PagePatientEdit> {
     } else {
       _doctorsId = await readSecureData(SecureKey.doctorsId);
       _dataDoctor = await _apiDoctor.get(doctorsId: _doctorsId);
-      _doctorFio = '${_dataDoctor.lastName} ${_dataDoctor.firstName} ${_dataDoctor.patronymic}';
+      _doctorFio =
+          '${_dataDoctor.lastName} ${_dataDoctor.firstName} ${_dataDoctor.patronymic}';
     }
 
     setState(() {});
@@ -185,7 +185,7 @@ class PagePatientEditState extends State<PagePatientEdit> {
 
     if (widget.isEditForm) {
       await Future.wait(
-        [_putPatientData(), _putParentData(), _putDiagnosisData()]);
+          [_putPatientData(), _putParentData(), _putDiagnosisData()]);
     } else {
       DataResult1 result = await _postRequest();
       if (result.message != null) {
@@ -195,8 +195,7 @@ class PagePatientEditState extends State<PagePatientEdit> {
           Navigator.pop(context);
           ShowMessage.show(
               context: context,
-              message:
-              'Пациент успешно зарегистрирован в системе');
+              message: 'Пациент успешно зарегистрирован в системе');
         }
       }
     }
@@ -209,8 +208,6 @@ class PagePatientEditState extends State<PagePatientEdit> {
       Navigator.pop(context);
     }
   }
-
-
 
   Future<void> _putPatientData() async {
     DataPatient thisData = DataPatient(
@@ -283,15 +280,9 @@ class PagePatientEditState extends State<PagePatientEdit> {
           diagnosisId: _diagnosisId,
           comment: _diagnosisComment,
           dateCreated: convertToTimestamp(dateTimeFormat(getMoscowDateTime())));
-      _apiDiagnoses.post(
-          patientsId: _patientsId, thisData: thisData);
+      _apiDiagnoses.post(patientsId: _patientsId, thisData: thisData);
     }
-
   }
-
-
-
-
 
   /// Запрос на добавление нового пациента
   Future<DataResult1> _postRequest() async {
@@ -311,22 +302,18 @@ class PagePatientEditState extends State<PagePatientEdit> {
         hospitalId: _hospitalId,
         unknownHospital: _unknownHospital,
         canContainCookies: false,
-        relationshipDegreeId: _relationshipDegreeId ?? 'd3cb858f-8b75-4f36-8b1f-350c33a17c38', // Отсутствует
+        relationshipDegreeId:
+            _relationshipDegreeId ?? 'd3cb858f-8b75-4f36-8b1f-350c33a17c38',
+        // Отсутствует
         applicantFirstName: _firstNameParent ?? '',
         applicantLastName: _lastNameParent ?? '',
         applicantPatrynomic: _patronymicParent ?? '',
         applicantEmail: _email,
         applicantPhone: _phone,
-        notificationReceiveType: getNotificationReceiveType(
-            agreeEmail: true, agreeLk: true));
+        notificationReceiveType:
+            getNotificationReceiveType(agreeEmail: true, agreeLk: true));
     return await _apiPatient.postRegister(thisData: thisData);
   }
-
-
-
-
-
-
 
   bool _areDifferent() {
     if (!widget.isEditForm) {
@@ -368,7 +355,6 @@ class PagePatientEditState extends State<PagePatientEdit> {
         _email != p.email ||
         _phone != p.phone;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -561,12 +547,6 @@ class PagePatientEditState extends State<PagePatientEdit> {
     );
   }
 
-
-
-
-
-
-
   Widget _buildInvalidForm() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -594,7 +574,8 @@ class PagePatientEditState extends State<PagePatientEdit> {
           RadioGroupWidget(
             labelText: 'Укажите причину',
             listAnswers: ['Сняли', 'Отказали', 'Не подавали документы'],
-            selectedIndex: _notInvalidReason != null ? _notInvalidReason! - 1 : null,
+            selectedIndex:
+                _notInvalidReason != null ? _notInvalidReason! - 1 : null,
             dividerHeight: 0,
             listRoles: Roles.all,
             onChanged: (value) {
@@ -606,10 +587,6 @@ class PagePatientEditState extends State<PagePatientEdit> {
       ],
     );
   }
-
-
-
-
 
   Widget _buildParentForm() {
     return Column(
@@ -752,8 +729,10 @@ class PagePatientEditState extends State<PagePatientEdit> {
           maxLength: 300,
           required: Roles.asPatient.contains(_role)
               ? (_diagnosisId == '18ff07ab-5fb5-49b1-8fe4-b301968df8af' ||
-              _diagnosisId == '13019398-b69c-4d4b-a58b-d3ed4f485ed0'
-              ? true : false) : false,
+                      _diagnosisId == '13019398-b69c-4d4b-a58b-d3ed4f485ed0'
+                  ? true
+                  : false)
+              : false,
           listRoles: Roles.all,
           onChanged: (value) {
             setState(() {
@@ -791,13 +770,15 @@ class PagePatientEditState extends State<PagePatientEdit> {
             });
           },
         ),
-        if (_hospitalId == '2a1101a8-0df3-4ac1-9c9e-4e5c15e9b422' && widget.isEditForm) // Другое
+        if (_hospitalId == '2a1101a8-0df3-4ac1-9c9e-4e5c15e9b422' &&
+            widget.isEditForm) // Другое
           InputText(
             labelText: 'Название учреждения',
             fieldKey: _keysPatient[EnumPatient.unknownHospital]!,
             value: _unknownHospital,
             maxLength: 300,
-            required: (_hospitalId == '2a1101a8-0df3-4ac1-9c9e-4e5c15e9b422' && Roles.asPatient.contains(_role))
+            required: (_hospitalId == '2a1101a8-0df3-4ac1-9c9e-4e5c15e9b422' &&
+                    Roles.asPatient.contains(_role))
                 ? true
                 : false,
             listRoles: Roles.all,
@@ -807,6 +788,7 @@ class PagePatientEditState extends State<PagePatientEdit> {
               });
             },
           ),
+
         InputText(
           labelText: 'Врач',
           fieldKey: _keysPatient[EnumPatient.doctorFio]!,

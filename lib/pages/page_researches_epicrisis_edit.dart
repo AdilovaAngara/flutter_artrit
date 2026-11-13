@@ -111,6 +111,7 @@ class PageResearchesEpicrisisEditState extends State<PageResearchesEpicrisisEdit
     }
 
     DataResearchesEpicrisis thisData = DataResearchesEpicrisis(
+        patientId: _patientsId,
         institution: _institution,
         date: convertToTimestamp(_date!),
         comment: _comment,

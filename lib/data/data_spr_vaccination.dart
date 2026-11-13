@@ -1,5 +1,3 @@
-//     final dataSprVaccination = dataSprVaccinationFromJson(jsonString);
-
 import 'dart:convert';
 
 List<DataSprVaccination> dataSprVaccinationFromJson(String str) => List<DataSprVaccination>.from(json.decode(str).map((x) => DataSprVaccination.fromJson(x)));

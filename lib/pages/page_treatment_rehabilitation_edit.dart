@@ -53,7 +53,6 @@ class _PageTreatmentRehabilitationEditState extends State<PageTreatmentRehabilit
   String? _type;
   String? _fizcomment;
 
-
   /// Ключи
   final _formKey = GlobalKey<FormState>();
   final Map<Enum, GlobalKey<FormFieldState>> _keys = {
@@ -108,6 +107,7 @@ class _PageTreatmentRehabilitationEditState extends State<PageTreatmentRehabilit
 
   Future<void> _request() async {
     DataTreatmentRehabilitations thisData = DataTreatmentRehabilitations(
+        patientsId: _patientsId,
         dateStart: convertToTimestamp(_dateStart!),
         typeRehabil: TypeRehabil(type: _type, fizcomment: _fizcomment),
         creationDate: _creationDate,

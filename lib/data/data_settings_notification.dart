@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final dataSettingsNotification = dataSettingsNotificationFromJson(jsonString);
-
 import 'dart:convert';
 
 DataSettingsNotification dataSettingsNotificationFromJson(String str) => DataSettingsNotification.fromJson(json.decode(str));

@@ -1,5 +1,3 @@
-//     final dataSprTreatmentUnits = dataSprTreatmentUnitsFromJson(jsonString);
-
 import 'dart:convert';
 
 enum Enum {
@@ -49,7 +47,7 @@ class DataTreatmentMedicaments {
 
   DataTreatmentMedicaments({
     this.id,
-    this.patientsId,
+    required this.patientsId,
     required this.tnp,
     required this.tlf,
     required this.mnn,
@@ -86,7 +84,7 @@ class DataTreatmentMedicaments {
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
+        if (id != null) "id": id,
         "patients_id": patientsId,
         "tnp": tnp,
         "tlf": tlf,

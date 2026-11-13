@@ -119,6 +119,8 @@ class _PageAnamnesisFamilyHistoryEditState extends State<PageAnamnesisFamilyHist
 
   Future<void> _request() async {
     DataAnamnesisFamilyHistory thisData = DataAnamnesisFamilyHistory(
+        patientId: _patientsId,
+
         radioart: getRadioValue(_radioart),
         radiopsor: getRadioValue(_radiopsor),
         radiokron: getRadioValue(_radiokron),

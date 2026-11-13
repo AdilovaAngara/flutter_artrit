@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import '../api/api_spr.dart';
 import '../api/api_tests_immunology.dart';
+import '../data/blood_test_items.dart';
 import '../data/data_tests_immunology.dart';
 import '../data/data_tests_options.dart';
 import '../my_functions.dart';
@@ -127,7 +128,7 @@ class _PageTestsImmunologyEditState extends State<PageTestsImmunologyEdit> {
       date: convertToTimestamp(_date),
       patientId: _patientsId,
       items: Items(
-        cReactiveProtein: ItemsChild(
+        cReactiveProtein: BloodTestItems(
             analysisPatientId: widget.thisData!.items.cReactiveProtein.analysisPatientId,
             analysisPatientDate: widget.thisData!.items.cReactiveProtein.analysisPatientDate,
             analysisPatientValue: _cReactiveProtein,
@@ -138,7 +139,7 @@ class _PageTestsImmunologyEditState extends State<PageTestsImmunologyEdit> {
             norma: _getNorma(_cReactiveProtein, _cReactiveProteinUnitId),
             minmax: _getMinMax(_cReactiveProtein, _cReactiveProteinUnitId),
             creationDate: _creationDate),
-        antinuclearFactor: ItemsChild(
+        antinuclearFactor: BloodTestItems(
             analysisPatientId: widget.thisData!.items.antinuclearFactor.analysisPatientId,
             analysisPatientDate: widget.thisData!.items.antinuclearFactor.analysisPatientDate,
             analysisPatientValue: _antinuclearFactor,
@@ -149,7 +150,7 @@ class _PageTestsImmunologyEditState extends State<PageTestsImmunologyEdit> {
             norma: _getNorma(_antinuclearFactor, _antinuclearFactorUnitId),
             minmax: _getMinMax(_antinuclearFactor, _antinuclearFactorUnitId),
             creationDate: _creationDate),
-        rheumatoidFactor: ItemsChild(
+        rheumatoidFactor: BloodTestItems(
             analysisPatientId: widget.thisData!.items.rheumatoidFactor.analysisPatientId,
             analysisPatientDate: widget.thisData!.items.rheumatoidFactor.analysisPatientDate,
             analysisPatientValue: _rheumatoidFactor,
@@ -160,7 +161,7 @@ class _PageTestsImmunologyEditState extends State<PageTestsImmunologyEdit> {
             norma: _getNorma(_rheumatoidFactor, _rheumatoidFactorUnitId),
             minmax: _getMinMax(_rheumatoidFactor, _rheumatoidFactorUnitId),
             creationDate: _creationDate),
-        antiCcp: ItemsChild(
+        antiCcp: BloodTestItems(
             analysisPatientId: widget.thisData!.items.antiCcp.analysisPatientId,
             analysisPatientDate: widget.thisData!.items.antiCcp.analysisPatientDate,
             analysisPatientValue: _antiCcp,
@@ -249,9 +250,9 @@ class _PageTestsImmunologyEditState extends State<PageTestsImmunologyEdit> {
   }
 
 
-  Minmax? _getMinMax(dynamic value, String? unitId)
+  DataTestsOptions? _getMinMax(dynamic value, String? unitId)
   {
-    return (unitId != null && value != null) ? Minmax(name: _dataSprTestsOptions.firstWhereOrNull((e) => e.unitId == unitId)?.name,
+    return (unitId != null && value != null) ? DataTestsOptions(name: _dataSprTestsOptions.firstWhereOrNull((e) => e.unitId == unitId)?.name,
         keyName: _dataSprTestsOptions.firstWhereOrNull((e) => e.unitId == unitId)?.keyName,
         id: _dataSprTestsOptions.firstWhereOrNull((e) => e.unitId == unitId)?.id,
         analysisId: _dataSprTestsOptions.firstWhereOrNull((e) => e.unitId == unitId)?.analysisId,
@@ -268,7 +269,7 @@ class _PageTestsImmunologyEditState extends State<PageTestsImmunologyEdit> {
 
 
   bool _getNorma(dynamic value, String? unitId){
-    Minmax? getMinMax = _getMinMax(value, unitId);
+    DataTestsOptions? getMinMax = _getMinMax(value, unitId);
     if (getMinMax != null) {
       return (value > getMinMax.refMIn && value < getMinMax.refMax);
     }

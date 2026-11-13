@@ -1,5 +1,3 @@
-//     final dataTreatmentDrugForms = dataTreatmentDrugFormsFromJson(jsonString);
-
 import 'dart:convert';
 
 List<DataSprTreatmentDrugForms> dataSprTreatmentDrugFormsFromJson(String str) => List<DataSprTreatmentDrugForms>.from(json.decode(str).map((x) => DataSprTreatmentDrugForms.fromJson(x)));

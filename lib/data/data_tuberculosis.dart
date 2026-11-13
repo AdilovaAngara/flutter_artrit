@@ -14,7 +14,7 @@ List<DataTuberculosis> dataTuberculosisFromJson(String str) => List<DataTubercul
 String dataTuberculosisToJson(List<DataTuberculosis> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class DataTuberculosis {
-  String id;
+  String? id;
   String patientId;
   DateTime? treatmentBeginDate;
   DateTime? treatmentEndDate;
@@ -26,7 +26,7 @@ class DataTuberculosis {
   List<String> customSideEffects;
 
   DataTuberculosis({
-    required this.id,
+    this.id,
     required this.patientId,
     required this.treatmentBeginDate,
     required this.treatmentEndDate,
@@ -52,7 +52,7 @@ class DataTuberculosis {
   );
 
   Map<String, dynamic> toJson() => {
-    "Id": id,
+    if (id != null) "Id": id,
     "PatientId": patientId,
     "TreatmentBeginDate": treatmentBeginDate?.toIso8601String(),
     "TreatmentEndDate": treatmentEndDate?.toIso8601String(),

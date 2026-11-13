@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final dataSprSections = dataSprSectionsFromJson(jsonString);
-
 import 'dart:convert';
 
 List<DataSprSections> dataSprSectionsFromJson(String str) => List<DataSprSections>.from(json.decode(str).map((x) => DataSprSections.fromJson(x)));

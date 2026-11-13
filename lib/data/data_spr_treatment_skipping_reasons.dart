@@ -1,5 +1,3 @@
-//     final dataTreatmentSkippingReasons = dataTreatmentSkippingReasonsFromJson(jsonString);
-
 import 'dart:convert';
 
 List<DataSprTreatmentSkippingReasons> dataSprTreatmentSkippingReasonsFromJson(String str) => List<DataSprTreatmentSkippingReasons>.from(json.decode(str).map((x) => DataSprTreatmentSkippingReasons.fromJson(x)));

@@ -1,5 +1,3 @@
-//     final dataSprHospitals = dataSprHospitalsFromJson(jsonString);
-
 import 'dart:convert';
 
 List<DataSprHospitals> dataSprHospitalsFromJson(String str) => List<DataSprHospitals>.from(json.decode(str).map((x) => DataSprHospitals.fromJson(x)));

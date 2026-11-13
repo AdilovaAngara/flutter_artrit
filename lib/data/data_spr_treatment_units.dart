@@ -1,5 +1,3 @@
-//     final dataSprTreatmentUnits = dataSprTreatmentUnitsFromJson(jsonString);
-
 import 'dart:convert';
 
 List<DataSprTreatmentUnits> dataSprTreatmentUnitsFromJson(String str) => List<DataSprTreatmentUnits>.from(json.decode(str).map((x) => DataSprTreatmentUnits.fromJson(x)));

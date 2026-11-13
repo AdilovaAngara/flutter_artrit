@@ -12,7 +12,7 @@ class ApiQuestionnaire {
     required String patientsId,
   }) async {
     var response =
-    await baseClient.get('//patients/$patientsId/questionnaire');
+    await baseClient.get('/patients/$patientsId/questionnaire');
     List<DataQuestionnaire>? thisData = dataQuestionnaireFromJson(response.body);
     thisData.sort((b, a) => a.creationDate!.compareTo(b.creationDate!));
     debugPrint(jsonEncode(thisData));

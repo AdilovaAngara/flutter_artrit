@@ -143,7 +143,7 @@ class ApiChat {
     required String chatId,
   }) async {
     var response = await baseClient.put(
-        '/api/chat/$chatId/allow?ssid=$ssId', {});
+        '/api/chat/$chatId/allow?ssid=$ssId', null);
     DataChatInfo? result = dataChatInfoFromJson(response.body);
     debugPrint(jsonEncode(result));
     return result;
@@ -161,7 +161,7 @@ class ApiChat {
     required String chatId,
   }) async {
     var response = await baseClient.put(
-        '/api/chat/$chatId/close?ssid=$ssId', {});
+        '/api/chat/$chatId/close?ssid=$ssId', null);
     DataChatInfo? result = dataChatInfoFromJson(response.body);
     debugPrint(jsonEncode(result));
     return result;
@@ -176,7 +176,7 @@ class ApiChat {
     required String chatId,
   }) async {
     var response = await baseClient.put(
-        '/api/chat/$chatId/open?ssid=$ssId', {});
+        '/api/chat/$chatId/open?ssid=$ssId', null);
     DataChatInfo? result = dataChatInfoFromJson(response.body);
     debugPrint(jsonEncode(result));
     return result;

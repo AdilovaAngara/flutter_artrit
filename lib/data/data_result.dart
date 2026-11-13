@@ -1,5 +1,3 @@
-//     final dataResult = dataResultFromJson(jsonString);
-
 import 'dart:convert';
 
 DataResult1 dataResult1FromJson(String str) => DataResult1.fromJson(json.decode(str));
@@ -24,6 +22,25 @@ class DataResult1 {
 
 
 
+DataResult5 dataResult5FromJson(String str) => DataResult5.fromJson(json.decode(str));
+
+String dataResult5ToJson(DataResult5 data) => json.encode(data.toJson());
+
+class DataResult5 {
+  String? message;
+
+  DataResult5({
+    required this.message,
+  });
+
+  factory DataResult5.fromJson(Map<String, dynamic> json) => DataResult5(
+    message: json["message"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "message": message,
+  };
+}
 
 
 
@@ -111,3 +128,5 @@ class DataResult4 {
     "Result": result,
   };
 }
+
+

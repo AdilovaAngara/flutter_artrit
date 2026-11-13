@@ -1,5 +1,3 @@
-//     final sendFileData = sendFileDataFromJson(jsonString);
-
 import 'dart:convert';
 
 DataSendFile dataSendFileFromJson(String str) => DataSendFile.fromJson(json.decode(str));

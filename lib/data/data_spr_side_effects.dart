@@ -1,5 +1,3 @@
-//     final dataSprSideEffects = dataSprSideEffectsFromJson(jsonString);
-
 import 'dart:convert';
 
 List<DataSprSideEffects> dataSprSideEffectsFromJson(String str) => List<DataSprSideEffects>.from(json.decode(str).map((x) => DataSprSideEffects.fromJson(x)));

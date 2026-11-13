@@ -88,21 +88,22 @@ class _PageNotificationsSettingsEditState
     _thisSprDataFrequency = await _apiSpr.getFrequency();
     _thisSprDataSections = await _apiSpr.getSections();
 
-    if (widget.isEditForm) {
-      _recordId = widget.thisData!.id;
-      _name = widget.thisData!.name ?? '';
-      _frequencyId = widget.thisData!.frequencyId;
-      _beginDate = dateFormat(widget.thisData!.beginDate!);
-      _endDate = dateFormat(widget.thisData!.endDate!);
-      _isDisabled = widget.thisData!.isDisabled;
-      _listSectionIds = widget.thisData!.sectionIds ?? [];
-      _listPatientIds = widget.thisData!.patientIds ?? [];
-    } else {
-      if (_patientsId.isNotEmpty && widget.forPatient) {
-        _listPatientIds = [_patientsId];
+    setState(() {
+      if (widget.isEditForm) {
+        _recordId = widget.thisData!.id!;
+        _name = widget.thisData!.name ?? '';
+        _frequencyId = widget.thisData!.frequencyId;
+        _beginDate = dateFormat(widget.thisData!.beginDate!);
+        _endDate = dateFormat(widget.thisData!.endDate!);
+        _isDisabled = widget.thisData!.isDisabled;
+        _listSectionIds = widget.thisData!.sectionIds ?? [];
+        _listPatientIds = widget.thisData!.patientIds ?? [];
+      } else {
+        if (_patientsId.isNotEmpty && widget.forPatient) {
+          _listPatientIds = [_patientsId];
+        }
       }
-    }
-    setState(() {});
+    });
   }
 
   void _changeData() async {
@@ -126,8 +127,7 @@ class _PageNotificationsSettingsEditState
 
   Future<void> _request() async {
     DataNotificationsSettings thisData = DataNotificationsSettings(
-        id: '',
-        doctorId: '',
+        doctorId: _doctorsId,
         name: _name,
         frequencyId: _frequencyId ?? 0,
         beginDate: convertStrToDate(_beginDate),

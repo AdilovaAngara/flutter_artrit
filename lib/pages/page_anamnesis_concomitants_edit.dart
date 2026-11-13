@@ -106,6 +106,7 @@ class _PageAnamnesisConcomitantsEditState
 
   Future<void> _request() async {
     DataAnamnesisConcomitants thisData = DataAnamnesisConcomitants(
+        patientsId: _patientsId,
         diagnosis: _diagnosis,
         creationDate: _creationDate,
         dateStart: convertToTimestamp(_dateStart!),

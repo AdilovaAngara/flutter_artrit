@@ -3,8 +3,6 @@ import 'package:artrit/data/data_diagnoses.dart';
 import 'package:flutter/cupertino.dart';
 import 'base_client.dart';
 
-
-
 var baseClient = BaseClient();
 
 class ApiDiagnoses {
@@ -20,7 +18,6 @@ class ApiDiagnoses {
   }
 
 
-
   Future<void> post({
     required String patientsId,
     required DataDiagnoses thisData,
@@ -32,18 +29,17 @@ class ApiDiagnoses {
   }
 
 
-
   Future<void> put({
     required String patientsId,
     required String recordId,
     required DataDiagnoses thisData,
   }) async {
+    debugPrint(jsonEncode(thisData.toJson()));
     var response = await baseClient.put(
         '/api/patients/$patientsId/diagnoses/$recordId',
         thisData.toJson());
     debugPrint(jsonEncode(thisData.toJson()));
     return response;
   }
-
 
 }

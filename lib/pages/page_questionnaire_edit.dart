@@ -73,7 +73,7 @@ class PageQuestionnaireEditState extends State<PageQuestionnaireEdit> {
 
   /// Параметры
   late int _role;
-  late String _patientsId;
+  String _patientsId = ""; // Так как форма доступна анонимному юзеру тоже
   late String _recordId;
   DateTime _date = getMoscowDateTime();
   int? _creationDate =
@@ -562,6 +562,7 @@ class PageQuestionnaireEditState extends State<PageQuestionnaireEdit> {
   Future<DataQuestionnaire?> _request() async {
     DataQuestionnaire thisData = DataQuestionnaire(
       id: widget.isEditForm ? _recordId : null,
+      patientsId: _patientsId,
       questdate: _date,
       q1: getAnswerForRadio('q1'),
       q2: getAnswerForRadio('q2'),

@@ -1,5 +1,3 @@
-//     final dataTestsBiochemicalList = dataTestsBiochemicalListFromJson(jsonString);
-
 import 'dart:convert';
 
 List<DataTestsBiochemicalList> dataTestsBiochemicalListFromJson(String str) => List<DataTestsBiochemicalList>.from(json.decode(str).map((x) => DataTestsBiochemicalList.fromJson(x)));

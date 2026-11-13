@@ -1,6 +1,3 @@
-
-//     final regionData = regionDataFromJson(jsonString);
-
 import 'dart:convert';
 
 List<DataSprRegion> dataSprRegionFromJson(String str) => List<DataSprRegion>.from(json.decode(str).map((x) => DataSprRegion.fromJson(x)));

@@ -221,7 +221,7 @@ class PageInspectionsAnglesPhotoAddState
       angle1: angle1,
       angle2: angle2,
       creationDate: convertToTimestamp(dateTimeFormat(getMoscowDateTime())),);
-    _api.post(patientsId: _patientsId, thisData: thisData);
+   await _api.post(patientsId: _patientsId, thisData: thisData);
   }
 
 

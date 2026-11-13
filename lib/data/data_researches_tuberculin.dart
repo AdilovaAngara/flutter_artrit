@@ -1,5 +1,3 @@
-//     final dataResearchesTuberculin = dataResearchesTuberculinFromJson(jsonString);
-
 import 'dart:convert';
 
 enum Enum{
@@ -22,12 +20,12 @@ class DataResearchesTuberculin {
   Res? result;
   DateTime? date;
   int? createDate;
-  String? researchItemId;
-  String? resultId;
+  String? researchItemId; // нет в модели
+  String? resultId; // нет в модели
 
   DataResearchesTuberculin({
     this.id,
-    this.patientId,
+    required this.patientId,
     required this.value,
     this.researchItem,
     this.result,

@@ -106,6 +106,7 @@ class _PageVaccinationEditState extends State<PageVaccinationEdit> {
 
   Future<void> _request() async {
     DataVaccination thisData = DataVaccination(
+        patientId: _patientsId,
         vaccinationId: _vaccinationId,
         executeDate: convertStrToDate(_executeDate!),
         comment: _comment);

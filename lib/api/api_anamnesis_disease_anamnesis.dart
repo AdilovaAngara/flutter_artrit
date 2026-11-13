@@ -19,7 +19,6 @@ class ApiAnamnesisDiseaseAnamnesis {
   }
 
 
-
   Future<void> put({
     required String patientsId,
     required DataAnamnesisDiseaseAnamnesis thisData,

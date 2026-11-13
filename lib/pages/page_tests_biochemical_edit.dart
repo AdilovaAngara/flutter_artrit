@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import '../api/api_spr.dart';
 import '../api/api_tests_biochemical.dart';
+import '../data/blood_test_items.dart';
 import '../data/data_tests_options.dart';
 import '../my_functions.dart';
 import '../roles.dart';
@@ -131,7 +132,7 @@ class _PageTestsBiochemicalEditState extends State<PageTestsBiochemicalEdit> {
       date: convertToTimestamp(_date),
       patientId: _patientsId,
       items: Items(
-        alt: ItemsChild(
+        alt: BloodTestItems(
             analysisPatientId: widget.thisData!.items.alt.analysisPatientId,
             analysisPatientDate: widget.thisData!.items.alt.analysisPatientDate,
             analysisPatientValue: _alt,
@@ -142,7 +143,7 @@ class _PageTestsBiochemicalEditState extends State<PageTestsBiochemicalEdit> {
             norma: _getNorma(_alt, _altUnitId),
             minmax: _getMinMax(_alt, _altUnitId),
             creationDate: _creationDate),
-        ast: ItemsChild(
+        ast: BloodTestItems(
             analysisPatientId: widget.thisData!.items.ast.analysisPatientId,
             analysisPatientDate: widget.thisData!.items.ast.analysisPatientDate,
             analysisPatientValue: _ast,
@@ -153,7 +154,7 @@ class _PageTestsBiochemicalEditState extends State<PageTestsBiochemicalEdit> {
             norma: _getNorma(_ast, _astUnitId),
             minmax: _getMinMax(_ast, _astUnitId),
             creationDate: _creationDate),
-        bilirubinTotal: ItemsChild(
+        bilirubinTotal: BloodTestItems(
             analysisPatientId: widget.thisData!.items.bilirubinTotal.analysisPatientId,
             analysisPatientDate: widget.thisData!.items.bilirubinTotal.analysisPatientDate,
             analysisPatientValue: _bilirubinTotal,
@@ -164,7 +165,7 @@ class _PageTestsBiochemicalEditState extends State<PageTestsBiochemicalEdit> {
             norma: _getNorma(_bilirubinTotal, _bilirubinTotalUnitId),
             minmax: _getMinMax(_bilirubinTotal, _bilirubinTotalUnitId),
             creationDate: _creationDate),
-        mochevina: ItemsChild(
+        mochevina: BloodTestItems(
             analysisPatientId: widget.thisData!.items.mochevina.analysisPatientId,
             analysisPatientDate: widget.thisData!.items.mochevina.analysisPatientDate,
             analysisPatientValue: _mochevina,
@@ -175,7 +176,7 @@ class _PageTestsBiochemicalEditState extends State<PageTestsBiochemicalEdit> {
             norma: _getNorma(_mochevina, _mochevinaUnitId),
             minmax: _getMinMax(_mochevina, _mochevinaUnitId),
             creationDate: _creationDate),
-        creatinine: ItemsChild(
+        creatinine: BloodTestItems(
             analysisPatientId: widget.thisData!.items.creatinine.analysisPatientId,
             analysisPatientDate: widget.thisData!.items.creatinine.analysisPatientDate,
             analysisPatientValue: _creatinine,
@@ -265,9 +266,9 @@ class _PageTestsBiochemicalEditState extends State<PageTestsBiochemicalEdit> {
   }
 
 
-  Minmax? _getMinMax(dynamic value, String? unitId)
+  DataTestsOptions? _getMinMax(dynamic value, String? unitId)
   {
-    return (unitId != null && value != null) ? Minmax(name: _dataSprTestsOptions.firstWhereOrNull((e) => e.unitId == unitId)?.name,
+    return (unitId != null && value != null) ? DataTestsOptions(name: _dataSprTestsOptions.firstWhereOrNull((e) => e.unitId == unitId)?.name,
         keyName: _dataSprTestsOptions.firstWhereOrNull((e) => e.unitId == unitId)?.keyName,
         id: _dataSprTestsOptions.firstWhereOrNull((e) => e.unitId == unitId)?.id,
         analysisId: _dataSprTestsOptions.firstWhereOrNull((e) => e.unitId == unitId)?.analysisId,
@@ -284,7 +285,7 @@ class _PageTestsBiochemicalEditState extends State<PageTestsBiochemicalEdit> {
 
 
   bool _getNorma(dynamic value, String? unitId){
-    Minmax? getMinMax = _getMinMax(value, unitId);
+    DataTestsOptions? getMinMax = _getMinMax(value, unitId);
     if (getMinMax != null) {
       return (value > getMinMax.refMIn && value < getMinMax.refMax);
     }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
+import '../data/data_result.dart';
 import '../data/data_tests_other.dart';
 import 'base_client.dart';
 
@@ -33,27 +34,49 @@ class ApiTestsOther {
   }
 
 
-
-  Future<void> post({
+  Future<dynamic> post({
     required String patientsId,
     required DataTestsOther thisData,
   }) async {
     debugPrint(jsonEncode(thisData.toJson()));
     var response = await baseClient.post(
         '/api/patients/$patientsId/other_blood_tests', thisData.toJson());
-    return response;
+
+    final statusCode = response.statusCode;
+    final body = response.body;
+    Object result;
+
+    if (statusCode >= 200 && statusCode < 300) {
+      result = DataTestsOther.fromJson(jsonDecode(body));
+    } else {
+      result = DataResult5.fromJson(jsonDecode(body)); // или DataResult
+    }
+
+    return result;
   }
 
 
-  Future<void> put({
+  Future<dynamic> put({
     required String patientsId,
     required String recordId,
     required DataTestsOther thisData,
   }) async {
     debugPrint(jsonEncode(thisData.toJson()));
     var response = await baseClient.put(
-        '/api/patients/$patientsId/other_blood_tests/$recordId', thisData.toJson());
-    return response;
+        '/api/patients/$patientsId/other_blood_tests/$recordId',
+        thisData.toJson());
+
+    final statusCode = response.statusCode;
+    final body = response.body;
+    Object result;
+
+    if (statusCode >= 200 && statusCode < 300) {
+      result = DataTestsOther.fromJson(jsonDecode(body));
+    } else {
+      result = DataResult5.fromJson(jsonDecode(body)); // или DataResult
+    }
+
+    return result;
   }
 
 

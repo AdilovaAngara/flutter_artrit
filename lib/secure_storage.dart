@@ -1,7 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 
-
 enum SecureKey {
   cookie,
   login,
@@ -14,7 +13,6 @@ enum SecureKey {
   fullAge,
   doubleAge,
 }
-
 
 extension SecureStorageKeyExtension on SecureKey {
   String get key {
@@ -43,7 +41,6 @@ extension SecureStorageKeyExtension on SecureKey {
   }
 }
 
-
 final FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
 // Сохранение данных
@@ -55,7 +52,7 @@ Future<void> saveSecureData(SecureKey key, String value) async {
 Future<String> readSecureData(SecureKey key) async {
   var value = await secureStorage.read(key: key.key);
   if (value == null) {
-    String ex = 'Ошибка: ${key.key} не найден';
+    String ex = 'В SecureStorage не найден: ${key.key}';
     debugPrint(ex);
     return '';
   }
@@ -75,11 +72,3 @@ Future<Map<String, String>> readAllSecureData() async {
 Future<void> deleteAllSecureData() async {
   await secureStorage.deleteAll();
 }
-
-
-
-
-
-
-
-

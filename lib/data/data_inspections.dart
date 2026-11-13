@@ -1,8 +1,4 @@
-
-//     final inspectionsData = inspectionsDataFromJson(jsonString);
-
 import 'dart:convert';
-
 import '../my_functions.dart';
 
 enum Enum {
@@ -67,7 +63,7 @@ class DataInspections {
 
   DataInspections({
     this.id,
-    this.patientsId,
+    required this.patientsId,
     required this.date,
     this.tem,
     required this.ardav,
@@ -112,8 +108,7 @@ class DataInspections {
   );
 
   Map<String, dynamic> toJson() => {
-    if (id != null) 'id': id, // Добавляем только если не null
-    //"id": id,
+    if (id != null) 'id': id,
     "patients_id": patientsId,
     "date": date,
     "tem": tem,
@@ -180,7 +175,7 @@ class Joint {
   );
 
   Map<String, dynamic> toJson() => {
-    "InspectionId": inspectionId,
+    if (inspectionId != null) 'InspectionId': inspectionId,
     "JointId": jointId,
     "IsPainful": isPainful,
     "IsSwollen": isSwollen,
@@ -278,7 +273,7 @@ class Uveit {
   );
 
   Map<String, dynamic> toJson() => {
-    "InspectionId": inspectionId,
+    if (inspectionId != null) 'InspectionId': inspectionId,
     "ConsultationDate": consultationDate?.toIso8601String(),
     "SideType": sideType,
     "DiseaseCourse": diseaseCourse,

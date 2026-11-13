@@ -1,5 +1,3 @@
-//     final dataScaleMainPatient = dataScaleMainPatientFromJson(jsonString);
-
 import 'dart:convert';
 
 enum Enum {
@@ -23,7 +21,7 @@ class DataScaleMainPatient {
 
   DataScaleMainPatient({
     this.id,
-    this.patientId,
+    required this.patientId,
     this.doctorId,
     required this.scale,
     required this.scaleDate,
@@ -41,7 +39,7 @@ class DataScaleMainPatient {
       );
 
   Map<String, dynamic> toJson() => {
-        "Id": id,
+        if (id != null) "Id": id,
         "PatientId": patientId,
         "DoctorId": doctorId,
         "Scale": scale,

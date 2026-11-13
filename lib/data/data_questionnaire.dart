@@ -1,5 +1,3 @@
-//     final questionnaireData = questionnaireDataFromJson(jsonString);
-
 import 'dart:convert';
 
 enum Enum {
@@ -17,7 +15,7 @@ String dataQuestionnaireRecToJson(DataQuestionnaire data) => json.encode(data.to
 
 class DataQuestionnaire {
   String? id;
-  //String? patientsId;
+  String? patientsId;
   DateTime questdate;
   int q1;
   int q2;
@@ -81,7 +79,7 @@ class DataQuestionnaire {
 
   DataQuestionnaire({
     this.id,
-    //this.patientsId,
+    required this.patientsId,
     required this.questdate,
     required this.q1,
     required this.q2,
@@ -146,7 +144,7 @@ class DataQuestionnaire {
 
   factory DataQuestionnaire.fromJson(Map<String, dynamic> json) => DataQuestionnaire(
     id: json["id"],
-    //patientsId: json["patients_id"],
+    patientsId: json["patients_id"],
     questdate: DateTime.parse(json["questdate"]),
     q1: json["q1"],
     q2: json["q2"],

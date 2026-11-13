@@ -1,6 +1,3 @@
-
-//     final temperatureData = temperatureDataFromJson(jsonString);
-
 import 'dart:convert';
 
 List<DataSprTemperature> dataSprTemperatureFromJson(String str) => List<DataSprTemperature>.from(json.decode(str).map((x) => DataSprTemperature.fromJson(x)));

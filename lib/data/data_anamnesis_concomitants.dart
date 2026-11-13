@@ -1,8 +1,6 @@
-//     final dataAnamnesisConcomitants = dataAnamnesisConcomitantsFromJson(jsonString);
-
 import 'dart:convert';
 
-enum Enum{
+enum Enum {
   dateStart,
   endDate,
   toThisTime,
@@ -19,7 +17,7 @@ String dataAnamnesisConcomitantsToJson(List<DataAnamnesisConcomitants> data) =>
 
 class DataAnamnesisConcomitants {
   String? id;
-  String? patientsId;
+  String patientsId;
   int? dateStart;
   String? diagnosis;
   EndDate? endDate;
@@ -28,7 +26,7 @@ class DataAnamnesisConcomitants {
 
   DataAnamnesisConcomitants({
     this.id,
-    this.patientsId,
+    required this.patientsId,
     required this.dateStart,
     required this.diagnosis,
     required this.endDate,
@@ -48,7 +46,7 @@ class DataAnamnesisConcomitants {
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
+        if (id != null) "id": id,
         "patients_id": patientsId,
         "date_start": dateStart,
         "diagnosis": diagnosis,

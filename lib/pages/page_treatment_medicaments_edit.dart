@@ -165,6 +165,7 @@ class _PageTreatmentMedicamentsEditState extends State<PageTreatmentMedicamentsE
 
   Future<DataResult3> _request() async {
     DataTreatmentMedicaments thisData = DataTreatmentMedicaments(
+        patientsId: _patientsId,
         tnp: _tnp,
         tlf: _tlf,
         mnn: _mnn,

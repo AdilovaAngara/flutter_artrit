@@ -48,14 +48,15 @@ class PageTuberculosisEditState extends State<PageTuberculosisEdit> {
   bool _isLoading = false;
   late int _role;
   late String _patientsId;
-  String _recordId = '';
+  late String _recordId;
   String? _treatmentBeginDate;
   String? _treatmentEndDate;
   List<String> _listDrugs = [];
   List<String> _listSideEffects = [];
   String? _customSideEffects;
   late DateTime? _createdOn = getMoscowDateTime();
-  final String _otherSideEffectId = '5635270d-c19d-4fa3-8131-c2f9d6742036'; // Другое
+  final String _otherSideEffectId =
+      '5635270d-c19d-4fa3-8131-c2f9d6742036'; // Другое
 
   /// Ключи
   final _formKey = GlobalKey<FormState>();
@@ -73,12 +74,16 @@ class PageTuberculosisEditState extends State<PageTuberculosisEdit> {
     _role = await getUserRole();
     _patientsId = await readSecureData(SecureKey.patientsId);
     if (widget.isEditForm) {
-      _recordId = widget.thisData!.id;
+      _recordId = widget.thisData!.id != null ? widget.thisData!.id! : '';
       _createdOn = widget.thisData!.createdOn;
       _treatmentBeginDate = dateFormat(widget.thisData!.treatmentBeginDate);
       _treatmentEndDate = dateFormat(widget.thisData!.treatmentEndDate);
-      _listDrugs = widget.thisData!.drugs != null ? widget.thisData!.drugs!.map((e) => e.id).toList() : [];
-      _listSideEffects = widget.thisData!.sideEffects != null ? widget.thisData!.sideEffects!.map((e) => e.id).toList() : [];
+      _listDrugs = widget.thisData!.drugs != null
+          ? widget.thisData!.drugs!.map((e) => e.id).toList()
+          : [];
+      _listSideEffects = widget.thisData!.sideEffects != null
+          ? widget.thisData!.sideEffects!.map((e) => e.id).toList()
+          : [];
       _customSideEffects = widget.thisData!.customSideEffects[0];
     }
 
@@ -105,25 +110,24 @@ class PageTuberculosisEditState extends State<PageTuberculosisEdit> {
     if (mounted) Navigator.pop(context);
   }
 
-
   Future<void> _request() async {
     DataTuberculosis thisData = DataTuberculosis(
-      id: _recordId,
       patientId: _patientsId,
-        treatmentBeginDate: convertStrToDate(_treatmentBeginDate),
-        treatmentEndDate: convertStrToDate(_treatmentEndDate),
-        createdOn: _createdOn,
-        drugIds: _listDrugs,
-        sideEffectIds: _listSideEffects,
-        customSideEffects: _listSideEffects.contains(_otherSideEffectId) ? [_customSideEffects ?? ''] : [''], ); // Другое
+      treatmentBeginDate: convertStrToDate(_treatmentBeginDate),
+      treatmentEndDate: convertStrToDate(_treatmentEndDate),
+      createdOn: _createdOn,
+      drugIds: _listDrugs,
+      sideEffectIds: _listSideEffects,
+      customSideEffects: _listSideEffects.contains(_otherSideEffectId)
+          ? [_customSideEffects ?? '']
+          : [''],
+    ); // Другое
 
     widget.isEditForm
-        ? await _api.put(patientsId: _patientsId, recordId: _recordId, thisData: thisData)
+        ? await _api.put(
+            patientsId: _patientsId, recordId: _recordId, thisData: thisData)
         : await _api.post(patientsId: _patientsId, thisData: thisData);
   }
-
-
-
 
   bool _areDifferent() {
     if (!widget.isEditForm || widget.thisData == null) {
@@ -138,8 +142,14 @@ class PageTuberculosisEditState extends State<PageTuberculosisEdit> {
     final w = widget.thisData!;
     return w.treatmentBeginDate != convertStrToDate(_treatmentBeginDate) ||
         w.treatmentEndDate != convertStrToDate(_treatmentEndDate) ||
-        !listEquals(w.drugs!.map((e) => e.id).toList()..sort(), _listDrugs..sort(),) ||
-        !listEquals(w.sideEffects!.map((e) => e.id).toList()..sort(), _listSideEffects..sort(),) ||
+        !listEquals(
+          w.drugs!.map((e) => e.id).toList()..sort(),
+          _listDrugs..sort(),
+        ) ||
+        !listEquals(
+          w.sideEffects!.map((e) => e.id).toList()..sort(),
+          _listSideEffects..sort(),
+        ) ||
         w.customSideEffects[0] != _customSideEffects;
   }
 
@@ -244,7 +254,8 @@ class PageTuberculosisEditState extends State<PageTuberculosisEdit> {
         WidgetInputMultiSelect(
           labelText: 'Лекарственные препараты',
           fieldKey: _keys[Enum.drugs]!,
-          allValues: _thisSprDataDrugs.map((e) => SprItem(id: e.id.toString(), name: e.name ?? ''))
+          allValues: _thisSprDataDrugs
+              .map((e) => SprItem(id: e.id.toString(), name: e.name ?? ''))
               .toList(),
           selectedValues: _listDrugs,
           required: true,
@@ -259,10 +270,11 @@ class PageTuberculosisEditState extends State<PageTuberculosisEdit> {
         WidgetInputMultiSelect(
           labelText: 'Нежелательные явления',
           fieldKey: _keys[Enum.sideEffects]!,
-          allValues: _thisSprDataSideEffects.map((e) => SprItem(id: e.id.toString(), name: e.name))
+          allValues: _thisSprDataSideEffects
+              .map((e) => SprItem(id: e.id.toString(), name: e.name))
               .toList(),
           selectedValues: _listSideEffects,
-          required: true,
+          required: false,
           listRoles: Roles.asPatient,
           roleId: _role,
           onChanged: (value) {
@@ -271,14 +283,14 @@ class PageTuberculosisEditState extends State<PageTuberculosisEdit> {
             });
           },
         ),
-
         if (_listSideEffects.contains(_otherSideEffectId))
           InputText(
             labelText: 'Другое',
             fieldKey: _keys[Enum.customSideEffects]!,
             value: _customSideEffects,
             maxLength: 200,
-            required: _listSideEffects.contains(_otherSideEffectId) ? true : false,
+            required:
+                _listSideEffects.contains(_otherSideEffectId) ? true : false,
             listRoles: Roles.asPatient,
             role: _role,
             onChanged: (value) {

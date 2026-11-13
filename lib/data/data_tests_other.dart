@@ -1,5 +1,3 @@
-//     final dataTestsOther = dataTestsOtherFromJson(jsonString);
-
 import 'dart:convert';
 
 enum Enum{
@@ -26,7 +24,7 @@ class DataTestsOther {
 
   DataTestsOther({
     this.id,
-    this.patientsId,
+    required this.patientsId,
     required this.date,
     required this.parametersId,
     required this.analys,
@@ -49,7 +47,7 @@ class DataTestsOther {
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
+    if (id != null) "id": id,
     "patients_id": patientsId,
     "date": date,
     "parameters_id": parametersId,
@@ -63,7 +61,7 @@ class DataTestsOther {
 
 
 class Znach {
-  double? num;
+  dynamic num;
   String? sel;
 
   Znach({

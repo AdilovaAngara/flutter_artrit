@@ -33,12 +33,10 @@ class ApiScaleJadas71 {
   }
 
   Future<DataScaleResult> post({
-    required String patientsId,
-    required DataScaleJadas71 thisData,
+    required String patientsId
   }) async {
-    debugPrint(jsonEncode(thisData.toJson()));
     var response = await baseClient.post(
-        '/api/patients/$patientsId/jadas71scales', thisData.toJson());
+        '/api/patients/$patientsId/jadas71scales', null);
     DataScaleResult? thisDataRecord = dataScaleResultFromJson(response.body);
     debugPrint(jsonEncode(thisDataRecord));
     return thisDataRecord;

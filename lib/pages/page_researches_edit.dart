@@ -48,8 +48,7 @@ class PageResearchesEditState extends State<PageResearchesEdit> {
   late String _recordId;
   String _name = '';
   String? _date;
-  int? _creationDate =
-  convertToTimestamp(dateTimeFormat(getMoscowDateTime()));
+  int? _creationDate = convertToTimestamp(dateTimeFormat(getMoscowDateTime()));
   String? _comment;
   String? _fileId;
   String _fileName = '';
@@ -106,14 +105,15 @@ class PageResearchesEditState extends State<PageResearchesEdit> {
     if (mounted) Navigator.pop(context);
   }
 
-
   Future<void> _request() async {
     if (_file != null) {
-      DataSendFile dataSendFile = await _apiSendFile.sendFile(path: _file!.path);
+      DataSendFile dataSendFile =
+          await _apiSendFile.sendFile(path: _file!.path);
       _fileId = dataSendFile.id;
     }
 
     DataResearches thisData = DataResearches(
+        patientId: _patientsId,
         typeId: widget.typeId,
         name: _name,
         date: convertToTimestamp(_date!),
@@ -123,10 +123,9 @@ class PageResearchesEditState extends State<PageResearchesEdit> {
 
     widget.isEditForm
         ? await _api.put(
-        patientsId: _patientsId, recordId: _recordId, thisData: thisData)
+            patientsId: _patientsId, recordId: _recordId, thisData: thisData)
         : await _api.post(patientsId: _patientsId, thisData: thisData);
   }
-
 
   bool _areDifferent() {
     if (!widget.isEditForm || widget.thisData == null) {

@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final dataLoginRecovery = dataLoginRecoveryFromJson(jsonString);
-
 import 'dart:convert';
 
 enum Enum {

@@ -1,5 +1,3 @@
-//     final dataSprTreatmentRehabilitationsTypes = dataSprTreatmentRehabilitationsTypesFromJson(jsonString);
-
 import 'dart:convert';
 
 List<DataSprTreatmentRehabilitationsTypes> dataSprTreatmentRehabilitationsTypesFromJson(String str) => List<DataSprTreatmentRehabilitationsTypes>.from(json.decode(str).map((x) => DataSprTreatmentRehabilitationsTypes.fromJson(x)));

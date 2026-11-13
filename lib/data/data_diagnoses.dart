@@ -1,5 +1,3 @@
-//     final diagnosesData = diagnosesDataFromJson(jsonString);
-
 import 'dart:convert';
 
 enum EnumDiagnoses {
@@ -17,8 +15,8 @@ class DataDiagnoses {
   String patientsId;
   String? diagnosisId;
   String? comment;
-  dynamic kritpost;
-  dynamic kritisc;
+  String? kritpost;
+  String? kritisc;
   int? dateCreated;
 
   DataDiagnoses({

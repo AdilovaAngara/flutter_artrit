@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-
 enum Enum {
   name,
   frequency,
@@ -11,13 +10,12 @@ enum Enum {
   patientIds
 }
 
-
 List<DataNotificationsSettings> dataNotificationsSettingsFromJson(String str) => List<DataNotificationsSettings>.from(json.decode(str).map((x) => DataNotificationsSettings.fromJson(x)));
 
 String dataNotificationsSettingsToJson(List<DataNotificationsSettings> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class DataNotificationsSettings {
-  String id;
+  String? id;
   String doctorId;
   String? name;
   int frequencyId;
@@ -28,7 +26,7 @@ class DataNotificationsSettings {
   List<String>? patientIds;
 
   DataNotificationsSettings({
-    required this.id,
+    this.id,
     required this.doctorId,
     required this.name,
     required this.frequencyId,
@@ -52,7 +50,7 @@ class DataNotificationsSettings {
   );
 
   Map<String, dynamic> toJson() => {
-    "Id": id,
+    if (id != null) "Id": id,
     "DoctorId": doctorId,
     "Name": name,
     "FrequencyId": frequencyId,

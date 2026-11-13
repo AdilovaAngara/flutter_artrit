@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final dataChatMessages = dataChatMessagesFromJson(jsonString);
-
 import 'dart:convert';
 
 DataChatMessages dataChatMessagesFromJson(String str) => DataChatMessages.fromJson(json.decode(str));
@@ -142,7 +138,7 @@ class FileElement {
   );
 
   Map<String, dynamic> toJson() => {
-    "MessageId": messageId,
+    if (messageId != null) "MessageId": messageId,
     "Name": name,
     "Url": url,
   };

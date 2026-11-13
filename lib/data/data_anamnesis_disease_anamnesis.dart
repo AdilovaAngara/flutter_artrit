@@ -1,5 +1,3 @@
-//     final dataAnamnesisDiseaseAnamnesis = dataAnamnesisDiseaseAnamnesisFromJson(jsonString);
-
 import 'dart:convert';
 
 enum Enum {
@@ -23,7 +21,7 @@ class DataAnamnesisDiseaseAnamnesis {
 
   DataAnamnesisDiseaseAnamnesis({
     this.id,
-    this.patientsId,
+    required this.patientsId,
     this.dateDisease,
     this.dateDiagnosis,
   });
@@ -37,7 +35,7 @@ class DataAnamnesisDiseaseAnamnesis {
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
+        if (id != null) "id": id,
         "patients_id": patientsId,
         "date_disease": dateDisease,
         "date_diagnosis": dateDiagnosis,

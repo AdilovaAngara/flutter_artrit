@@ -299,10 +299,13 @@ class PageLoginState extends State<PageLogin> {
                         InkWell(
                           onTap: () {
                             setState(() {
+                              _isLoading = false;
                               _login = 'piepim@mail.ru';
                               _password = '00112299p-';
                               // _login = 'fortest2@nitrosdata.com';
                               // _password = 'aSc47wCU';
+                              //  _login = 'angara.creator@mail.ru';
+                              //  _password = '6UTwNXCx';
                               _keys[Enum.login]!.currentState?.didChange(_login);
                               _keys[Enum.password]!
                                   .currentState
@@ -321,6 +324,7 @@ class PageLoginState extends State<PageLogin> {
                         InkWell(
                           onTap: () {
                             setState(() {
+                              _isLoading = false;
                               _login = 'angara.pie@mail.ru';
                               _password = '123456';
                               _keys[Enum.login]!.currentState?.didChange(_login);

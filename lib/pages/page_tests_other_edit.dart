@@ -4,6 +4,7 @@ import 'package:artrit/data/data_tests_other.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import '../api/api_spr.dart';
+import '../data/data_result.dart';
 import '../data/data_tests_options.dart';
 import '../data/data_spr_other_tests_names.dart';
 import '../data/data_spr_other_tests_units.dart';
@@ -14,6 +15,7 @@ import '../widget_another/form_header_widget.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/banners.dart';
 import '../widgets/button_widget.dart';
+import '../widgets/show_message.dart';
 import '../widgets/widget_input_select.dart';
 import '../widgets/input_text_with_select.dart';
 import '../widgets/widget_input_select_date_time.dart';
@@ -103,18 +105,23 @@ class _PageTestsOtherEditState extends State<PageTestsOtherEdit> {
       _isLoading = true;
     });
 
-    await _request();
+    var result = await _request();
 
     setState(() {
       _isLoading = false;
     });
 
-    if (mounted) Navigator.pop(context);
+    if (result is DataResult5) {
+      ShowMessage.show(context: context, message: result.message?.toString() ?? 'Неизвестная ошибка');
+    } else {
+      Navigator.pop(context);
+    }
   }
 
 
-  Future<void> _request() async {
-    DataTestsOther thisData = DataTestsOther(
+  Future<dynamic> _request() async {
+     var thisData = DataTestsOther(
+      patientsId: _patientsId,
       date: convertToTimestamp(_date),
       analys: _analys,
       znach: Znach(num: _znachNum, sel: _znachSel!),
@@ -123,11 +130,12 @@ class _PageTestsOtherEditState extends State<PageTestsOtherEdit> {
       creationDate: _creationDate,
     );
 
-    widget.isEditForm
+    dynamic result = widget.isEditForm
         ? await _api.put(patientsId: _patientsId, recordId: _recordId, thisData: thisData)
         : await _api.post(patientsId: _patientsId, thisData: thisData);
-  }
 
+    return result;
+  }
 
 
   String? _getAnalysisName(String? parametersId) {
@@ -138,7 +146,6 @@ class _PageTestsOtherEditState extends State<PageTestsOtherEdit> {
       return null;
     }
   }
-
 
 
   Future<void> _getUnitList(String? parametersId) async {
@@ -155,7 +162,6 @@ class _PageTestsOtherEditState extends State<PageTestsOtherEdit> {
     setState(() {
     });
   }
-
 
 
   String? _getUnitId(String? unitName) {

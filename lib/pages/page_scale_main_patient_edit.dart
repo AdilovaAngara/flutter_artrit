@@ -90,6 +90,7 @@ class _PageScaleMainPatientEditState extends State<PageScaleMainPatientEdit> {
 
   Future<void> _request() async {
     DataScaleMainPatient thisData = DataScaleMainPatient(
+        patientId: _patientsId,
         creationDate: _creationDate,
         scaleDate: convertStrToDateTime(convertTimestampToDateTime(_creationDate)),
         scale: _scale

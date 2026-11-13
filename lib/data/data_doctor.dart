@@ -1,7 +1,4 @@
-//     final dataDoctor = dataDoctorFromJson(jsonString);
-
 import 'dart:convert';
-
 
 enum Enum{
   firstName,

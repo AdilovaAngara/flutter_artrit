@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final dataNotifications = dataNotificationsFromJson(jsonString);
-
 import 'dart:convert';
 
 List<DataNotificationsForPatient> dataNotificationsFromJson(String str) => List<DataNotificationsForPatient>.from(json.decode(str).map((x) => DataNotificationsForPatient.fromJson(x)));

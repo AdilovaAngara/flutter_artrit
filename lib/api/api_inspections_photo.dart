@@ -15,8 +15,8 @@ class ApiInspectionsPhoto {
   }) async {
     var response =
     await baseClient.get('/api/patients/$patientsId/pictures?type=$bodyType');
-    List<DataInspectionsPhoto>? thisData = dataInspectionsPhotoFromJson(response.body);
-    thisData = thisData
+    var result = dataInspectionsPhotoFromJson(response.body);
+    List<DataInspectionsPhoto>? thisData = result
         .where((e) => e.inspectionId == inspectionsId)
         .toList();
 

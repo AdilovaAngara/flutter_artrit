@@ -329,6 +329,7 @@ class PageInspectionsJointSyndromeState
             _isMovementLimited = selectedJoint.isMovementLimited;
           } else {
             Joint newJoint = Joint(
+                inspectionId: _inspectionsId,
                 jointId: jointId,
                 isPainful: false,
                 isSwollen: false,

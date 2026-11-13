@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final dataChatMessage = dataChatMessageFromJson(jsonString);
-
 import 'dart:convert';
 import 'data_chat_messages.dart';
 

@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final dataChatFileSend = dataChatFileSendFromJson(jsonString);
-
 import 'dart:convert';
 
 DataChatFileSend dataChatFileSendFromJson(String str) => DataChatFileSend.fromJson(json.decode(str));

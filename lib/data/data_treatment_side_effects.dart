@@ -1,5 +1,3 @@
-//     final dataTreatmentSideEffects = dataTreatmentSideEffectsFromJson(jsonString);
-
 import 'dart:convert';
 
 enum Enum {
@@ -32,7 +30,7 @@ class DataTreatmentSideEffects {
 
   DataTreatmentSideEffects({
     this.id,
-    this.patientsId,
+    required this.patientsId,
     required this.date,
     required this.ny,
     required this.comment,
@@ -56,7 +54,7 @@ class DataTreatmentSideEffects {
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
+        if (id != null) "id": id,
         "patients_id": patientsId,
         "date": date,
         "ny": ny,

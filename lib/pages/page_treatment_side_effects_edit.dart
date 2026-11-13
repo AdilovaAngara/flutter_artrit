@@ -114,6 +114,7 @@ class _PageTreatmentSideEffectsEditState extends State<PageTreatmentSideEffectsE
 
   Future<void> _request() async {
     DataTreatmentSideEffects thisData = DataTreatmentSideEffects(
+        patientsId: _patientsId,
         date: convertToTimestamp(_date!),
         ny: _ny,
         comment: _comment,

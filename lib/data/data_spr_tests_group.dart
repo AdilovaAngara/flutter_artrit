@@ -1,5 +1,3 @@
-//     final dataSprTestsGroup = dataSprTestsGroupFromJson(jsonString);
-
 import 'dart:convert';
 
 List<DataSprTestsGroup> dataSprTestsGroupFromJson(String str) => List<DataSprTestsGroup>.from(json.decode(str).map((x) => DataSprTestsGroup.fromJson(x)));

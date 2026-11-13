@@ -6,14 +6,15 @@ import 'package:artrit/secure_storage.dart';
 import "package:path/path.dart" as path;
 
 class BaseClient {
-  bool isTest = false;
-  //bool isTest = true;
+  //bool isTest = false;
+  bool isTest = true;
 
   String get baseUrl {
     /// Релиз
     if (!isTest) return 'https://api.aspirre-russia.ru/ja';
     /// Тест
-    return 'https://artritdevapi.nitrosbase.com';
+    //return 'https://artritdevapi.nitrosbase.com';
+    return 'http://192.168.0.217:5270';
   }
 
   var client = http.Client();
@@ -26,8 +27,6 @@ class BaseClient {
       if (cookie.isNotEmpty) 'Cookie': cookie,
     };
   }
-
-
 
   Future<dynamic> get(String api) async {
     try {

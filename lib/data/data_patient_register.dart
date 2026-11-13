@@ -1,5 +1,3 @@
-//     final dataPatientRegister = dataPatientRegisterFromJson(jsonString);
-
 import 'dart:convert';
 
 

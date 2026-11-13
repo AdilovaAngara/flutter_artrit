@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import '../my_functions.dart';
 import '../theme.dart'; // Предполагается, что стили определены в theme.dart
 
-
 class ItemsCallBack {
   double? value;
   String? unit;
@@ -57,18 +56,22 @@ class InputTextWithSelectState extends State<InputTextWithSelect> {
   String? _selectedUnit;
   late List<String> _unitOptions;
 
-
   @override
   void initState() {
+    super.initState();
     _unitOptions = widget.unitOptions ?? ['Нет данных'];
     _controller = TextEditingController(
       text: widget.initialValue != null ? widget.initialValue.toString() : '',
     );
-    _selectedUnit = widget.initialUnit ??
-        (_unitOptions.isNotEmpty ? _unitOptions[0] : null);
-    super.initState();
-  }
 
+    _selectedUnit = (widget.initialUnit == null || widget.initialUnit!.isEmpty)
+        ? _unitOptions.isNotEmpty
+            ? _unitOptions[0]
+            : null
+        : _unitOptions.contains(widget.initialUnit)
+            ? widget.initialUnit
+            : null;
+  }
 
   @override
   void didUpdateWidget(InputTextWithSelect oldWidget) {
@@ -90,14 +93,13 @@ class InputTextWithSelectState extends State<InputTextWithSelect> {
     super.dispose();
   }
 
-
   void _updateValue() {
     if (widget.onChanged != null) {
-      widget.onChanged!(
-          ItemsCallBack(
-              value: _controller.text.trim().isNotEmpty ? double.parse(_controller.text.trim()) : null,
-              unit: (_controller.text.trim().isNotEmpty) ? _selectedUnit : null)
-      );
+      widget.onChanged!(ItemsCallBack(
+          value: _controller.text.trim().isNotEmpty
+              ? double.parse(_controller.text.trim())
+              : null,
+          unit: (_controller.text.trim().isNotEmpty) ? _selectedUnit : null));
     }
   }
 
@@ -116,10 +118,14 @@ class InputTextWithSelectState extends State<InputTextWithSelect> {
               widget.required &&
               !widget.readOnly) {
             return widget.errorText;
-          } else if (widget.max != null && widget.min != null && value != null &&
+          } else if (widget.max != null &&
+              widget.min != null &&
+              value != null &&
               value.trim().isNotEmpty) {
             final doubleValue = double.tryParse(value.replaceAll(',', '.'));
-            if (doubleValue == null || doubleValue < widget.min! || doubleValue > widget.max!) {
+            if (doubleValue == null ||
+                doubleValue < widget.min! ||
+                doubleValue > widget.max!) {
               return 'От ${widget.min} до ${widget.max}';
             }
           }
@@ -133,26 +139,29 @@ class InputTextWithSelectState extends State<InputTextWithSelect> {
         minLines: 1,
         keyboardType: TextInputType.numberWithOptions(decimal: true),
         inputFormatters: [NumberInputFormatter()],
-
         decoration: InputDecoration(
           labelText: widget.required && !widget.readOnly
               ? '${widget.labelText}*'
               : widget.labelText,
           labelStyle: inputLabelStyle,
-          floatingLabelBehavior: FloatingLabelBehavior.always, // Всегда отображать label сверху
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          // Всегда отображать label сверху
           errorStyle: errorStyle,
           border: widget.border,
           suffixIcon: SizedBox(
             width: MediaQuery.of(context).size.width * 0.35, // 35% ширины поля
             child: DropdownButtonFormField<String>(
-              value: _selectedUnit,
-              style: inputTextStyle, decoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.only(top: 20), // Уменьшаем высоту
-            ),
+              initialValue: _selectedUnit,
+              style: inputTextStyle,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.only(top: 20), // Уменьшаем высоту
+              ),
               dropdownColor: Colors.white,
-              isDense: true, // Уменьшает высоту селекта
-              isExpanded: true, // Растягиваем DropdownButtonFormField на всю доступную ширину
+              isDense: true,
+              // Уменьшает высоту селекта
+              isExpanded: true,
+              // Растягиваем DropdownButtonFormField на всю доступную ширину
               items: _unitOptions.map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
@@ -168,19 +177,20 @@ class InputTextWithSelectState extends State<InputTextWithSelect> {
               onChanged: widget.readOnly
                   ? null
                   : (String? newValue) {
-                setState(() {
-                  _selectedUnit = newValue;
-                  _updateValue(); // Обновляем значение при выборе единицы
-                  widget.fieldKey.currentState?.validate(); // Валидация после выбора
-                });
-              },
+                      setState(() {
+                        _selectedUnit = newValue;
+                        _updateValue(); // Обновляем значение при выборе единицы
+                        widget.fieldKey.currentState
+                            ?.validate(); // Валидация после выбора
+                      });
+                    },
             ),
           ),
           suffixIconConstraints: BoxConstraints(
             minWidth: 0,
             minHeight: 0,
             maxWidth:
-            MediaQuery.of(context).size.width * 0.35, // Ограничение ширины
+                MediaQuery.of(context).size.width * 0.35, // Ограничение ширины
           ),
         ),
         style: inputTextStyle,
@@ -192,5 +202,3 @@ class InputTextWithSelectState extends State<InputTextWithSelect> {
     );
   }
 }
-
-

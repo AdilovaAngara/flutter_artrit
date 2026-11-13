@@ -85,9 +85,7 @@ class _PageScaleJadas71State extends State<PageScaleJadas71> {
 
 
   Future<DataScaleResult> _request() async {
-    DataScaleJadas71 thisData = DataScaleJadas71(
-    );
-    return await _api.post(patientsId: _patientsId, thisData: thisData);
+    return await _api.post(patientsId: _patientsId);
   }
 
 

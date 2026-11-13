@@ -1,5 +1,3 @@
-//     final dataInspectionsJointsFavorite = dataInspectionsJointsFavoriteFromJson(jsonString);
-
 import 'dart:convert';
 
 List<DataInspectionsJointsFavorite> dataInspectionsJointsFavoriteFromJson(String str) => List<DataInspectionsJointsFavorite>.from(json.decode(str).map((x) => DataInspectionsJointsFavorite.fromJson(x)));

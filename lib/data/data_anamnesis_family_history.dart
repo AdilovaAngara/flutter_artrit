@@ -1,5 +1,3 @@
-//     final dataAnamnesisFamilyHistory = dataAnamnesisFamilyHistoryFromJson(jsonString);
-
 import 'dart:convert';
 
 enum Enum {
@@ -42,7 +40,7 @@ class DataAnamnesisFamilyHistory {
   List<String>? valuebobolrey;
 
   DataAnamnesisFamilyHistory({
-    this.patientId,
+    required this.patientId,
     required this.radioart,
     required this.radiopsor,
     required this.radiokron,

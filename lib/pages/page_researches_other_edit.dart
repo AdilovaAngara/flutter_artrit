@@ -106,6 +106,7 @@ class PageResearchesOtherEditState extends State<PageResearchesOtherEdit> {
 
   Future<void> _request() async {
     DataResearchesOther thisData = DataResearchesOther(
+        patientId: _patientsId,
         name: _name,
         executeDate: convertStrToDate(_executeDate!),
         comment: _comment,

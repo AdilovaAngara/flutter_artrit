@@ -108,6 +108,8 @@ class PageInspectionsAnglesPhotoState
       return false;
     }
     await _put(index, comments, angle1, angle2);
+    // Искусственная задержка
+    await Future.delayed(const Duration(seconds: 1));
     await _refreshData();
     return true;
   }

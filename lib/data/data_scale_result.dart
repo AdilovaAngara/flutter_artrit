@@ -37,7 +37,7 @@ class Result {
 
   Result({
     this.id,
-    this.patientId,
+    required this.patientId,
     this.calculateDate,
     this.indexResult,
     this.createdOn,
@@ -52,7 +52,7 @@ class Result {
   );
 
   Map<String, dynamic> toJson() => {
-    "Id": id,
+    if (id != null) "Id": id,
     "PatientId": patientId,
     "CalculateDate": calculateDate?.toIso8601String(),
     "IndexResult": indexResult,

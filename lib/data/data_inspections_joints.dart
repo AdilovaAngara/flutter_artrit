@@ -1,6 +1,3 @@
-
-//     final inspectionsJointsData = inspectionsJointsDataFromJson(jsonString);
-
 import 'dart:convert';
 
 List<DataInspectionsJoints> dataInspectionsJointsFromJson(String str) => List<DataInspectionsJoints>.from(json.decode(str).map((x) => DataInspectionsJoints.fromJson(x)));

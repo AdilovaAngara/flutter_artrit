@@ -1,5 +1,3 @@
-//     final dataResearchesEpicrisis = dataResearchesEpicrisisFromJson(jsonString);
-
 import 'dart:convert';
 
 enum Enum{
@@ -26,7 +24,7 @@ class DataResearchesEpicrisis {
 
   DataResearchesEpicrisis({
     this.id,
-    this.patientId,
+    required this.patientId,
     this.name,
     required this.date,
     required this.institution,
@@ -43,9 +41,9 @@ class DataResearchesEpicrisis {
     date: json["date"],
     institution: json["institution"],
     comment: json["comment"],
-    fileIds: List<String>.from(json["file_ids"].map((x) => x)),
+    fileIds: json["file_ids"] != null ? List<String>.from(json["file_ids"].map((x) => x)) : null,
     creationDate: json["creation_date"],
-    filename: List<String>.from(json["filename"].map((x) => x)),
+    filename: json["filename"] != null ? List<String>.from(json["filename"].map((x) => x)) : null,
   );
 
   Map<String, dynamic> toJson() => {

@@ -1,5 +1,3 @@
-//     final dataVaccination = dataVaccinationFromJson(jsonString);
-
 import 'dart:convert';
 
 enum Enum{
@@ -8,7 +6,6 @@ enum Enum{
   filename,
   comment,
 }
-
 
 List<DataVaccination> dataVaccinationFromJson(String str) => List<DataVaccination>.from(json.decode(str).map((x) => DataVaccination.fromJson(x)));
 
@@ -27,7 +24,7 @@ class DataVaccination {
 
   DataVaccination({
     this.id,
-    this.patientId,
+    required this.patientId,
     this.name,
     required this.executeDate,
     required this.comment,
@@ -50,7 +47,7 @@ class DataVaccination {
   );
 
   Map<String, dynamic> toJson() => {
-    "Id": id,
+    if (id != null) "Id": id,
     "PatientId": patientId,
     "Name": name,
     "ExecuteDate": executeDate?.toIso8601String(),

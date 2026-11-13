@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/services.dart';
 import 'package:artrit/secure_storage.dart';
 import 'package:artrit/widgets/audio_provider.dart';
 import 'package:artrit/widgets/chat_provider.dart';
@@ -15,26 +16,35 @@ import 'my_functions.dart';
 
 
 // Перед публикацией
-// 1. Скрыть тестовые кнопки
-// 2. Заменить адрес API
-// 3. Закомментировать код, который отключает проверку сертификата HttpOverrides.global = MyHttpOverrides();
-// 4. Увеличить номер сборки в pubspec.yaml и codemagic.yaml
-// 5. При сборке для Android надо указывать после знака + версию, которая выше той, что уже опубликована. Андроид почему-то не смотрит, что предыдущие цифры стали выше
+// 1. Сделать BaseClient().isTest = false, чтобы
+// - Скрыть тестовые кнопки
+// - Заменить адрес API
+// - Отключить проверку сертификата HttpOverrides.global = MyHttpOverrides();
+// 2. Увеличить номер сборки в pubspec.yaml и codemagic.yaml
+// 3. При сборке для Android надо указывать после знака + версию, которая выше той, что уже опубликована. Андроид почему-то не смотрит, что предыдущие цифры стали выше
 
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Добавляем поддержку сертификата GlobalSign Root R46
+  final ByteData data = await rootBundle.load('assets/certs/globalsign_root_r46.pem');
+  SecurityContext.defaultContext.setTrustedCertificatesBytes(
+    data.buffer.asUint8List(),
+  );
+
+  // Этот код отключает проверку сертификата (только для тестирования, если андроид ругается на сертификат)
+  // if (BaseClient().isTest) {
+  //   HttpOverrides.global = MyHttpOverrides();
+  // }
+
   int role = await getUserRole();
   String login = await readSecureData(SecureKey.login);
   String password = await readSecureData(SecureKey.password);
   if (Platform.isAndroid) {
     await MediaStore.ensureInitialized();
     MediaStore.appFolder = '/';
-  }
-  // Этот код отключает проверку сертификата (раскомментировать только для тестирования, если андроид ругается на сертификат)
-  if (BaseClient().isTest) {
-    HttpOverrides.global = MyHttpOverrides();
   }
   runApp(
       MultiProvider(

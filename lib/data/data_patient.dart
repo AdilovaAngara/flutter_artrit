@@ -1,6 +1,3 @@
-
-//     final userData = userDataFromJson(jsonString);
-
 import 'dart:convert';
 
 enum EnumPatient {

@@ -1,5 +1,3 @@
-//     final dataSprResearchTuberculosisResult = dataSprResearchTuberculosisResultFromJson(jsonString);
-
 import 'dart:convert';
 
 List<DataSprResearchTuberculinResult> dataSprResearchTuberculinResultFromJson(String str) => List<DataSprResearchTuberculinResult>.from(json.decode(str).map((x) => DataSprResearchTuberculinResult.fromJson(x)));

@@ -1,5 +1,3 @@
-//     final dataInspectionsPhotoRash = dataInspectionsPhotoRashFromJson(jsonString);
-
 import 'dart:convert';
 
 enum Enum {

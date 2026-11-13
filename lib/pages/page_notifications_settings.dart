@@ -121,7 +121,7 @@ class PageNotificationsSettingsState extends State<PageNotificationsSettings> {
       builder: (BuildContext context) {
         return ShowDialogDelete(
           onConfirm: () async {
-            String recordId = _thisData![index].id;
+            String recordId = _thisData![index].id!;
             await _api.delete(recordId: recordId);
             await _refreshData();
           },

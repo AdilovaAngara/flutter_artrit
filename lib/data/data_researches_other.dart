@@ -1,5 +1,3 @@
-//     final dataResearchesOther = dataResearchesOtherFromJson(jsonString);
-
 import 'dart:convert';
 
 enum Enum{
@@ -25,7 +23,7 @@ class DataResearchesOther {
 
   DataResearchesOther({
     this.id,
-    this.patientId,
+    required this.patientId,
     required this.name,
     required this.executeDate,
     required this.comment,
@@ -40,7 +38,7 @@ class DataResearchesOther {
     executeDate: DateTime.parse(json["ExecuteDate"]),
     comment: json["Comment"],
     createdOn: DateTime.parse(json["CreatedOn"]),
-    files: List<FileElement>.from(json["Files"].map((x) => FileElement.fromJson(x))),
+    files: json["Files"] != null ? List<FileElement>.from(json["Files"].map((x) => FileElement.fromJson(x))) : null,
   );
 
   Map<String, dynamic> toJson() => {

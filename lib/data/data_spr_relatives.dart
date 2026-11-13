@@ -1,5 +1,3 @@
-//     final dataSprRelatives = dataSprRelativesFromJson(jsonString);
-
 import 'dart:convert';
 
 List<DataSprRelatives> dataSprRelativesFromJson(String str) => List<DataSprRelatives>.from(json.decode(str).map((x) => DataSprRelatives.fromJson(x)));

@@ -1,5 +1,3 @@
-//     final DataScaleDas28 = DataScaleDas28FromJson(jsonString);
-
 import 'dart:convert';
 
 List<DataScaleDas28> dataScaleDas28FromJson(String str) => List<DataScaleDas28>.from(json.decode(str).map((x) => DataScaleDas28.fromJson(x)));
@@ -7,16 +5,16 @@ List<DataScaleDas28> dataScaleDas28FromJson(String str) => List<DataScaleDas28>.
 String dataScaleDas28ToJson(List<DataScaleDas28> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class DataScaleDas28 {
-  String? id;
-  String? patientId;
-  DateTime? calculateDate;
+  String id;
+  String patientId;
+  DateTime calculateDate;
   double? indexResult;
   DateTime? createdOn;
 
   DataScaleDas28({
-    this.id,
-    this.patientId,
-    this.calculateDate,
+    required this.id,
+    required this.patientId,
+    required this.calculateDate,
     this.indexResult,
     this.createdOn,
   });

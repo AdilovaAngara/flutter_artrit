@@ -1,5 +1,3 @@
-//     final dataTestsOptions = dataTestsOptionsFromJson(jsonString);
-
 import 'dart:convert';
 
 List<DataTestsOptions> dataTestsOptionsFromJson(String str) => List<DataTestsOptions>.from(json.decode(str).map((x) => DataTestsOptions.fromJson(x)));

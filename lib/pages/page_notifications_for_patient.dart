@@ -6,7 +6,7 @@ import '../my_functions.dart';
 import '../roles.dart';
 
 class PageNotificationsForPatient extends StatefulWidget {
-  final List<DataNotificationsForPatient> thisData;
+  final List<DataNotificationsForPatient>? thisData;
   final VoidCallback? onDataUpdated;
   const PageNotificationsForPatient({
     super.key,
@@ -41,7 +41,7 @@ class _PageNotificationsForPatientState extends State<PageNotificationsForPatien
   Future<void> _loadData() async {
     _role = await getUserRole();
     if (Roles.asPatient.contains(_role)) {
-      _thisData = List.from(widget.thisData); // Создаём копию;
+      _thisData = List.from(widget.thisData ?? []); // Создаём копию;
       _updateNotificationLists();
     }
     setState(() {});
